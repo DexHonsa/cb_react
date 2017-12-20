@@ -14,6 +14,7 @@ const TextFieldGroup = ({ field, value, label, error, type, onChange, checkUserE
 				name={field}
 				className="css-login-input-input"
         placeholder={field}
+				autocomplete="off"
 			/>
 			{error && <span className="css-help-block animated fadeInDown">{error}</span>}
 		</div>

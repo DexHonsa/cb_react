@@ -39,7 +39,9 @@ class Header extends React.Component {
 	}
   jsUcfirst(string)
   {
+    if(string !== undefined){
       return string.charAt(0).toUpperCase() + string.slice(1);
+    }
   }
   render(){
     var userDropdown;

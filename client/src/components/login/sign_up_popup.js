@@ -1,21 +1,61 @@
 import React, {Component} from 'react';
 import logo_color from '../../img/logo_color_with_line.png';
 import onClickOutside from "react-onclickoutside";
-
-
-
+import validateInput from '../validations/signup_validation';
+import TextFieldGroup from './signup_text_field_group';
+import {connect} from 'react-redux';
+import { userSignup } from '../../actions/auth_actions';
+import {createBrowserHistory } from 'history';
+const browserHistory = createBrowserHistory();
+import PropTypes from "prop-types";
 
 class SignUpPopup extends Component {
+  static contextTypes = {
+    router: PropTypes.object
+  }
   constructor(props){
     super(props);
     this.state = {
-      popupVisible: false
+      popupVisible: false,
+      username:'',
+      email : '',
+			password : '',
+			passwordConfirm : '',
+			errors : {},
+			isLoading : ''
     }
-
+    this.onSubmit = this.onSubmit.bind(this);
+    this.onChange = this.onChange.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.handleOutsideClick = this.handleOutsideClick.bind(this);
   }
+  isValid(){
+    const { errors, isValid } = validateInput(this.state);
+    if(!isValid){
+      this.setState({
+        errors : errors
+      })
+    }
+    return isValid;
+  }
+  onChange(e){
+		this.setState({
+			[e.target.name] : e.target.value
+		})
+	}
+  onSubmit(e){
+		if(this.isValid()){
+			var data = this.state;
+			var that = this;
 
+			e.preventDefault();
+			 this.setState({errors: {}, isLoading: true});
+			this.props.userSignup(this.state).then(
+				(res) => this.context.router.history.push('/product/dashboard'),
+				(err) => this.setState({errors: err.response.data.errors, isLoading: false})
+				);
+		}
+	}
   componentDidMount(){
     document.addEventListener('click', this.handleOutsideClick, false);
   }
@@ -32,20 +72,24 @@ class SignUpPopup extends Component {
 
 
   handleOutsideClick(e) {
-
+    var that = this;
 
     if (this.node.contains(e.target)) {
       return;
     }
-    this.props.hidePopup();
+    setTimeout(function(){
+      that.props.hidePopup();
+    },500)
+
     this.handleClick();
   }
 
   render() {
+    const {username,email, password, passwordConfirm, errors} = this.state;
     return (
       <div>
-        <div className="overlay animated fadeIn">
-          <div className="popup-1  animated fadeInUpBig" ref={node => { this.node = node; }}>
+        <div className={this.state.popupVisible ? "overlay animated-fast fadeOut" : "overlay animated-fast fadeIn"}>
+          <div className={this.state.popupVisible ? "popup-1 animated-fast bounceOutDown" : "popup-1 animated-fast bounceInUp" } ref={node => { this.node = node; }}>
             <div className="sign-up-popup">
               <div className="popup-inner">
                 <div className="popup-top">Sign Up to Commonbrain
@@ -54,23 +98,52 @@ class SignUpPopup extends Component {
                   <div className="sign-up-logo">
                     <img src={logo_color} alt/>
                   </div>
-                  <div className="sign-up-input-item">
+                  <div className="sign-up-input-item2">
                     <div className="sign-up-input-label">Username</div>
-                    <input type="text" placeholder="Username"/>
+                    <TextFieldGroup
+		                	field="username"
+		                	label="Username"
+		                	type="text"
+		                	value={username}
+		                	error={errors.username}
+		                	onChange={this.onChange}
+		                />
                   </div>
-                  <div className="sign-up-input-item">
+                  <div className="sign-up-input-item2">
                     <div className="sign-up-input-label">Email</div>
-                    <input type="text" placeholder="Email"/>
+                    <TextFieldGroup
+    		                	field="email"
+    		                	label="Email"
+    		                	type="text"
+    		                	value={email}
+    		                	error={errors.email}
+    		                	onChange={this.onChange}
+    		                />
                   </div>
-                  <div className="sign-up-input-item">
+                  <div className="sign-up-input-item2">
                     <div className="sign-up-input-label">Password</div>
-                    <input type="text" placeholder="Password"/>
+                    <TextFieldGroup
+    		                	field="password"
+    		                	label="Password"
+    		                	type="password"
+    		                	value={password}
+    		                	error={errors.password}
+    		                	onChange={this.onChange}
+    		                />
                   </div>
-                  <div className="sign-up-input-item">
+                  <div className="sign-up-input-item2">
                     <div className="sign-up-input-label">Re-type Password</div>
-                    <input type="text" placeholder="Re-type Password"/>
+                    <TextFieldGroup
+    		                	field="passwordConfirm"
+    		                	label="Confirm Password"
+    		                	type="password"
+    		                	value={passwordConfirm}
+    		                	error={errors.passwordConfirm}
+    		                	onChange={this.onChange}
+    		                />
                   </div>
-                  <div className="sign-up-btn">Sign Up</div>
+                  {errors.form && <div className=" alert-danger animated fadeIn">{errors.form}</div>}
+                  <div className="sign-up-btn" onClick={this.onSubmit.bind(this)}>Sign Up</div>
                   <div className="sign-up-disclaimer">Subject to Terms and Conditions</div>
                 </div>
               </div>
@@ -84,4 +157,4 @@ class SignUpPopup extends Component {
 
 }
 
-export default SignUpPopup;
+export default connect((state) => {return {} }, { userSignup })(SignUpPopup);;

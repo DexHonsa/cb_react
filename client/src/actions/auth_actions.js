@@ -44,7 +44,7 @@ export function userLogin(data) {
 
 export function userSignup(data) {
 	return dispatch => {
-		return axios.post('/api/signup', data).then(res => {
+		return axios.post('/api/sign_up', data).then(res => {
 			const token = res.data.token;
 			localStorage.setItem('jwtToken', token);
 			setAuthorizationToken(token);

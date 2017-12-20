@@ -1,5 +1,4 @@
 import React from 'react';
-
 import $ from 'jquery';
 import {Link} from 'react-router-dom';
 import TextFieldGroup from './text_field_group';
@@ -7,16 +6,15 @@ import axios from 'axios';
 import validateInput from '../validations/signin_validation';
 import {createBrowserHistory } from 'history';
 import PropTypes from "prop-types";
-
 import {connect} from 'react-redux';
 import { userLogin } from '../../actions/auth_actions';
-
 import SignUpPopup from './sign_up_popup.js';
-
 import logo_grey from '../../img/logo_grey.png';
 import logo_color from '../../img/logo_color_with_line.png';
 import computer from '../../img/computer.png';
 import logo_white from '../../img/logo_white.png';
+
+
 
 const browserHistory = createBrowserHistory();
 
@@ -94,7 +92,7 @@ class Login extends React.Component {
               <ul className="css-login-list">
 
                   <li>Login</li>
-                
+
                 <li>
                   <div className="css-signup-btn" onClick={this.showSignupPopup.bind(this)}>Sign Up</div>
                 </li>
