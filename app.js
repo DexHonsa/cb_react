@@ -20,14 +20,21 @@ app.use(bodyParser.json());
 app.engine('handlebars', exphbs());
 app.set('view engine', 'handlebars');
 
-app.use('/public', express.static(path.join(__dirname, 'public')));
+
+//development options
+//app.use('/public', express.static(path.join(__dirname, 'public')));
+
+
 
 mongoose.connect('mongodb://localhost/commonbrain');
 var db = mongoose.connection;
 
-app.get('/', function(req, res) {
-  res.send('Hello Worlfd');
+//production options
+app.use(express.static(path.join(__dirname, 'client/build')));
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname+'/client/build/index.html'));
 });
+//
 
 // create reusable transporter object using the default SMTP transport
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
