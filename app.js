@@ -26,7 +26,7 @@ app.set('view engine', 'handlebars');
 
 
 
-mongoose.connect('mongodb://localhost/commonbrain');
+mongoose.connect('mongodb://iwantmoredexx:Awesomeo21!@cluster0-shard-00-00-l9gyz.mongodb.net:27017,cluster0-shard-00-01-l9gyz.mongodb.net:27017,cluster0-shard-00-02-l9gyz.mongodb.net:27017/commonbrain?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin');
 var db = mongoose.connection;
 
 //production options
