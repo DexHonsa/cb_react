@@ -53,14 +53,14 @@ class Login extends React.Component {
 		if(this.isValid()){
 			var data = this.state;
 			var that = this;
-      
+
 
 			e.preventDefault();
 			 this.setState({errors: {}, isLoading: true});
 			this.props.userLogin(this.state).then(
 				(res) => this.context.router.history.push('/product/dashboard'),
 				(err) => {
-
+            console.log('an error has occured');
           if(err.data == undefined){
             console.log(err);
             return this.setState({errors: err.response.data.errors, isLoading: false});
