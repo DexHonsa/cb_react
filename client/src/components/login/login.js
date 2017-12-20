@@ -58,7 +58,7 @@ class Login extends React.Component {
 			 this.setState({errors: {}, isLoading: true});
 			this.props.userLogin(this.state).then(
 				(res) => this.context.router.history.push('/product/dashboard'),
-				(err) => this.setState({errors: err.response.data.errors, isLoading: false})
+				(err) => this.setState({errors: err.data.errors, isLoading: false})
 				);
 		}
 	}
