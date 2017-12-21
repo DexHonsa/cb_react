@@ -22,7 +22,7 @@ app.set('view engine', 'handlebars');
 
 
 //development options
-//app.use('/public', express.static(path.join(__dirname, 'public')));
+app.use('/public', express.static(path.join(__dirname, 'public')));
 
 
 
@@ -30,10 +30,10 @@ mongoose.connect('mongodb://iwantmoredexx:Awesomeo21!@cluster0-shard-00-00-l9gyz
 var db = mongoose.connection;
 
 //production options
-app.use(express.static(path.join(__dirname, 'client/build')));
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname+'/client/build/index.html'));
-});
+// app.use(express.static(path.join(__dirname, 'client/build')));
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname+'/client/build/index.html'));
+// });
 //
 
 // create reusable transporter object using the default SMTP transport
@@ -115,6 +115,14 @@ app.route('/api/sign_up').post(api.SignUpUser);
 //application api
 app.route('/api/applications').get(api.getApplications);
 app.route('/api/uploadData').post(api.excelData);
+
+//closingData apis
+app.route('/api/uploadClosingData').post(api.ImportClosingData);
+app.route('/api/getClosingBlock').post(api.GetClosingBlock);
+app.route('/api/getClosingHeaders').get(api.GetClosingHeaders);
+
+
+var _ = require('lodash');
 var storage = multer.diskStorage({
   destination: function(req, file, cb) {
     cb(null, './uploads/') //folder to save uploading file
@@ -148,69 +156,34 @@ app.post('/upload', function(req, res) {
     } catch (e) {
       res.json({error_code: 1, err_desc: "Corrupted excel file or Not valid excel file"});
     }
-    console.log(req.file.path);
+
   })
 
 });
+function chunkArray(myArray, chunk_size){
+    var index = 0;
+    var arrayLength = myArray.length;
+    var tempArray = [];
+
+    for (index = 0; index < arrayLength; index += chunk_size) {
+        myChunk = myArray.slice(index, index+chunk_size);
+        // Do something if you want with the group
+        tempArray.push(myChunk);
+    }
+
+    return tempArray;
+}
+function isEmpty(obj) {
+    for(var prop in obj) {
+        if(obj.hasOwnProperty(prop))
+            return false;
+    }
+
+    return true;
+}
 app.post('/upload2', function(req, res) {
 
-  upload(req, res, function(err) {
-    if (err) {
-      res.json({error_code: 1, err_desc: err});
-      return;
-    }
-    if (!req.file) {
-      res.json({error_code: 1, err_desc: "No file passed"});
-      return;
-    }
 
-    workbook.xlsx.readFile(req.file.path).then(function() {
-      //  var dataObj = CircularJSON.stringify(data);
-      //res.json({form:dataObj})
-      // var worksheet = workbook.getWorksheet('Dex');
-      //
-      //
-      // var sheet2 = JSON.parse(CircularJSON.stringify(worksheet));
-      // var arr = [];
-      //
-      // for (var i = 0, len = sheet2._rows.length; i < len; i++){
-      //
-      //   var index = i;
-      //   if( sheet2._rows[i]._cells !== null && sheet2._rows[i]._cells !== undefined){
-      //
-      //   for (var i2 = 0, len2 = sheet2._rows[i]._cells.length; i2 < len2; i2++){
-      //       if( sheet2._rows[i]._cells[i2] !== null && sheet2._rows[i]._cells[i2] !== undefined){
-      //         var cell = sheet2._rows[i]._cells[i2]._value.model.address;
-      //         var Obj = {};
-      //         if(sheet2._rows[i]._cells[i2]._value.model.value === undefined){
-      //           Obj[cell] = sheet2._rows[i]._cells[i2]._value.model.result;
-      //         }else{
-      //           Obj[cell] = sheet2._rows[i]._cells[i2]._value.model.value;
-      //         }
-      //
-      //
-      //
-      //         if(Obj[cell] !== undefined){
-      //           arr.push(Obj);
-      //         }
-      //
-      //
-      //
-      //         console.log(Obj);
-      //       }
-      //     //arr[cell] = sheet2._rows[i]._cells[i2]._value ;
-      //   }
-      //
-      //
-      //   }
-      //
-      // }
-
-      res.json(JSON.parse(CircularJSON.stringify(workbook)));
-    });
-
-    console.log(req.file.path);
-  })
 
 });
 app.post('/upload3', function(req, res) {
