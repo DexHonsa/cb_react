@@ -31,7 +31,7 @@ var db = mongoose.connection;
 
 //production options
 app.use(express.static(path.join(__dirname, 'client/build')));
-app.get('/', (req, res) => {
+app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname+'/client/build/index.html'));
 });
 
@@ -107,19 +107,19 @@ app.post('/send', (req, res) => {
   });
 })
 app.route('/api/login').post(api.LoginCheck);
-app.route('/confirmation/:token').get(api.ConfirmEmail);
-app.route('/api/users').get(api.Users);
-app.route('/api/user_portfolios/:id').get(api.GetPortfolios);
+app.route('/confirmation/:token').post(api.ConfirmEmail);
+app.route('/api/users').post(api.Users);
+app.route('/api/user_portfolios/:id').post(api.GetPortfolios);
 app.route('/api/import').post(api.ImportExcel);
 app.route('/api/sign_up').post(api.SignUpUser);
 //application api
-app.route('/api/applications').get(api.getApplications);
+app.route('/api/applications').post(api.getApplications);
 app.route('/api/uploadData').post(api.excelData);
 
 //closingData apis
 app.route('/api/uploadClosingData').post(api.ImportClosingData);
 app.route('/api/getClosingBlock').post(api.GetClosingBlock);
-app.route('/api/getClosingHeaders').get(api.GetClosingHeaders);
+app.route('/api/getClosingHeaders').post(api.GetClosingHeaders);
 
 
 var _ = require('lodash');

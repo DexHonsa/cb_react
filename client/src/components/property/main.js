@@ -15,7 +15,7 @@ class Main extends React.Component {
   componentDidMount(){
     var that = this;
     this.setState({headers:[]});
-    axios.get('/api/getClosingHeaders').then(
+    axios.post('/api/getClosingHeaders').then(
       (res) => {
 
         that.setState({headers:res.data, headersLoaded:true});

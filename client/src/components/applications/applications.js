@@ -21,7 +21,7 @@ class Applications extends React.Component {
   }
 componentDidMount(){
   var that = this;
-  axios.get('/api/applications').then(function(res){
+  axios.post('/api/applications').then(function(res){
     that.setState({
       applications:res.data,
       filteredApplications:res.data

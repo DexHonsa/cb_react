@@ -22,7 +22,7 @@ componentDidMount(){
   console.log('mounted');
   console.log(this.props.auth.user.id);
   var that = this;
-  axios.get('/api/user_portfolios/' + this.props.auth.user.id).then(function(res){
+  axios.post('/api/user_portfolios/' + this.props.auth.user.id).then(function(res){
     console.log(res.data);
     that.setState({portfolios:res.data});
   })
