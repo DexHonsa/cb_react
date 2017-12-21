@@ -14,7 +14,8 @@ class MyPortfolios extends React.Component {
 constructor(props){
   super(props);
   this.state = {
-    portfolios:['']
+    portfolios:[],
+    isLoading:true
   }
 }
 
@@ -24,7 +25,7 @@ componentDidMount(){
   var that = this;
   axios.post('/api/user_portfolios/' + this.props.auth.user.id).then(function(res){
     console.log(res.data);
-    that.setState({portfolios:res.data});
+    that.setState({portfolios:res.data,isLoading:false});
   })
 }
 
@@ -81,6 +82,7 @@ componentDidMount(){
                     <div className="my-projects-tab">All Portfolios</div>
                   </div>
                   <div className="my-projects-container">
+                  {this.state.isLoading ? <div className="loading-gif"><img src={require('../../img/loading2.gif')} /></div> : null}
                   {this.state.portfolios.map(function(data, i){
                     return <PortfolioItem key={i} portfolioLink={portfolioLink} username={this.props.auth.user.username}  portfolioName={data.portfolioName}  />
                   },this)}

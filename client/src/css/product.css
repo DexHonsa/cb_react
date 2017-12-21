@@ -1361,3 +1361,14 @@ select:focus{
 	color:#fff;
 	cursor: pointer;
 }
+.loading-gif{
+	overflow:auto;
+	height:100px;
+	text-align: center;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.loading-gif img{
+	width:100px;
+}

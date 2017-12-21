@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import DetailBlock from './detail_block';
 import axios from 'axios';
 import UploadData from './upload_data';
+import loadingGif from '../../img/loading2.gif';
 class Main extends React.Component {
   constructor(props){
     super(props);
@@ -9,7 +10,8 @@ class Main extends React.Component {
       isLoading:true,
       uploadPopup:false,
       headers:[],
-      headersLoaded:false
+      headersLoaded:false,
+      isLoading:true,
     }
   }
   componentDidMount(){
@@ -18,7 +20,7 @@ class Main extends React.Component {
     axios.post('/api/getClosingHeaders').then(
       (res) => {
 
-        that.setState({headers:res.data, headersLoaded:true});
+        that.setState({headers:res.data, headersLoaded:true, isLoading:false});
       }
     )
 
@@ -93,6 +95,7 @@ class Main extends React.Component {
           </ul>
         </div>
       </div>
+      {this.state.isLoading ? <div className="loading-gif"><img src={loadingGif} /></div> : null}
       {this.state.headersLoaded ? this.state.headers.map(function(data,i){
         if(i > 1){
         return <DetailBlock key={i} mainCategory={data} />
