@@ -11,7 +11,6 @@ var CircularJSON = require('circular-json');
 var nodemailer = require('nodemailer');
 var smtpTransport = require('nodemailer-smtp-transport');
 
-
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 let transporter = nodemailer.createTransport(smtpTransport({
   name: 'Server', host: 'mail.commonbrain.io',
@@ -146,9 +145,9 @@ exports.ImportExcel = function(req, res) {
         }
       }
       MongoClient.connect(URL, function(err, db) {
-        if (err)
+        if (err) 
           throw err;
-
+        
         var collection = db.collection("applications")
         collection.remove();
 
@@ -160,7 +159,7 @@ exports.ImportExcel = function(req, res) {
     });
   })
 }
-exports.ImportClosingData = function(req,res){
+exports.ImportClosingData = function(req, res) {
   upload(req, res, function(err) {
     if (err) {
       res.json({error_code: 1, err_desc: err});
@@ -174,54 +173,68 @@ exports.ImportClosingData = function(req,res){
     workbook.xlsx.readFile(req.file.path).then(function() {
       //  var dataObj = CircularJSON.stringify(data);
       //res.json({form:dataObj})
-       var worksheet = workbook.getWorksheet('Sheet1');
+      var worksheet = workbook.getWorksheet('Sheet1');
       //
       //
-       var sheet2 = JSON.parse(CircularJSON.stringify(worksheet));
-       var arr = [];
-       var headers = []
+      var sheet2 = JSON.parse(CircularJSON.stringify(worksheet));
+      var arr = [];
+      var headers = []
       //
-      for (var i = 0, len = sheet2._rows.length; i < len; i++){
-          var rowObj = {}
+      for (var i = 0, len = sheet2._rows.length; i < len; i++) {
+        var rowObj = {}
 
-         if( sheet2._rows[i]._cells !== null && sheet2._rows[i]._cells !== undefined){
-           for (var i2 = 0, len2 = sheet2._rows[i]._cells.length; i2 < len2; i2++){
-                var cell = sheet2._rows[i]._cells[i2]._value.model.address;
-                   if(cell.indexOf('2') !== -1  && cell.length == 2){
-                     headers.push(sheet2._rows[i]._cells[i2]._value.model.value);
-                   }
-                 var letter = cell.charAt(0);
-                 var header;
-                 if(letter == 'A'){header = headers[0]}
-                 if(letter == 'B'){header = headers[1]}
-                 if(letter == 'C'){header = headers[2]}
-                 if(letter == 'D'){header = headers[3]}
-                 if(letter == 'E'){header = headers[4]}
-                 if(letter == 'F'){header = headers[5]}
-                 if(letter == 'G'){header = headers[6]}
-                 if(letter == 'H'){header = headers[7]}
+        if (sheet2._rows[i]._cells !== null && sheet2._rows[i]._cells !== undefined) {
+          for (var i2 = 0, len2 = sheet2._rows[i]._cells.length; i2 < len2; i2++) {
+            var cell = sheet2._rows[i]._cells[i2]._value.model.address;
+            if (cell.indexOf('2') !== -1 && cell.length == 2) {
+              headers.push(sheet2._rows[i]._cells[i2]._value.model.value);
+            }
+            var letter = cell.charAt(0);
+            var header;
+            if (letter == 'A') {
+              header = headers[0]
+            }
+            if (letter == 'B') {
+              header = headers[1]
+            }
+            if (letter == 'C') {
+              header = headers[2]
+            }
+            if (letter == 'D') {
+              header = headers[3]
+            }
+            if (letter == 'E') {
+              header = headers[4]
+            }
+            if (letter == 'F') {
+              header = headers[5]
+            }
+            if (letter == 'G') {
+              header = headers[6]
+            }
+            if (letter == 'H') {
+              header = headers[7]
+            }
 
+            if (sheet2._rows[i]._cells[i2]._value.model.value === undefined) {
+              if (sheet2._rows[i]._cells[i2]._value.model.result === undefined) {
+                rowObj[header] = 'NAP';
+              } else {
+                rowObj[header] = sheet2._rows[i]._cells[i2]._value.model.result;
+              }
 
-
-             if(sheet2._rows[i]._cells[i2]._value.model.value === undefined){
-                    if(sheet2._rows[i]._cells[i2]._value.model.result === undefined){
-                      rowObj[header] = 'NAP';
-                    }else{
-                      rowObj[header] = sheet2._rows[i]._cells[i2]._value.model.result;
-                    }
-
-                   }else{
-                     rowObj[header] = sheet2._rows[i]._cells[i2]._value.model.value;
-                   }
-           }
-         }
-         if(rowObj['CB ID'] != 'NAP'){
-           arr.push(rowObj);
-           console.log(rowObj);
-           console.log('not empty')
-         }else{
-           console.log('empty')
-         }
+            } else {
+              rowObj[header] = sheet2._rows[i]._cells[i2]._value.model.value;
+            }
+          }
+        }
+        if (rowObj['CB ID'] != 'NAP') {
+          arr.push(rowObj);
+          console.log(rowObj);
+          console.log('not empty')
+        } else {
+          console.log('empty')
+        }
 
         //  var index = i;
         //  if( sheet2._rows[i]._cells !== null && sheet2._rows[i]._cells !== undefined){
@@ -252,33 +265,32 @@ exports.ImportClosingData = function(req,res){
         // }
 
       }
-        //res.json(JSON.parse(CircularJSON.stringify(arr)));
-        MongoClient.connect(URL, function(err, db) {
-          if (err)
-            throw err;
+      //res.json(JSON.parse(CircularJSON.stringify(arr)));
+      MongoClient.connect(URL, function(err, db) {
+        if (err) 
+          throw err;
+        
+        var collection = db.collection("closingCollection")
+        collection.remove();
 
-          var collection = db.collection("closingCollection")
-          collection.remove();
+        collection.insert(arr)
+        res.json(arr);
 
-          collection.insert(arr)
-          res.json(arr);
-
-        })
+      })
     });
-
 
   })
 }
-exports.GetClosingBlock = function(req,res){
+exports.GetClosingBlock = function(req, res) {
   var majorCategory = req.body.majorCategory;
   MongoClient.connect(URL, function(err, db) {
-    if (err)
+    if (err) 
       throw err;
-
+    
     var collection = db.collection("closingCollection")
 
     collection.find({"Major Category": majorCategory}).toArray(function(err, result) {
-      if (err)
+      if (err) 
         throw err;
       console.log(result);
       res.send(result);
@@ -287,29 +299,30 @@ exports.GetClosingBlock = function(req,res){
 
   })
 }
-exports.GetClosingHeaders = function(req,res){
-  function removeDuplicates(arr){
+exports.GetClosingHeaders = function(req, res) {
+  function removeDuplicates(arr) {
     let unique_array = []
-    for(let i = 0;i < arr.length; i++){
-        if(unique_array.indexOf(arr[i]) == -1){
-            unique_array.push(arr[i])
-        }
+    for (let i = 0; i < arr.length; i++) {
+      if (unique_array.indexOf(arr[i]) == -1) {
+        unique_array.push(arr[i])
+      }
     }
     return unique_array
-}
+  }
   MongoClient.connect(URL, function(err, db) {
-    if (err)
+    if (err) 
       throw err;
-
+    
     var collection = db.collection("closingCollection")
 
     collection.find().toArray(function(err, result) {
       var headerArr = [];
-      for(var i = 0, len = result.length; i < len; i++){
+      for (var i = 0, len = result.length; i < len; i++) {
         headerArr.push(result[i]['Major Category'])
       }
 
-      if (err) throw err;
+      if (err) 
+        throw err;
       res.json(removeDuplicates(headerArr));
       db.close();
     })
@@ -319,7 +332,7 @@ exports.GetClosingHeaders = function(req,res){
 exports.LoginCheck = function(req, res) {
   const {username, password} = req.body;
   MongoClient.connect(URL, function(err, db) {
-    if (err)
+    if (err) 
       return
 
     var collection = db.collection('users')
@@ -373,15 +386,15 @@ exports.excelData = function(req, res) {
 };
 exports.getApplications = function(req, res) {
   MongoClient.connect(URL, function(err, db) {
-    if (err)
+    if (err) 
       throw err;
-
+    
     var collection = db.collection("applications")
 
     collection.find({}).toArray(function(err, result) {
-      if (err)
+      if (err) 
         throw err;
-
+      
       res.send(result);
       db.close();
     })
@@ -390,13 +403,13 @@ exports.getApplications = function(req, res) {
 };
 exports.Users = function(req, res) {
   MongoClient.connect(URL, function(err, db) {
-    if (err)
+    if (err) 
       throw err;
-
+    
     var collection = db.collection("users")
 
     collection.find({}).toArray(function(err, result) {
-      if (err)
+      if (err) 
         throw err;
       console.log(result);
       res.send(result);
@@ -408,13 +421,13 @@ exports.Users = function(req, res) {
 exports.GetPortfolios = function(req, res) {
   var userId = req.params.id;
   MongoClient.connect(URL, function(err, db) {
-    if (err)
+    if (err) 
       throw err;
-
+    
     var collection = db.collection("portfolios")
 
     collection.find({userId: userId}).toArray(function(err, result) {
-      if (err)
+      if (err) 
         throw err;
       console.log(result);
       res.send(result);
@@ -428,7 +441,7 @@ exports.ConfirmEmail = function(req, res) {
   var token = req.params.token;
   const _id = jwt.verify(token, config.jwtSecret);
   MongoClient.connect(URL, function(err, db) {
-    if (err)
+    if (err) 
       throw err;
     var collection = db.collection('users');
     //console.log(_id);
@@ -441,9 +454,9 @@ exports.ConfirmEmail = function(req, res) {
         confirmed: true
       }
     }, function(err, result) {
-      if (err)
+      if (err) 
         throw err;
-
+      
       res.send(result);
     })
   });
@@ -453,9 +466,9 @@ exports.SignUpUser = function(req, res) {
   const {username, email, password} = req.body;
   var EMAIL_SECRET;
   MongoClient.connect(URL, function(err, db) {
-    if (err)
+    if (err) 
       throw err;
-
+    
     var collection = db.collection("users")
 
     collection.find({email: email}).toArray(function(err, result) {

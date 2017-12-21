@@ -14,7 +14,7 @@ class MyPortfolios extends React.Component {
 constructor(props){
   super(props);
   this.state = {
-    portfolios:[]
+    portfolios:['']
   }
 }
 
