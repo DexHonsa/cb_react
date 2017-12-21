@@ -22,7 +22,7 @@ app.set('view engine', 'handlebars');
 
 
 //development options
-app.use('/public', express.static(path.join(__dirname, 'public')));
+//app.use('/public', express.static(path.join(__dirname, 'public')));
 
 
 
@@ -30,11 +30,11 @@ mongoose.connect('mongodb://iwantmoredexx:Awesomeo21!@cluster0-shard-00-00-l9gyz
 var db = mongoose.connection;
 
 //production options
-// app.use(express.static(path.join(__dirname, 'client/build')));
-// app.get('*', (req, res) => {
-//   res.sendFile(path.join(__dirname+'/client/build/index.html'));
-// });
-//
+app.use(express.static(path.join(__dirname, 'client/build')));
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname+'/client/build/index.html'));
+});
+
 
 // create reusable transporter object using the default SMTP transport
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
