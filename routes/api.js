@@ -299,7 +299,7 @@ exports.GetClosingBlock = function(req, res) {
     collection.find({"Major Category": majorCategory}).toArray(function(err, result) {
       if (err)
         throw err;
-      console.log(result);
+
       res.send(result);
       db.close();
     })
