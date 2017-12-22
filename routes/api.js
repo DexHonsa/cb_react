@@ -167,6 +167,7 @@ exports.ImportExcel = function(req, res) {
   })
 }
 exports.ImportClosingData = function(req, res) {
+  console.log(req);
   upload(req, res, function(err) {
     // if (err) {
     //   res.json({error_code: 1, err_desc: err});

@@ -33,8 +33,8 @@ class UploadPopup extends Component {
     }
     console.log("--FORM DATA--");
     console.log(formData);
-    
-    return post(url, formData,config).then(
+
+     axios.post(url, formData, config).then(
       (res) => {this.props.closePopup();console.log(res)},
       (err) => {console.log(err)}
     );
