@@ -19,7 +19,7 @@ class Main extends React.Component {
   componentDidMount(){
     var that = this;
     this.setState({headers:[]});
-    axios.post('/api/getClosingHeaders').then(
+    axios.post('/api/getClosingHeaders/', { responseType: 'arraybuffer' }).then(
       (res) => {
 
         that.setState({headers:res.data, headersLoaded:true, isLoading:false});
@@ -28,7 +28,7 @@ class Main extends React.Component {
 
   }
   downloadExcel(){
-    axios.post('/api/DownloadClosingExcel').then(
+    axios.post('/api/DownloadClosingExcel/', {} , { responseType: 'arraybuffer' }).then(
       (res) => {FileDownload(res.data, 'ClosingExcel.xlsx')},
       (err) => {}
     )
