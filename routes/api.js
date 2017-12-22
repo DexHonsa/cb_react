@@ -145,9 +145,9 @@ exports.ImportExcel = function(req, res) {
         }
       }
       MongoClient.connect(URL, function(err, db) {
-        if (err) 
+        if (err)
           throw err;
-        
+
         var collection = db.collection("applications")
         collection.remove();
 
@@ -267,9 +267,9 @@ exports.ImportClosingData = function(req, res) {
       }
       //res.json(JSON.parse(CircularJSON.stringify(arr)));
       MongoClient.connect(URL, function(err, db) {
-        if (err) 
+        if (err)
           throw err;
-        
+
         var collection = db.collection("closingCollection")
         collection.remove();
 
@@ -284,13 +284,13 @@ exports.ImportClosingData = function(req, res) {
 exports.GetClosingBlock = function(req, res) {
   var majorCategory = req.body.majorCategory;
   MongoClient.connect(URL, function(err, db) {
-    if (err) 
+    if (err)
       throw err;
-    
+
     var collection = db.collection("closingCollection")
 
     collection.find({"Major Category": majorCategory}).toArray(function(err, result) {
-      if (err) 
+      if (err)
         throw err;
       console.log(result);
       res.send(result);
@@ -310,9 +310,9 @@ exports.GetClosingHeaders = function(req, res) {
     return unique_array
   }
   MongoClient.connect(URL, function(err, db) {
-    if (err) 
+    if (err)
       throw err;
-    
+
     var collection = db.collection("closingCollection")
 
     collection.find().toArray(function(err, result) {
@@ -321,7 +321,7 @@ exports.GetClosingHeaders = function(req, res) {
         headerArr.push(result[i]['Major Category'])
       }
 
-      if (err) 
+      if (err)
         throw err;
       res.json(removeDuplicates(headerArr));
       db.close();
@@ -332,7 +332,7 @@ exports.GetClosingHeaders = function(req, res) {
 exports.LoginCheck = function(req, res) {
   const {username, password} = req.body;
   MongoClient.connect(URL, function(err, db) {
-    if (err) 
+    if (err)
       return
 
     var collection = db.collection('users')
@@ -386,15 +386,15 @@ exports.excelData = function(req, res) {
 };
 exports.getApplications = function(req, res) {
   MongoClient.connect(URL, function(err, db) {
-    if (err) 
+    if (err)
       throw err;
-    
+
     var collection = db.collection("applications")
 
     collection.find({}).toArray(function(err, result) {
-      if (err) 
+      if (err)
         throw err;
-      
+
       res.send(result);
       db.close();
     })
@@ -403,13 +403,13 @@ exports.getApplications = function(req, res) {
 };
 exports.Users = function(req, res) {
   MongoClient.connect(URL, function(err, db) {
-    if (err) 
+    if (err)
       throw err;
-    
+
     var collection = db.collection("users")
 
     collection.find({}).toArray(function(err, result) {
-      if (err) 
+      if (err)
         throw err;
       console.log(result);
       res.send(result);
@@ -421,13 +421,13 @@ exports.Users = function(req, res) {
 exports.GetPortfolios = function(req, res) {
   var userId = req.params.id;
   MongoClient.connect(URL, function(err, db) {
-    if (err) 
+    if (err)
       throw err;
-    
+
     var collection = db.collection("portfolios")
 
     collection.find({userId: userId}).toArray(function(err, result) {
-      if (err) 
+      if (err)
         throw err;
       console.log(result);
       res.send(result);
@@ -441,7 +441,7 @@ exports.ConfirmEmail = function(req, res) {
   var token = req.params.token;
   const _id = jwt.verify(token, config.jwtSecret);
   MongoClient.connect(URL, function(err, db) {
-    if (err) 
+    if (err)
       throw err;
     var collection = db.collection('users');
     //console.log(_id);
@@ -454,9 +454,9 @@ exports.ConfirmEmail = function(req, res) {
         confirmed: true
       }
     }, function(err, result) {
-      if (err) 
+      if (err)
         throw err;
-      
+
       res.send(result);
     })
   });
@@ -466,9 +466,9 @@ exports.SignUpUser = function(req, res) {
   const {username, email, password} = req.body;
   var EMAIL_SECRET;
   MongoClient.connect(URL, function(err, db) {
-    if (err) 
+    if (err)
       throw err;
-    
+
     var collection = db.collection("users")
 
     collection.find({email: email}).toArray(function(err, result) {

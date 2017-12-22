@@ -15,16 +15,14 @@ class UploadPopup extends Component {
 
   onFormSubmit(e){
     e.preventDefault() // Stop form submit
-    this.fileUpload(this.state.file).then((response)=>{
-      console.log(response.data);
-    })
+    this.fileUpload(this.state.file);
   }
   onChange(e) {
     this.setState({file:e.target.files[0]})
   }
   fileUpload(file){
     var that = this;
-    const url = '/api/uploadClosingData';
+    const url = '/api/uploadClosingData/';
     const formData = new FormData();
     formData.append('file',file)
     const config = {
@@ -32,9 +30,10 @@ class UploadPopup extends Component {
             'content-type': 'multipart/form-data'
         }
     }
-    return post(url, formData,config).then(function(){
-      that.props.closePopup();
-    });
+    return post(url, formData,config).then(
+      (res) => {this.props.closePopup();console.log(res)},
+      (err) => {console.log(err)}
+    );
   }
   render() {
     return (
