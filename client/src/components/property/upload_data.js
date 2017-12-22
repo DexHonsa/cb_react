@@ -27,12 +27,10 @@ class UploadPopup extends Component {
     formData.append('file',file)
     const config = {
         headers: {
-            'content-type': 'multipart/form-data',
-            "Cache-Control": "no-cache"
+            'content-type': 'multipart/form-data'
         }
     }
-    console.log("--FORM DATA--");
-    console.log(formData);
+
 
      axios.post(url, formData, config).then(
       (res) => {this.props.closePopup();console.log(res)},
