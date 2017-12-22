@@ -118,6 +118,18 @@ app.route('/api/uploadData').post(api.excelData);
 
 //closingData apis
 app.route('/api/uploadClosingData').post(api.ImportClosingData);
+app.post('/api/DownloadClosingExcel', function(req,res){
+  var file = __dirname + '/uploads/ClosingExcel.xlsx';
+  console.log(file);
+  res.download(file, function (err) {
+       if (err) {
+           console.log("Error");
+           console.log(err);
+       } else {
+           console.log("Success");
+       }
+   });
+})
 app.route('/api/getClosingBlock').post(api.GetClosingBlock);
 app.route('/api/getClosingHeaders').post(api.GetClosingHeaders);
 

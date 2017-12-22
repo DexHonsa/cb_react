@@ -34,8 +34,8 @@ var storage = multer.diskStorage({
     cb(null, './uploads/')
   },
   filename: function(req, file, cb) {
-    var datetimestamp = Date.now();
-    cb(null, file.originalname.split('.')[0] + '.' + file.originalname.split('.')[file.originalname.split('.').length - 1])
+    //var datetimestamp = Date.now();
+    cb(null, 'ClosingExcel.xlsx')
   }
 });
 
@@ -290,6 +290,10 @@ exports.ImportClosingData = function(req, res) {
     });
 
   })
+}
+exports.DownloadClosingExcel = function(req,res){
+  var file = __dirname + '/uploads/ClosingExcel.xlsx';
+  res.download(file);
 }
 exports.GetClosingBlock = function(req, res) {
   var majorCategory = req.body.majorCategory;

@@ -3,6 +3,8 @@ import DetailBlock from './detail_block';
 import axios from 'axios';
 import UploadData from './upload_data';
 import loadingGif from '../../img/loading2.gif';
+import FileDownload from 'react-file-download';
+
 class Main extends React.Component {
   constructor(props){
     super(props);
@@ -24,6 +26,12 @@ class Main extends React.Component {
       }
     )
 
+  }
+  downloadExcel(){
+    axios.post('/api/DownloadClosingExcel').then(
+      (res) => {FileDownload(res.data, 'ClosingExcel.xlsx')},
+      (err) => {}
+    )
   }
   showUploadPopup(){
     this.setState({
@@ -56,9 +64,10 @@ class Main extends React.Component {
 
     {uploadPopup}
     <div className="side-stage">
-    <div className="side-stage-top">
+    <div className="side-stage-top" style={{marginBottom:'25px'}}>
 
-      <div className="add-new-project-btn" onClick={this.showUploadPopup.bind(this)}>Upload</div>
+      <div className="add-new-project-btn" style={{right:'160px'}} onClick={this.showUploadPopup.bind(this)}>Upload</div>
+      <div className="add-new-project-btn" onClick={this.downloadExcel.bind(this)}>Download Excel</div>
     </div>
       <div className="property-main-title">6135 NW 167th Street Miami Lakes, FL 33015</div>
       <div className="property-top-container">
