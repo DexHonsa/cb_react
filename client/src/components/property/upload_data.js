@@ -31,6 +31,9 @@ class UploadPopup extends Component {
             "Cache-Control": "no-cache"
         }
     }
+    console.log("--FORM DATA--");
+    console.log(formData);
+    
     return post(url, formData,config).then(
       (res) => {this.props.closePopup();console.log(res)},
       (err) => {console.log(err)}
