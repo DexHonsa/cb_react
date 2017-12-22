@@ -31,13 +31,14 @@ let transporter = nodemailer.createTransport(smtpTransport({
 
 var storage = multer.diskStorage({
   destination: function(req, file, cb) {
-    cb(null, './uploads/') //folder to save uploading file
+    cb(null, './uploads/')
   },
   filename: function(req, file, cb) {
     var datetimestamp = Date.now();
-    cb(null, file.fieldname + '-' + datetimestamp + '.' + file.originalname.split('.')[file.originalname.split('.').length - 1])
+    cb(null, file.originalname.split('.')[0] + '.' + file.originalname.split('.')[file.originalname.split('.').length - 1])
   }
 });
+
 var upload = multer({storage: storage}).single('file');
 
 mongoose.connect('mongodb://iwantmoredexx:Awesomeo21!@cluster0-shard-00-00-l9gyz.mongodb.net:27017,cluster0-shard-00-01-l9gyz.mongodb.net:27017,cluster0-shard-00-02-l9gyz.mongodb.net:27017/commonbrain?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin');

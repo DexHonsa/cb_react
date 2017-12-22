@@ -27,7 +27,8 @@ class UploadPopup extends Component {
     formData.append('file',file)
     const config = {
         headers: {
-            'content-type': 'multipart/form-data'
+            'content-type': 'multipart/form-data',
+            "Cache-Control": "no-cache"
         }
     }
     return post(url, formData,config).then(
