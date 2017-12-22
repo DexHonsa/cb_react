@@ -30,6 +30,10 @@ class DetailBlock extends Component {
 
         <div className="basic-detail-block-detail-container">
         {this.state.blockDetails.map(function(data,i){
+          var hasSource = false;
+          if(data['Source File'] !== '--'){
+            hasSource = true;
+          }
           var newDataValue = [];
           var value = data['Value'];
           if(value !== undefined && value.toString().indexOf('T') > -1){
@@ -40,7 +44,7 @@ class DetailBlock extends Component {
           return (
             <div key={i} className="basic-detail-block-detail-item animated-fast fadeIn">
             <div className="basic-detail-block-title">{data['Specific Category']}</div>
-            <div className="basic-detail-block-value"><a target="_blank" href={data['Source File']}>{newDataValue[0]}</a></div>
+            <div className="basic-detail-block-value">{hasSource ? <a target="_blank" href={data['Source File']}>{newDataValue[0]}</a> : newDataValue[0]}</div>
           </div>
         );
         },this)}

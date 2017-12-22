@@ -228,7 +228,7 @@ exports.ImportClosingData = function(req, res) {
 
             if (sheet2._rows[i]._cells[i2]._value.model.value === undefined) {
               if (sheet2._rows[i]._cells[i2]._value.model.result === undefined) {
-                rowObj[header] = 'NAP';
+                rowObj[header] = '--';
               } else {
                 rowObj[header] = sheet2._rows[i]._cells[i2]._value.model.result;
               }
@@ -238,7 +238,7 @@ exports.ImportClosingData = function(req, res) {
             }
           }
         }
-        if (rowObj['CB ID'] != 'NAP') {
+        if (rowObj['CB ID'] != '--') {
           arr.push(rowObj);
           //console.log(rowObj);
           //console.log('not empty')
