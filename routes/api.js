@@ -178,7 +178,7 @@ exports.ImportClosingData = function(req, res) {
     //   return;
     // }
 
-    workbook.xlsx.readFile(req.file.path).then(function() {
+    workbook.xlsx.readFile(req.files.file.path).then(function() {
       //  var dataObj = CircularJSON.stringify(data);
       //res.json({form:dataObj})
       var worksheet = workbook.getWorksheet('Sheet1');
