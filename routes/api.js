@@ -168,14 +168,14 @@ exports.ImportExcel = function(req, res) {
 }
 exports.ImportClosingData = function(req, res) {
   upload(req, res, function(err) {
-    if (err) {
-      res.json({error_code: 1, err_desc: err});
-      return;
-    }
-    if (!req.file) {
-      res.json({error_code: 1, err_desc: "No file passed"});
-      return;
-    }
+    // if (err) {
+    //   res.json({error_code: 1, err_desc: err});
+    //   return;
+    // }
+    // if (!req.file) {
+    //   res.json({error_code: 1, err_desc: "No file passed"});
+    //   return;
+    // }
 
     workbook.xlsx.readFile(req.file.path).then(function() {
       //  var dataObj = CircularJSON.stringify(data);
@@ -237,10 +237,10 @@ exports.ImportClosingData = function(req, res) {
         }
         if (rowObj['CB ID'] != 'NAP') {
           arr.push(rowObj);
-          console.log(rowObj);
-          console.log('not empty')
+          //console.log(rowObj);
+          //console.log('not empty')
         } else {
-          console.log('empty')
+          //console.log('empty')
         }
 
         //  var index = i;
