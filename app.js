@@ -114,7 +114,7 @@ app.route('/api/import').post(api.ImportExcel);
 app.route('/api/sign_up').post(api.SignUpUser);
 //application api
 app.route('/api/applications').post(api.getApplications);
-app.route('/api/uploadData').post(api.excelData);
+app.route('/api/uploadData').post(api.UploadData);
 
 //closingData apis
 app.route('/api/uploadClosingData').post(api.ImportClosingData);
@@ -168,9 +168,8 @@ app.post('/upload', function(req, res) {
     } catch (e) {
       res.json({error_code: 1, err_desc: "Corrupted excel file or Not valid excel file"});
     }
-
+    
   })
-
 });
 function chunkArray(myArray, chunk_size){
     var index = 0;

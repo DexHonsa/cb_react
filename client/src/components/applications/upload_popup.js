@@ -24,17 +24,20 @@ class UploadPopup extends Component {
   }
   fileUpload(file){
     var that = this;
-    const url = '/api/import';
+    const url = '/api/import/';
     const formData = new FormData();
     formData.append('file',file)
     const config = {
         headers: {
-            'content-type': 'multipart/form-data'
+
         }
     }
-    return post(url, formData,config).then(function(){
-      that.props.closePopup();
-    });
+
+
+     axios.post(url, formData, config).then(
+      (res) => {this.props.closePopup();console.log(res)},
+      (err) => {console.log(err)}
+    );
   }
   render() {
     return (
