@@ -56,9 +56,9 @@ const Root = ({ store }) => (
         <Route exact path="/product/dashboard/" component={Dashboard}></Route>
         <Route exact path="/product/dashboard/faq" component={FAQ}></Route>
         <Route exact path="/product/my-portfolios" component={MyPortfolios}></Route>
-        <Route exact path="/product/my-portfolios/portfolio" component={Portfolio}></Route>
+        <Route exact path="/product/my-portfolios/:portfolioId" component={Portfolio}></Route>
         <Route exact path="/product/my-portfolios/applications" component={Applications}></Route>
-        <Route exact path="/product/my-portfolios/portfolio/:id" component={Property}></Route>
+        <Route exact path="/product/my-portfolios/:portfolioId/:id" component={Property}></Route>
         </div>
     </Router>
   </Provider>

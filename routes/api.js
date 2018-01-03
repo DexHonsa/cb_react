@@ -169,12 +169,17 @@ exports.ImportExcel = function(req, res) {
 exports.ImportClosingData = function(req, res) {
 
 
-  var headerRow = req.body.headerRow;
-  var databaseName = req.body.databaseName;
-  var sheetName = req.body.sheetName;
-  var userId = req.body.userId;
+
+
+
 
   upload(req, res, function(err) {
+    var userId = req.body.userId;
+    var portfolioId = req.body.portfolioId;
+    console.log(req.body);
+    var headerRow = '2';
+    var databaseName = 'closingCollection';
+    var sheetName = 'Sheet1';
 
     workbook.xlsx.readFile(req.file.path).then(function() {
 
@@ -257,11 +262,33 @@ exports.ImportClosingData = function(req, res) {
 
         }
       }
+      //sheet 2
+      var basicSheet = workbook.getWorksheet('Sheet2');
+      var basicSheet2 = JSON.parse(CircularJSON.stringify(basicSheet));
+      var basicDetailObj = {userId:userId, portfolioId:portfolioId}
+      for (var i = 0, len = basicSheet2._rows.length; i < len; i++) {
+        if (basicSheet2._rows[i]._cells !== null && basicSheet2._rows[i]._cells !== undefined) { //cycle through cells in each row
+          for (var i2 = 0, len2 = basicSheet2._rows[i]._cells.length; i2 < len2; i2++) {
+            var cell = basicSheet2._rows[i]._cells[i2]._value.model.address;
+            //console.log(cell);
+            if(cell == 'A2'){
+              basicDetailObj['title'] = basicSheet2._rows[i]._cells[i2]._value.model.value;
+            }
+            if(cell == 'B2'){
+              basicDetailObj['imgUrl'] = basicSheet2._rows[i]._cells[i2]._value.model.value;
+            }
+          }
+        }
+      }
+
       MongoClient.connect(URL, function(err, db) {
         if (err)
           throw err;
 
         var collection = db.collection(databaseName);
+        var collection2 = db.collection('properties');
+        collection2.remove({userId:userId})
+        collection2.insert(basicDetailObj);
         collection.remove();
 
         collection.insert(arr);
@@ -272,12 +299,35 @@ exports.ImportClosingData = function(req, res) {
 
   })
 }
+exports.AddPortfolio = function(req,res){
+  MongoClient.connect(URL, function(err,db){
+    if(err)
+      throw err;
+    var collection = db.collection('portfolios');
+    collection.insert(req.body);
+    db.close();
+  })
+}
+exports.GetPortfolioItems = function(req,res){
+  var portfolioId = req.body.portfolioId
+  MongoClient.connect(URL, function(err,db){
+    if(err)
+      throw err;
+    var collection = db.collection('portfolioItems');
+    collection.find({portfolioId:portfolioId}).toArray(function(err,result){
+      if(err)
+        throw err;
+
+      res.json(result);
+
+    });
+    db.close();
+  })
+}
 exports.UploadData = function(req, res) {
-
-
-  var headerRow = '2';
-  var databaseName = 'closingCollection';
-  var sheetName = 'Sheet1';
+  var headerRow = req.body.headerRow;
+  var databaseName = req.body.databaseName;
+  var sheetName = req.body.sheetName;
   var userId = req.body.userId;
 
   upload(req, res, function(err) {
@@ -381,6 +431,20 @@ exports.UploadData = function(req, res) {
 exports.DownloadClosingExcel = function(req,res){
   var file = __dirname + '/uploads/ClosingExcel.xlsx';
   res.download(file);
+}
+exports.GetPropertyInfo = function(req,res){
+  var userId = req.body.userId;
+  MongoClient.connect(URL, function(err, db){
+    if(err)
+      throw err;
+      var collection = db.collection('properties');
+      collection.find({'userId':userId}).toArray(function(err,result){
+        if(err)
+          throw err;
+        res.send(result);
+        db.close();
+      })
+  })
 }
 exports.GetClosingBlock = function(req, res) {
   var majorCategory = req.body.majorCategory;

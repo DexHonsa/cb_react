@@ -1,7 +1,27 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
+import axios from 'axios';
 
 class Portfolio extends React.Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      portfolioId: this.props.location.portfolioName,
+      items:[],
+      isLoading:true
+    }
+  }
+
+  componentDidMount(){
+    var that = this;
+    var portfolioId = this.props.match.params.portfolioId;
+    axios.post('/api/getPortfolioItems', {portfolioId:portfolioId}).then(function(res){
+      that.setState({
+        items:res.data,
+        isLoading:false
+      });
+    })
+  }
   render(){
     return(
       <div>
@@ -18,10 +38,10 @@ class Portfolio extends React.Component {
     </div>
     <div className="col-sm-8">
       <div className="side-stage">
-        <div className="side-stage-title">My First Portfolio</div>
+        <div className="side-stage-title">{this.state.portfolioId}</div>
         <div className="my-projects-tabs">
           <div id="files_tab" className="my-projects-tab active">Portfolio Files</div>
-          <div id="properties_tab" className="my-projects-tab">Property Files</div>
+
         </div>
         <div id="files">
           <div className="file-item-headers">
@@ -29,12 +49,18 @@ class Portfolio extends React.Component {
             <div className="file-item-header">Date Created</div>
             <div className="file-item-header">Date Modified</div>
           </div>
-          <Link to="/product/my-portfolios/portfolio/100"><div className="file-item">
-              <div className="icon"><i className="fa fa-file" /></div>
-              <div className="file-item-value">MasterUpload.xlsx</div>
-              <div className="file-item-value">08/01/2017</div>
-              <div className="file-item-value">08/01/2017</div>
-            </div></Link>
+          {this.state.isLoading ? <div className="loading-gif"><img src={require('../../img/loading2.gif')} /></div> : null}
+          {this.state.items.map(function(data, i){
+            return (
+              <Link key={i} to={"/product/my-portfolios/" + this.props.match.params.portfolioId + "/" + data._id}><div className="file-item animated-fast fadeIn">
+                <div className="icon"><i className="fa fa-file" /></div>
+                <div className="file-item-value">{data.name}</div>
+                <div className="file-item-value">08/01/2017</div>
+                <div className="file-item-value">08/01/2017</div>
+              </div></Link>
+            );
+          },this)}
+
         </div>
         <div id="properties" style={{display: 'none'}}>
           <div className="file-item-headers">

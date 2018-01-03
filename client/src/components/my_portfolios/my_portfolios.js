@@ -9,24 +9,34 @@ import excel from '../../img/Excel-Logo-Home-Page.png';
 import logo_color from '../../img/logo_1.png';
 
 import PortfolioItem from './portfolio_item';
+import AddPortfolioPopup from './add_portfolio_popup';
 
 class MyPortfolios extends React.Component {
 constructor(props){
   super(props);
   this.state = {
     portfolios:[],
-    isLoading:true
+    isLoading:true,
+    addPortfolioPopup:false
   }
 }
 
 componentDidMount(){
-  console.log('mounted');
-  console.log(this.props.auth.user.id);
+  this.getPortfolios();
+}
+getPortfolios(){
   var that = this;
+  this.setState({isLoading:true});
   axios.post('/api/user_portfolios/' + this.props.auth.user.id).then(function(res){
-    console.log(res.data);
     that.setState({portfolios:res.data,isLoading:false});
   })
+}
+showAddPortfolio(){
+  this.setState({addPortfolioPopup:true});
+}
+hideAddPortfolio(){
+  this.setState({addPortfolioPopup:false});
+  this.getPortfolios();
 }
 
 
@@ -40,7 +50,7 @@ componentDidMount(){
     return (
       <div>
         <div className="main-stage">
-
+        {this.state.addPortfolioPopup && <AddPortfolioPopup hide={this.hideAddPortfolio.bind(this)} />}
           <div className="container">
             <div className="overlay" style={{
               display: 'none'
@@ -76,7 +86,7 @@ componentDidMount(){
               <div className="col-sm-8">
                 <div className="side-stage">
                   <div className="side-stage-title">My Portfolios</div>
-                  <div className="add-new-project-btn">+ Add New Portfolio</div>
+                  <div  onClick={this.showAddPortfolio.bind(this)} className="add-new-project-btn">+ Add New Portfolio</div>
                   <div className="my-projects-tabs">
                     <div className="my-projects-tab active">Recent Portfolios</div>
                     <div className="my-projects-tab">All Portfolios</div>
@@ -84,7 +94,7 @@ componentDidMount(){
                   <div className="my-projects-container">
                   {this.state.isLoading ? <div className="loading-gif"><img src={require('../../img/loading2.gif')} /></div> : null}
                   {this.state.portfolios.map(function(data, i){
-                    return <PortfolioItem key={i} portfolioLink={portfolioLink} username={this.props.auth.user.username}  portfolioName={data.portfolioName}  />
+                    return <PortfolioItem key={i} portfolioId={data._id} username={this.props.auth.user.username}  portfolioName={data.portfolioName}  />
                   },this)}
 
 

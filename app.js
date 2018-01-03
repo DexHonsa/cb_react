@@ -132,6 +132,9 @@ app.post('/api/DownloadClosingExcel', function(req,res){
 })
 app.route('/api/getClosingBlock').post(api.GetClosingBlock);
 app.route('/api/getClosingHeaders').post(api.GetClosingHeaders);
+app.route('/api/getPropertyInfo').post(api.GetPropertyInfo);
+app.route('/api/addPortfolio').post(api.AddPortfolio);
+app.route('/api/getPortfolioItems').post(api.GetPortfolioItems);
 
 
 var _ = require('lodash');
@@ -168,7 +171,7 @@ app.post('/upload', function(req, res) {
     } catch (e) {
       res.json({error_code: 1, err_desc: "Corrupted excel file or Not valid excel file"});
     }
-    
+
   })
 });
 function chunkArray(myArray, chunk_size){

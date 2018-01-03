@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios, { post } from 'axios';
+import {connect} from 'react-redux';
 
 
 class UploadPopup extends Component {
@@ -26,7 +27,10 @@ class UploadPopup extends Component {
     var that = this;
     const url = '/api/import/';
     const formData = new FormData();
-    formData.append('file',file)
+    
+    formData.append('file',file);
+
+    console.log(this.props.auth.user.id);
     const config = {
         headers: {
 
@@ -59,4 +63,10 @@ class UploadPopup extends Component {
 
 }
 
-export default UploadPopup;
+function mapStateToProps(state){
+  return {
+    auth: state.auth
+  };
+}
+
+export default connect(mapStateToProps)(UploadPopup);

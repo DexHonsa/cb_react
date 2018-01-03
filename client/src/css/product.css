@@ -123,9 +123,9 @@ ul, li{
 }
 .property-img{
 	float: left;
-	width:calc(100% - 250px);
+	width:calc(100%);
 	padding:15px;
-	background-image: url(../img/building.jpg);
+	/* background-image: url(../img/building.jpg); */
 	background-size: cover;
 	background-position: center;
 	height:330px;
@@ -137,6 +137,7 @@ ul, li{
 	padding:15px;
 	position: relative;
 	font-weight: 500;
+	display: none;
 }
 .property-info-item{
 	width:100%;

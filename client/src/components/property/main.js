@@ -4,6 +4,7 @@ import axios from 'axios';
 import UploadData from './upload_data';
 import loadingGif from '../../img/loading2.gif';
 import FileDownload from 'react-file-download';
+import {connect} from 'react-redux';
 
 class Main extends React.Component {
   constructor(props){
@@ -13,6 +14,7 @@ class Main extends React.Component {
       uploadPopup:false,
       headers:[],
       headersLoaded:false,
+      propertyInfo:[{title:'',ImgUrl:''}],
       isLoading:true,
     }
   }
@@ -22,7 +24,15 @@ class Main extends React.Component {
     axios.post('/api/getClosingHeaders/', { responseType: 'arraybuffer' }).then(
       (res) => {
 
-        that.setState({headers:res.data, headersLoaded:true, isLoading:false});
+        that.setState({headers:res.data, headersLoaded:true});
+      }
+    )
+
+    axios.post('/api/getPropertyInfo/', { responseType: 'arraybuffer', userId:this.props.auth.user.id }).then(
+      (res) => {
+
+        that.setState({propertyInfo:res.data, isLoading:false});
+        console.log(this.state.propertyInfo)
       }
     )
 
@@ -69,9 +79,9 @@ class Main extends React.Component {
       <div className="add-new-project-btn" style={{right:'160px'}} onClick={this.showUploadPopup.bind(this)}>Upload</div>
       <div className="add-new-project-btn" onClick={this.downloadExcel.bind(this)}>Download Excel</div>
     </div>
-      <div className="property-main-title">6135 NW 167th Street Miami Lakes, FL 33015</div>
+      <div className="property-main-title">{!this.state.isLoading && this.state.propertyInfo[0].title}</div>
       <div className="property-top-container">
-        <div className="property-img" />
+        <div className="property-img" style={!this.state.isLoading ? {backgroundImage:'url(' + this.state.propertyInfo[0].imgUrl + ')'} : {}} />
         <div className="property-side-details">
           <ul>
             <li>
@@ -121,5 +131,9 @@ class Main extends React.Component {
   );
   }
 }
-
-export default Main;
+function mapStateToProps(state){
+  return {
+    auth: state.auth
+  };
+}
+export default connect(mapStateToProps)(Main);

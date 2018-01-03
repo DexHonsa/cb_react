@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios, { post } from 'axios';
 import {connect} from 'react-redux';
 
-class UploadPopup extends Component {
+class uploadItem extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -22,10 +22,12 @@ class UploadPopup extends Component {
   }
   fileUpload(file){
     var that = this;
-    const url = '/api/uploadClosingData/';
+    const url = '/api/uploadData/';
     const formData = new FormData();
     formData.append('file',file);
     formData.append('userId',this.props.auth.user.id);
+    formData.append('portfolioId', this.props.portfolioId);
+    formData.append('itemId', this.props.itemId);
     const config = {
         headers: {
 
@@ -64,4 +66,4 @@ function mapStateToProps(state){
   };
 }
 
-export default connect(mapStateToProps)(UploadPopup);
+export default connect(mapStateToProps)(uploadItem);
