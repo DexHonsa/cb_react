@@ -1,12 +1,28 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 import logo_color from '../../img/logo_1.png';
+import {connect} from 'react-redux';
 
 class PortfolioItem extends React.Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      ntt:false
+    }
+  }
+  componentDidMount(){
+    if(this.props.auth.user.id == '5a3adb9cc786f041d850f823'){
+      this.setState({ntt:true})
+    }
+  }
   render() {
+
     return (
       <div>
-        <Link  to={{
+        <Link  to={this.state.ntt ? {
+          pathname: '/product/applications',
+          portfolioName:this.props.portfolioName
+        }:{
           pathname: '/product/my-portfolios/' + this.props.portfolioId,
           portfolioName:this.props.portfolioName
         }}>
@@ -25,4 +41,9 @@ class PortfolioItem extends React.Component {
     );
   }
 }
-export default PortfolioItem;
+function mapStateToProps(state){
+  return {
+    auth: state.auth
+  };
+}
+export default connect(mapStateToProps)(PortfolioItem);

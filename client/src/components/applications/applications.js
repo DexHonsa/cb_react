@@ -405,9 +405,7 @@ filterApplications(event){
                         float: 'right',
                         fontSize: '10pt',
                         marginTop: 5
-                      }}>Profiled
-                        <span>20</span>
-                        of 23 Applications</div>
+                      }}></div>
                     </div><br/>
                   </div>
                   {
