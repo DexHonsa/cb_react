@@ -47,12 +47,30 @@ var upload = multer({
       }
     }).single('file');
 
+var storage_applications = multer.diskStorage({
+  destination: function(req, file, cb) {
+    cb(null, './uploads/')
+  },
+  filename: function(req, file, cb) {
+    //var datetimestamp = Date.now();
+    cb(null, 'Application_Legend.xlsx')
+  }
+});
+
+var upload_applications = multer({
+  storage: storage_applications,
+  onError : function(err, next) {
+        console.log('error', err);
+        next(err);
+      }
+    }).single('file');
+
 mongoose.connect('mongodb://iwantmoredexx:Awesomeo21!@cluster0-shard-00-00-l9gyz.mongodb.net:27017,cluster0-shard-00-01-l9gyz.mongodb.net:27017,cluster0-shard-00-02-l9gyz.mongodb.net:27017/commonbrain?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin');
 var db = mongoose.connection;
 var ObjectId = require('mongodb').ObjectId;
 
 exports.ImportExcel = function(req, res) {
-  upload(req, res, function(err) {
+  upload_applications(req, res, function(err) {
     if (err) {
       res.json({error_code: 1, err_desc: err});
       return;

@@ -17,7 +17,7 @@ class UploadPopup extends Component {
   onFormSubmit(e){
     e.preventDefault() // Stop form submit
     this.fileUpload(this.state.file).then((response)=>{
-      console.log(response.data);
+
     })
   }
   onChange(e) {
@@ -27,7 +27,7 @@ class UploadPopup extends Component {
     var that = this;
     const url = '/api/import/';
     const formData = new FormData();
-    
+
     formData.append('file',file);
 
     console.log(this.props.auth.user.id);
@@ -39,7 +39,7 @@ class UploadPopup extends Component {
 
 
      axios.post(url, formData, config).then(
-      (res) => {this.props.closePopup();console.log(res)},
+      (res) => {this.props.closePopup();},
       (err) => {console.log(err)}
     );
   }
