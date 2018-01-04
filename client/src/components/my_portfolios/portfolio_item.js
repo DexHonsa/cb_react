@@ -7,13 +7,15 @@ class PortfolioItem extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      ntt:false
+      ntt:false,
+      portfolioId:this.props.portfolioId
     }
   }
   componentDidMount(){
     if(this.props.auth.user.id == '5a3adb9cc786f041d850f823'){
       this.setState({ntt:true})
     }
+    console.log(this.state.portfolioId)
   }
   render() {
 

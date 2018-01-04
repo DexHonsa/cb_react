@@ -3,6 +3,7 @@ import {NavLink, withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import { logout } from './actions/auth_actions';
 import logo_color from './img/logo_color_with_line.png';
+import ntt_logo from './img/ntt.png';
 import PropTypes from "prop-types";
 
 class Header extends React.Component {
@@ -13,7 +14,13 @@ class Header extends React.Component {
     super(props);
     this.state = {
       userDropdown: false,
-      alertsDropdown:false
+      alertsDropdown:false,
+      ntt:false
+    }
+  }
+  componentDidMount(){
+    if(this.props.auth.user.id == '5a3adb9cc786f041d850f823'){
+      this.setState({ntt:true})
     }
   }
   showUserDropdown(){
@@ -47,7 +54,7 @@ class Header extends React.Component {
     var userDropdown;
     var username = this.jsUcfirst(this.props.auth.user.username);
     if(this.state.userDropdown == true){
-      console.log('trueeeee');
+
       userDropdown = <div className="notifications-dropdown animated-fast fadeInUp">
         <div className="caret" />
         <a onClick={this.logout.bind(this)} >Logout</a><br />
@@ -69,7 +76,7 @@ class Header extends React.Component {
       <div>
       <div className="main-nav">
         <div className="container nav-container">
-          <div className="logo"><img src={logo_color} alt /></div>
+          <div className="logo"><img src={this.state.ntt ? ntt_logo : logo_color} alt /></div>
           <div className="nav-list">
             <ul>
               <NavLink to="/product/dashboard" activeClassName="active"><li>Getting Started</li></NavLink>

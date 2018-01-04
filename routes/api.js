@@ -49,6 +49,7 @@ var upload = multer({
 
 mongoose.connect('mongodb://iwantmoredexx:Awesomeo21!@cluster0-shard-00-00-l9gyz.mongodb.net:27017,cluster0-shard-00-01-l9gyz.mongodb.net:27017,cluster0-shard-00-02-l9gyz.mongodb.net:27017/commonbrain?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin');
 var db = mongoose.connection;
+var ObjectId = require('mongodb').ObjectId;
 
 exports.ImportExcel = function(req, res) {
   upload(req, res, function(err) {
@@ -315,6 +316,23 @@ exports.GetPortfolioItems = function(req,res){
       throw err;
     var collection = db.collection('portfolioItems');
     collection.find({portfolioId:portfolioId}).toArray(function(err,result){
+      if(err)
+        throw err;
+
+      res.json(result);
+
+    });
+    db.close();
+  })
+}
+exports.GetPortfolioInfo = function(req,res){
+  var portfolioId = req.body.portfolioId
+
+  MongoClient.connect(URL, function(err,db){
+    if(err)
+      throw err;
+    var collection = db.collection('portfolios');
+    collection.find({_id:ObjectId(portfolioId)}).toArray(function(err,result){
       if(err)
         throw err;
 

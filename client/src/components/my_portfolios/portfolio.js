@@ -6,19 +6,25 @@ class Portfolio extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      portfolioId: this.props.location.portfolioName,
+      portfolioId: this.props.match.params.portfolioId,
       items:[],
-      isLoading:true
+      isloaded:false,
+      portfolioInfo:{},
     }
   }
 
   componentDidMount(){
     var that = this;
     var portfolioId = this.props.match.params.portfolioId;
+    axios.post('/api/getPortfolioInfo',{portfolioId:portfolioId}).then(function(res){
+      that.setState({
+        portfolioInfo:res.data
+      })
+    })
     axios.post('/api/getPortfolioItems', {portfolioId:portfolioId}).then(function(res){
       that.setState({
         items:res.data,
-        isLoading:false
+        isloaded:true
       });
     })
   }
@@ -38,7 +44,7 @@ class Portfolio extends React.Component {
     </div>
     <div className="col-sm-8">
       <div className="side-stage">
-        <div className="side-stage-title">{this.state.portfolioId}</div>
+        <div className="side-stage-title">{this.state.isloaded && this.state.portfolioInfo[0].portfolioName}</div>
         <div className="my-projects-tabs">
           <div id="files_tab" className="my-projects-tab active">Portfolio Files</div>
 
