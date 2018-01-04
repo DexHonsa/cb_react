@@ -3,6 +3,7 @@ import {Link} from 'react-router-dom';
 import axios from 'axios';
 import DeletePortfolio from './delete_portfolio';
 import UploadItem from './upload_item';
+import {connect} from 'react-redux';
 class Portfolio extends React.Component {
   constructor(props){
     super(props);
@@ -13,9 +14,65 @@ class Portfolio extends React.Component {
       portfolioInfo:{},
       deletePopup:false,
       uploadPopup:false,
+      tab:'files',
+      activeClasses: [true,false],
+      shareInput:'',
+      shareErrors:{},
+      sharedUsers:[],
+      sharedLoading:false
     }
   }
+  changeTab(tab) {
+    var that = this;
+    if (tab == 'files') {
+      this.setState({sideStage: 'files',activeClasses:[true,false]})
+    }
+    if (tab == 'sharing') {
+      this.setState({sideStage: 'sharing',activeClasses:[false,true]})
+      this.getSharedUsers();
+    }
+  }
+  shareSubmit(){
+    this.setState({sharedLoading:true,shareErrors:{}});
+    var data = {
+      userId:this.props.auth.user.id,
+      shareEmail:this.state.shareInput,
+      portfolioId:this.state.portfolioId
+    }
+    axios.post('/api/sharePortfolio', data).then(
+      (res) => {this.getSharedUsers()},
+      (err) => {this.setState({shareErrors: err.response.data.shareErrors, isLoaded: true, sharedLoading:false})}
+    )
+  }
+  unshareSubmit(email){
+    this.setState({sharedLoading:true,shareErrors:{}});
+    var data = {
+      userId:this.props.auth.user.id,
+      shareEmail:email,
+      portfolioId:this.state.portfolioId
+    }
+    axios.post('/api/unsharePortfolio', data).then(
+      (res) => {this.getSharedUsers();this.setState({sharedUsers:[]})},
+      (err) => {}
+    )
+  }
+  onChange(e){
+    this.setState({shareInput:e.target.value})
+  }
+  getSharedUsers(){
+      this.setState({sharedLoading:true,shareErrors:{}});
+    axios.post('/api/getSharedUsers', {portfolioId:this.state.portfolioId}).then(
+      (res) => {
+        if(res.data.length > 0){
+          this.setState({shareErrors:{},sharedUsers:res.data, sharedLoading:false})
+        }else{
+          this.setState({shareErrors:{}, sharedLoading:false})
+        }
 
+      },
+      (err) => {this.setState({sharedLoading:false})}
+    )
+  }
   componentDidMount(){
     var that = this;
     var portfolioId = this.props.match.params.portfolioId;
@@ -30,6 +87,7 @@ class Portfolio extends React.Component {
         isloaded:true
       });
     })
+
   }
   showDeletePopup(){
     this.setState({deletePopup:true});
@@ -44,6 +102,7 @@ class Portfolio extends React.Component {
     this.setState({uploadPopup:false});
   }
   render(){
+    const {shareErrors} = this.state;
     var deletePopup;
     if(this.state.deletePopup){
       deletePopup = <DeletePortfolio portfolioId={this.state.portfolioId} hide={this.hideDeletePopup.bind(this)}/>
@@ -73,9 +132,11 @@ class Portfolio extends React.Component {
         <div onClick={this.showDeletePopup.bind(this)} className="delete-portfolio-btn">Delete</div>
         <div style={{right:'80px'}} onClick={this.showUploadPopup.bind(this)} className="add-new-project-btn">Upload File</div>
         <div className="my-projects-tabs">
-          <div id="files_tab" className="my-projects-tab active">Portfolio Files</div>
+          <div id="files_tab" onClick={() => this.changeTab('files')} className={this.state.activeClasses[0] ? 'my-projects-tab active' : 'my-projects-tab'}>Portfolio Files</div>
+          <div id="files_tab" onClick={() => this.changeTab('sharing')} className={this.state.activeClasses[1] ? 'my-projects-tab active' : 'my-projects-tab'}>Sharing</div>
 
         </div>
+        {this.state.activeClasses[0] && (
         <div id="files">
           <div className="file-item-headers">
             <div className="file-item-header" style={{marginRight: 15}}>File Name</div>
@@ -99,23 +160,34 @@ class Portfolio extends React.Component {
           },this)}
 
         </div>
-        <div id="properties" style={{display: 'none'}}>
-          <div className="file-item-headers">
-            <div className="file-item-header" style={{marginRight: 15}}>Property Name</div>
-          </div>
-          <a href="property.html"><div className="file-item">
-              <div className="icon"><i className="fa fa-file" /></div>
-              <div className="file-item-value" style={{width: '100%'}}>6135 NW 167th Street Miami Lakes, FL 33015.xlsx</div>
-            </div></a>
-          <a href="property.html"><div className="file-item">
-              <div className="icon"><i className="fa fa-file" /></div>
-              <div className="file-item-value" style={{width: '100%'}}>18 South Palmer Rd Miami Lakes, FL 33015.xlsx</div>
-            </div></a>
-          <a href="property.html"><div className="file-item">
-              <div className="icon"><i className="fa fa-file" /></div>
-              <div className="file-item-value" style={{width: '100%'}}>6135 NW 167th Street E-7 Miami Lakes, FL 33015.xlsx</div>
-            </div></a>
-        </div>
+      )
+    }
+    {this.state.activeClasses[1] && (
+    <div id="files">
+
+      {this.state.isLoading ? <div className="loading-gif"><img src={require('../../img/loading2.gif')} /></div> : null}
+      <div className="sharing-add-email animated-fast fadeIn">
+        <input onChange={this.onChange.bind(this)} placeholder="Username or Email" type="text" />
+        <div className="sharing-add-email-btn" onClick={this.shareSubmit.bind(this)}>Share</div>
+      </div>
+      {shareErrors.form && <div style={{marginTop:'15px'}} className=" alert-danger animated fadeIn">{shareErrors.form}</div>}
+      <div className="sharing-list animated-fast fadeIn">
+        {this.state.sharedLoading ? <div className="loading-gif"><img src={require('../../img/loading2.gif')} /></div> : this.state.sharedUsers.map(function(data,i){
+
+          return (
+            <div className="shared-user-item animated-fast fadeIn" key={i}>
+            <div className="shared-user-username">{data.username}</div>
+            <div className="shared-user-email">{data.email}</div>
+            <i onClick={() => this.unshareSubmit(data.email)} className="fa fa-close"/>
+            </div>
+          )
+        },this)}
+
+      </div>
+
+    </div>
+  )
+}
       </div>
     </div>
   </div>
@@ -126,4 +198,9 @@ class Portfolio extends React.Component {
     );
   }
 }
-export default Portfolio;
+function mapStateToProps(state){
+  return {
+    auth: state.auth
+  };
+}
+export default connect(mapStateToProps)(Portfolio);

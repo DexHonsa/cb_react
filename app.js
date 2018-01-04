@@ -137,6 +137,9 @@ app.route('/api/addPortfolio').post(api.AddPortfolio);
 app.route('/api/getPortfolioItems').post(api.GetPortfolioItems);
 app.route('/api/getPortfolioInfo').post(api.GetPortfolioInfo);
 app.route('/api/deletePortfolio').post(api.DeletePortfolio);
+app.route('/api/sharePortfolio').post(api.SharePortfolio);
+app.route('/api/getSharedUsers').post(api.GetSharedUsers);
+app.route('/api/unsharePortfolio').post(api.UnsharePortfolio);
 
 
 var _ = require('lodash');

@@ -64,8 +64,11 @@ var upload_applications = multer({
         next(err);
       }
     }).single('file');
-
-mongoose.connect('mongodb://iwantmoredexx:Awesomeo21!@cluster0-shard-00-00-l9gyz.mongodb.net:27017,cluster0-shard-00-01-l9gyz.mongodb.net:27017,cluster0-shard-00-02-l9gyz.mongodb.net:27017/commonbrain?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin');
+var options = {
+  server: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } },
+  replset: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } }
+};
+mongoose.connect('mongodb://iwantmoredexx:Awesomeo21!@cluster0-shard-00-00-l9gyz.mongodb.net:27017,cluster0-shard-00-01-l9gyz.mongodb.net:27017,cluster0-shard-00-02-l9gyz.mongodb.net:27017/commonbrain?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin', options);
 var db = mongoose.connection;
 var ObjectId = require('mongodb').ObjectId;
 
@@ -377,6 +380,89 @@ exports.DeletePortfolio= function(req,res){
     db.close();
   })
 }
+exports.SharePortfolio = function(req,res){
+  var userId = req.body.userId;
+  var shareEmail = req.body.shareEmail;
+  var portfolioId = req.body.portfolioId;
+
+  MongoClient.connect(URL, function(err,db){
+    if(err)
+      throw err;
+    var users = db.collection('users');
+    var portfolios = db.collection('portfolios');
+    users.find({email:shareEmail}).toArray(function(err,result){
+      if (err)
+        throw err;
+
+      if(result.length < 1){
+        res.status(401).json({
+          shareErrors: {
+            form: "User Email Does Not Exist"
+          }
+        });
+      }else{
+        var shareId = result[0];
+        var data = {
+          id:result[0]._id.toString(),
+          username:result[0].username,
+          email:result[0].email
+        }
+        console.log(shareId);
+        portfolios.update({_id:ObjectId(portfolioId)},
+          {
+            $push:{
+              sharedUsers: data
+            }
+          },function(err, result){
+            if(err)
+              throw err;
+            res.json(result)
+            db.close();
+          })
+      }
+
+      res.json(result);
+    });
+
+  })
+}
+exports.UnsharePortfolio = function(req,res){
+  var userId = req.body.userId;
+  var shareEmail = req.body.shareEmail;
+  var portfolioId = req.body.portfolioId;
+
+  MongoClient.connect(URL, function(err,db){
+    if(err)
+      throw err;
+
+    var portfolios = db.collection('portfolios');
+    portfolios.update({_id:ObjectId(portfolioId)},
+      {
+        $pull:{
+          sharedUsers: {email:shareEmail}
+        }
+      },function(err, result){
+        if(err)
+          throw err;
+        res.json(result)
+        db.close();
+      })
+
+  })
+}
+exports.GetSharedUsers = function(req,res){
+  var portfolioId = req.body.portfolioId;
+  MongoClient.connect(URL, function(err,db){
+    if(err)
+      throw err;
+    var portfolios = db.collection('portfolios');
+    portfolios.findOne({_id:ObjectId(portfolioId)},function(err,result){
+      if(err)
+        throw err;
+      res.json(result.sharedUsers);
+    })
+  })
+}
 exports.UploadData = function(req, res) {
   var headerRow = req.body.headerRow;
   var databaseName = req.body.databaseName;
@@ -559,7 +645,6 @@ exports.LoginCheck = function(req, res) {
       "username": username
     }, function(err, result) {
       if (result == null) {
-        //console.log(result);
         res.status(401).json({
           errors: {
             form: "Username Does Not Exist"
@@ -591,7 +676,7 @@ exports.LoginCheck = function(req, res) {
 
   // db.collection('users').find({username:username}).toArray(function(err,result){
   //   if (err) throw err
-  //   console.log(err);
+
   //   res.status(401).json({errors: {form : result } });
   // })
 
@@ -599,8 +684,7 @@ exports.LoginCheck = function(req, res) {
 
 };
 exports.excelData = function(req, res) {
-  console.log(req);
-  comsole.log(res);
+
 };
 exports.getApplications = function(req, res) {
   MongoClient.connect(URL, function(err, db) {
@@ -629,7 +713,6 @@ exports.Users = function(req, res) {
     collection.find({}).toArray(function(err, result) {
       if (err)
         throw err;
-      console.log(result);
       res.send(result);
       db.close();
     })
@@ -647,7 +730,7 @@ exports.GetPortfolios = function(req, res) {
     collection.find({userId: userId}).toArray(function(err, result) {
       if (err)
         throw err;
-      console.log(result);
+
       res.send(result);
       db.close();
     })
@@ -662,9 +745,9 @@ exports.ConfirmEmail = function(req, res) {
     if (err)
       throw err;
     var collection = db.collection('users');
-    //console.log(_id);
+
     //res.send(_id);
-    console.log(_id.id);
+
     collection.updateOne({
       _id: ObjectId(_id.id)
     }, {

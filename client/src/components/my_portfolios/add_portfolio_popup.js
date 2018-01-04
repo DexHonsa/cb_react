@@ -28,8 +28,8 @@ onChange(e){
 }
   render() {
     return (
-      <div className="overlay animated fadeIn">
-        <div className="upload-popup animated fadeInUp">
+      <div className="overlay animated-fast fadeIn">
+        <div className="upload-popup animated-fast bounceInUp">
           <div className="upload-popup-top">Add Portfolio<i onClick={this.props.hide} className="fa fa-times"></i></div>
           <div className="upload-popup-content">
 

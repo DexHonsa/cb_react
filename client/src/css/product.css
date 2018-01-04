@@ -1390,3 +1390,77 @@ select:focus{
 	cursor: pointer;
 	box-shadow: 0px 0px 0px 5px rgba(213, 80, 80, 0.53);
 }
+.sharing-add-email{
+	display:flex;
+	margin-top:45px;
+}
+.sharing-add-email input{
+	border:solid 1px #eaeaea;
+	border-radius: 3px;
+	padding:7px;
+	font-size: 12pt;
+	font-weight: 500;
+	flex:3
+}
+.sharing-add-email-btn{
+	background:#00bff3;
+	padding:7px 15px;
+	border-radius: 3px;
+	color:#fff;
+	display: flex;
+	align-items: center;
+	flex:1;
+	margin-left: 15px;
+	font-size: 12pt;
+	justify-content: center;
+	transition: all .3s ease;
+}
+.sharing-add-email-btn:hover{
+	background:#00bff3;
+	cursor: pointer;
+	box-shadow: 0px 0px 0px 5px rgba(0,191,243,0.27);
+}
+.sharing-add-email input:focus{
+	outline: none;
+	border-color: #3080e8;
+}
+.sharing-list-empty{
+	color:#d0d0d0;
+	width:100%;
+	padding:15px;
+	margin-top:15px;
+	text-align: center;
+}
+.sharing-list{
+	margin-top:15px;
+}
+.shared-user-item{
+	position: relative;
+	border:solid 1px #3080e8;
+	padding:10px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	border-radius: 3px;
+	margin-bottom:10px;
+}
+.shared-user-username{
+	font-weight: 500;
+	text-transform: capitalize;
+	color:#000;
+}
+.shared-user-email{
+	color:#d0d0d0;
+	margin-right:25px;
+}
+.shared-user-item i{
+	position: absolute;
+	top:10px;
+	right:10px;
+	font-size: 15pt;
+	color:#d0d0d0;
+}
+.shared-user-item i:hover{
+	color:#ff0000;
+	cursor: pointer;
+}
