@@ -45,6 +45,7 @@ class Portfolio extends React.Component {
     <div className="col-sm-8">
       <div className="side-stage">
         <div className="side-stage-title">{this.state.isloaded && this.state.portfolioInfo[0].portfolioName}</div>
+        <div className="delete-portfolio-btn">Delete</div>
         <div className="my-projects-tabs">
           <div id="files_tab" className="my-projects-tab active">Portfolio Files</div>
 
