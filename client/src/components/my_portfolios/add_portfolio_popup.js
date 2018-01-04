@@ -17,10 +17,11 @@ onSubmit(){
     userId:this.props.auth.user.id
   };
   var that = this;
-  axios.post('/api/addPortfolio', data).then(function(res){
-  //  that.props.hide();
-  });
-  this.props.hide();
+  axios.post('/api/addPortfolio', data).then(
+  (res) => { that.props.hide(); console.log('res')},
+  (err) => console.log(err)
+);
+
 }
 onChange(e){
   this.setState({portfolioName:e.target.value})
@@ -33,7 +34,7 @@ onChange(e){
           <div className="upload-popup-content">
 
             <input onChange={this.onChange.bind(this)} type="text" className="project-name-input" placeholder="Porfolio Name"/>
-            <button onClick={this.onSubmit.bind(this)} type="submit" className="add-new-project-btn">Create Portfolio</button>
+            <div onClick={this.onSubmit.bind(this)} className="add-new-project-btn">Create Portfolio</div>
 
           </div>
 

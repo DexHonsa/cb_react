@@ -136,6 +136,7 @@ app.route('/api/getPropertyInfo').post(api.GetPropertyInfo);
 app.route('/api/addPortfolio').post(api.AddPortfolio);
 app.route('/api/getPortfolioItems').post(api.GetPortfolioItems);
 app.route('/api/getPortfolioInfo').post(api.GetPortfolioInfo);
+app.route('/api/deletePortfolio').post(api.DeletePortfolio);
 
 
 var _ = require('lodash');

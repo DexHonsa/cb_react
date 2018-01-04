@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import { logout } from './actions/auth_actions';
 import logo_color from './img/logo_color_with_line.png';
 import ntt_logo from './img/ntt.png';
+import gj_logo from './img/gj_logo.jpg'
 import PropTypes from "prop-types";
 
 class Header extends React.Component {
@@ -15,13 +16,18 @@ class Header extends React.Component {
     this.state = {
       userDropdown: false,
       alertsDropdown:false,
-      ntt:false
+      ntt:false,
+      gj:false
     }
   }
   componentDidMount(){
     if(this.props.auth.user.id == '5a3adb9cc786f041d850f823'){
       this.setState({ntt:true})
     }
+    if(this.props.auth.user.id == '5a4e8e21c27b7c780cbb8e3d'){
+      this.setState({gj:true})
+    }
+
   }
   showUserDropdown(){
     console.log(this.state.userDropdown);
@@ -52,6 +58,13 @@ class Header extends React.Component {
   }
   render(){
     var userDropdown;
+    var logo = logo_color;
+    if(this.state.ntt){
+      logo = ntt_logo
+    }
+    if(this.state.gj){
+      logo = gj_logo
+    }
     var username = this.jsUcfirst(this.props.auth.user.username);
     if(this.state.userDropdown == true){
 
@@ -76,7 +89,7 @@ class Header extends React.Component {
       <div>
       <div className="main-nav">
         <div className="container nav-container">
-          <div className="logo"><img src={this.state.ntt ? ntt_logo : logo_color} alt /></div>
+          <div className="logo"><img src={logo} alt /></div>
           <div className="nav-list">
             <ul>
               <NavLink to="/product/dashboard" activeClassName="active"><li>Getting Started</li></NavLink>

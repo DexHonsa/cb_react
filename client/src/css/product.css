@@ -62,9 +62,10 @@ ul, li{
 	align-items: center;
 	justify-content: center;
 	width:100px;
+	margin-right:15px;
 }
 .logo img{
-	max-width: 60px;
+	max-height: 40px;
 }
 .notifications-dropdown a{
 	padding:0px 0px;
@@ -1013,7 +1014,7 @@ ul, li{
 	z-index: 1000000;
 }
 .disabled{
-	color:#d0d0d0;
+	color:#d0d0d0 !important;
 	pointer-events: none;
 }
 .side-stage-top{

@@ -20,6 +20,7 @@ import Dashboard from './components/dashboard/dashboard.js';
 import MyPortfolios from './components/my_portfolios/my_portfolios.js';
 import Property from './components/property/property.js';
 import Applications from './components/applications/applications.js';
+import ModelHomes from './components/model_homes/model_homes';
 import FAQ from './components/dashboard/faq.js';
 import Portfolio from './components/my_portfolios/portfolio.js';
 import {withRouter} from 'react-router';
@@ -58,6 +59,7 @@ const Root = ({ store }) => (
         <Route exact path="/product/my-portfolios" component={MyPortfolios}></Route>
         <Route exact path="/product/my-portfolios/:portfolioId" component={Portfolio}></Route>
         <Route exact path="/product/applications" component={Applications}></Route>
+        <Route exact path="/product/model_homes" component={ModelHomes}></Route>
         <Route exact path="/product/my-portfolios/:portfolioId/:id" component={Property}></Route>
         </div>
     </Router>

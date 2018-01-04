@@ -71,10 +71,10 @@ class Property extends React.Component {
 
                     <div className="divider"/>
 
-                      <li className={activeClasses[3]? "active" : "inactive"} onClick={() => this.changeStage("visualize")}>Visualize</li>
+                      <li className={activeClasses[3]? "active disabled" : "inactive disabled"} onClick={() => this.changeStage("visualize")}>Visualize</li>
 
 
-                      <li className={activeClasses[4]? "active" : "inactive"} onClick={() => this.changeStage("exceptions")}>Exceptions</li>
+                      <li className={activeClasses[4]? "active disabled" : "inactive disabled"} onClick={() => this.changeStage("exceptions")}>Exceptions</li>
 
                     {/*					<a href="img/Sample Property Template.xlsx"><li>Main Template</li></a>*/}
                   </ul>

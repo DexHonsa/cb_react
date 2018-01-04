@@ -62,12 +62,10 @@ class Login extends React.Component {
 				(err) => {
             console.log('an error has occured');
           if(err.data == undefined){
-            console.log(err);
+
             return this.setState({errors: err.response.data.errors, isLoading: false});
           }else{
-            console.log(err.response);
-            console.log(err.data);
-            console.log(err.errors);
+
             return this.setState({errors: err.data.errors, isLoading: false});
           }
 

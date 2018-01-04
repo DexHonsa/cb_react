@@ -61,10 +61,7 @@ class SignUpPopup extends Component {
   }
 
   handleClick() {
-
-      document.addEventListener('click', this.handleOutsideClick, false);
-
-
+    document.addEventListener('click', this.handleOutsideClick, false);
     this.setState(prevState => ({
        popupVisible: !prevState.popupVisible,
     }));
@@ -73,14 +70,12 @@ class SignUpPopup extends Component {
 
   handleOutsideClick(e) {
     var that = this;
-
     if (this.node.contains(e.target)) {
       return;
     }
     setTimeout(function(){
       that.props.hidePopup();
     },500)
-
     this.handleClick();
   }
 

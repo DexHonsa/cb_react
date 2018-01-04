@@ -26,7 +26,7 @@ componentDidMount(){
 }
 getPortfolios(){
   var that = this;
-  this.setState({isLoading:true});
+  this.setState({portfolios:[],isLoading:true});
   axios.post('/api/user_portfolios/' + this.props.auth.user.id).then(function(res){
     that.setState({portfolios:res.data,isLoading:false});
   })

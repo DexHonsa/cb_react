@@ -195,7 +195,6 @@ exports.ImportClosingData = function(req, res) {
   upload(req, res, function(err) {
     var userId = req.body.userId;
     var portfolioId = req.body.portfolioId;
-    console.log(req.body);
     var headerRow = '2';
     var databaseName = 'closingCollection';
     var sheetName = 'Sheet1';
@@ -323,7 +322,11 @@ exports.AddPortfolio = function(req,res){
     if(err)
       throw err;
     var collection = db.collection('portfolios');
-    collection.insert(req.body);
+    collection.insert(req.body, function(err,result){
+      if(err)
+        throw err;
+      res.json(result);
+    });
     db.close();
   })
 }
@@ -356,6 +359,20 @@ exports.GetPortfolioInfo = function(req,res){
 
       res.json(result);
 
+    });
+    db.close();
+  })
+}
+exports.DeletePortfolio= function(req,res){
+  var portfolioId = req.body.portfolioId;
+  MongoClient.connect(URL, function(err,db){
+    if(err)
+      throw err;
+    var collection = db.collection('portfolios');
+    collection.deleteOne({_id:ObjectId(portfolioId)}, function(err,result){
+      if (err)
+        throw err;
+      res.json(result);
     });
     db.close();
   })
