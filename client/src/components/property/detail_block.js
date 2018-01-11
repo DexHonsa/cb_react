@@ -40,15 +40,14 @@ truncate(string){
           if(data['Source File'] !== '--'){
             hasSource = true;
             var dataLink;
-            if(data['Source File'].indexOf('http://') < -1){
-              dataLink = data['Source File'];
-            }else{
-              dataLink = "http://"  + data['Source File'];
-            }
+            dataLink = "http://"  + data['Source File'];
           }
           var newDataValue = [];
-          var value2 = data['Value'];
-          var value = this.truncate(value2);
+          var value = data['Value'];
+          if(typeof value == 'String'){
+            value = this.truncate(value);
+          }
+
           if(value !== undefined && value.toString().indexOf('T') > -1){
           newDataValue = value.split('T00');
 

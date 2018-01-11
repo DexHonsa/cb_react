@@ -136,7 +136,7 @@ exports.ImportLoan = function(req,res){
       workbook.xlsx.readFile(req.file.path).then(function() {
 
 
-          var worksheet = workbook.getWorksheet('Sheet1');
+          var worksheet = workbook.getWorksheet('Loan');
           var sheet = JSON.parse(CircularJSON.stringify(worksheet));
           var newSheet = {};
           var headers = [];
@@ -177,7 +177,7 @@ exports.ImportLoan = function(req,res){
                   if(sheet._rows[i]._cells[ic]._value.model.address.indexOf('D') !== -1){
                     if(sheet._rows[i]._cells[ic]._value.model.value != undefined){
                       lien3[header] = sheet._rows[i]._cells[ic]._value.model.value;
-                      lien3['object' + i] = sheet._rows[i];
+                      //lien3['object' + i] = sheet._rows[i];
                     }else{
                       console.log(sheet._rows[i]._cells[ic]._value.model);
                       lien3[header] = 'HEADER';
@@ -190,8 +190,21 @@ exports.ImportLoan = function(req,res){
 
             newSheet[i] = sheet._rows[i]._cells.address
           }
-          var liens = [lien1,lien2,lien3]
-          res.send(liens);
+          MongoClient.connect(URL, function(err, db) {
+            if (err)
+              throw err;
+
+
+            var collection2 = db.collection('loanData');
+            collection2.remove();
+            collection2.insert(lien1);
+            collection2.insert(lien2);
+            collection2.insert(lien3);
+            res.json(lien1,lien2,lien3);
+            db.close();
+          })
+
+        //  res.send(liens);
       })
 
 
@@ -403,7 +416,6 @@ exports.ImportClosingData = function(req, res) {
         }
         if (rowObj['CB ID'] != '--') {
           arr.push(rowObj);
-
         } else {
 
         }

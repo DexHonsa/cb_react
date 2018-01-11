@@ -63,7 +63,7 @@ class Property extends React.Component {
                       <li className={activeClasses[0]? "active" : "inactive"} onClick={() => this.changeStage("main")}>Asset</li>
 
 
-                      <li className={activeClasses[1]? "active" : "inactive"} onClick={() => this.changeStage("loan")}>Loan</li>
+                      <li className={activeClasses[1]? "active" : "inactive"} onClick={() => this.changeStage("loan")}>Financing</li>
 
 
                       <li className={activeClasses[2]? "active" : "inactive"} onClick={() => this.changeStage("asset_sum")}>Asset Summary</li>
