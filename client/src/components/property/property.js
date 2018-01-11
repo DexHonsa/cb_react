@@ -60,7 +60,7 @@ class Property extends React.Component {
                 <div className="side-nav">
                   <ul>
 
-                      <li className={activeClasses[0]? "active" : "inactive"} onClick={() => this.changeStage("main")}>Property</li>
+                      <li className={activeClasses[0]? "active" : "inactive"} onClick={() => this.changeStage("main")}>Asset</li>
 
 
                       <li className={activeClasses[1]? "active" : "inactive"} onClick={() => this.changeStage("loan")}>Loan</li>

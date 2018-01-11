@@ -141,6 +141,9 @@ app.route('/api/sharePortfolio').post(api.SharePortfolio);
 app.route('/api/getSharedUsers').post(api.GetSharedUsers);
 app.route('/api/unsharePortfolio').post(api.UnsharePortfolio);
 
+app.route('/api/importBasic').post(api.ImportBasic);
+app.route('/api/importLoan').post(api.ImportLoan);
+
 
 var _ = require('lodash');
 var storage = multer.diskStorage({

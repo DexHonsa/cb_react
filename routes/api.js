@@ -64,6 +64,27 @@ var upload_applications = multer({
         next(err);
       }
     }).single('file');
+
+    var storage2 = multer.diskStorage({
+      destination: function(req, file, cb) {
+        cb(null, './uploads/')
+      },
+      filename: function(req, file, cb) {
+        //var datetimestamp = Date.now();
+        cb(null, 'TempExcelData.xlsx')
+      }
+    });
+
+    var upload2 = multer({
+      storage: storage2,
+      onError : function(err, next) {
+            console.log('error', err);
+            next(err);
+          }
+        }).single('file');
+
+
+
 var options = {
   server: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } },
   replset: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } }
@@ -72,6 +93,110 @@ mongoose.connect('mongodb://iwantmoredexx:Awesomeo21!@cluster0-shard-00-00-l9gyz
 var db = mongoose.connection;
 var ObjectId = require('mongodb').ObjectId;
 
+exports.ImportBasic = function(req,res){
+
+
+    upload2(req,res,function(err){
+
+      if(err) {
+        res.json({error_code:1, err_desc:err});
+        return;
+      }
+      if (!req.file) {
+        res.json({error_code: 1, err_desc: "No file passed"});
+        return;
+      }
+
+      workbook.xlsx.readFile(req.file.path).then(function() {
+
+
+          var worksheet = workbook.getWorksheet('Sheet1');
+          var sheet = JSON.parse(CircularJSON.stringify(worksheet));
+
+          res.json(sheet);
+      })
+
+
+    });
+}
+exports.ImportLoan = function(req,res){
+
+
+    upload2(req,res,function(err){
+
+      if(err) {
+        res.json({error_code:1, err_desc:err});
+        return;
+      }
+      if (!req.file) {
+        res.json({error_code: 1, err_desc: "No file passed"});
+        return;
+      }
+
+      workbook.xlsx.readFile(req.file.path).then(function() {
+
+
+          var worksheet = workbook.getWorksheet('Sheet1');
+          var sheet = JSON.parse(CircularJSON.stringify(worksheet));
+          var newSheet = {};
+          var headers = [];
+          var lien1 = {};
+          var lien2 = {};
+          var lien3 = {};
+          for(var i = 7; i <= 22; i++){
+
+
+
+            for(var ic = 0, len = sheet._rows[i]._cells.length; ic <= len; ic++ ){
+              //console.log(ic);
+
+              //res.send(sheet._rows[i]._cells[ic]);
+
+
+               if(sheet._rows[i]._cells[ic] !== undefined && sheet._rows[i]._cells[ic] !== null){
+
+                  var header;
+
+                  if(sheet._rows[i]._cells[ic]._value.model.address.indexOf('A') !== -1){
+                    header = sheet._rows[i]._cells[ic]._value.model.value;
+                  }
+                  if(sheet._rows[i]._cells[ic]._value.model.address.indexOf('B') !== -1){
+                    if(sheet._rows[i]._cells[ic]._value.model.value != undefined){
+                      lien1[header] = sheet._rows[i]._cells[ic]._value.model.value;
+                    }else{
+                      lien1[header] = sheet._rows[i]._cells[ic]._value.model.result;
+                    }
+                  }
+                  if(sheet._rows[i]._cells[ic]._value.model.address.indexOf('C') !== -1){
+                    if(sheet._rows[i]._cells[ic]._value.model.value != undefined){
+                      lien2[header] = sheet._rows[i]._cells[ic]._value.model.value;
+                    }else{
+                      lien2[header] = sheet._rows[i]._cells[ic]._value.model.result;
+                    }
+                  }
+                  if(sheet._rows[i]._cells[ic]._value.model.address.indexOf('D') !== -1){
+                    if(sheet._rows[i]._cells[ic]._value.model.value != undefined){
+                      lien3[header] = sheet._rows[i]._cells[ic]._value.model.value;
+                      lien3['object' + i] = sheet._rows[i];
+                    }else{
+                      console.log(sheet._rows[i]._cells[ic]._value.model);
+                      lien3[header] = 'HEADER';
+                      //lien3[header] = sheet._rows[i]._cells[ic]._value.model.result;
+                    }
+                  }
+               }
+            }
+
+
+            newSheet[i] = sheet._rows[i]._cells.address
+          }
+          var liens = [lien1,lien2,lien3]
+          res.send(liens);
+      })
+
+
+    });
+}
 exports.ImportExcel = function(req, res) {
   upload_applications(req, res, function(err) {
     if (err) {

@@ -94,7 +94,7 @@ class Header extends React.Component {
             <ul>
               <NavLink to="/product/dashboard" activeClassName="active"><li>Getting Started</li></NavLink>
               <NavLink to="/product/my-portfolios" activeClassName="active"><li>My Portfolios</li></NavLink>
-              <NavLink to="/product/my-templates" activeClassName="active"><li>My Templates</li></NavLink>
+              <NavLink to="/product/templates" activeClassName="active"><li>Templates</li></NavLink>
             </ul>
             <ul className="login-list">
               <li>Welcome {username}</li>

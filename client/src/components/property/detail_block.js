@@ -20,6 +20,12 @@ class DetailBlock extends Component {
       }
     );
   }
+truncate(string){
+     if (string.length > 25)
+        return string.substring(0,25)+'...';
+     else
+        return string;
+  };
 
   render() {
     return (
@@ -33,18 +39,27 @@ class DetailBlock extends Component {
           var hasSource = false;
           if(data['Source File'] !== '--'){
             hasSource = true;
+            var dataLink;
+            if(data['Source File'].indexOf('http://') < -1){
+              dataLink = data['Source File'];
+            }else{
+              dataLink = "http://"  + data['Source File'];
+            }
           }
           var newDataValue = [];
-          var value = data['Value'];
+          var value2 = data['Value'];
+          var value = this.truncate(value2);
           if(value !== undefined && value.toString().indexOf('T') > -1){
           newDataValue = value.split('T00');
+
+          console.log(dataLink);
         }else{
           newDataValue[0] = value;
         }
           return (
             <div key={i} className="basic-detail-block-detail-item animated-fast fadeIn">
             <div className="basic-detail-block-title">{data['Specific Category']}</div>
-            <div className="basic-detail-block-value">{hasSource ? <a target="_blank" href={data['Source File']}>{newDataValue[0]}</a> : newDataValue[0]}</div>
+            <div className="basic-detail-block-value">{hasSource ? <a target="_blank" href={dataLink}> {newDataValue[0]}</a> : newDataValue[0]}</div>
           </div>
         );
         },this)}
