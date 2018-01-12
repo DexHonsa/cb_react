@@ -327,12 +327,6 @@ exports.ImportExcel = function(req, res) {
   })
 }
 exports.ImportClosingData = function(req, res) {
-
-
-
-
-
-
   upload(req, res, function(err) {
     var userId = req.body.userId;
     var portfolioId = req.body.portfolioId;
@@ -347,9 +341,12 @@ exports.ImportClosingData = function(req, res) {
       var arr = [];
       var headers = []
       for (var i = 0, len = sheet2._rows.length; i < len; i++) { //cycle through sheet rows
+        console.log('!' + i)
         var rowObj = {}; //create row object for data
         if (sheet2._rows[i]._cells !== null && sheet2._rows[i]._cells !== undefined) { //cycle through cells in each row
           for (var i2 = 0, len2 = sheet2._rows[i]._cells.length; i2 < len2; i2++) {
+            if (sheet2._rows[i]._cells[i2] !== null && sheet2._rows[i]._cells[i2] !== undefined) {
+            console.log(i2);
             var cell = sheet2._rows[i]._cells[i2]._value.model.address;
             if (cell.indexOf(headerRow) !== -1 && cell.length == 2) {
               headers.push(sheet2._rows[i]._cells[i2]._value.model.value);
@@ -413,6 +410,7 @@ exports.ImportClosingData = function(req, res) {
               rowObj[header] = sheet2._rows[i]._cells[i2]._value.model.value;
             }
           }
+        }
         }
         if (rowObj['CB ID'] != '--') {
           arr.push(rowObj);

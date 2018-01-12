@@ -37,27 +37,30 @@ truncate(string){
         <div className="basic-detail-block-detail-container">
         {this.state.blockDetails.map(function(data,i){
           var hasSource = false;
-          if(data['Source File'] !== '--'){
+          console.log(data['Source File']);
+          if(data['Source File'] !== '--' && data['Source File'] != undefined){
             hasSource = true;
             var dataLink;
             dataLink = "http://"  + data['Source File'];
           }
           var newDataValue = [];
           var value = data['Value'];
-          if(typeof value == 'String'){
+          //console.log(typeof value)
+          if(typeof value == 'string'){
             value = this.truncate(value);
           }
+          var dataTitle =  this.truncate(data['Specific Category']);
 
           if(value !== undefined && value.toString().indexOf('T') > -1){
           newDataValue = value.split('T00');
 
-          console.log(dataLink);
+          //console.log(dataLink);
         }else{
           newDataValue[0] = value;
         }
           return (
             <div key={i} className="basic-detail-block-detail-item animated-fast fadeIn">
-            <div className="basic-detail-block-title">{data['Specific Category']}</div>
+            <div className="basic-detail-block-title">{dataTitle}</div>
             <div className="basic-detail-block-value">{hasSource ? <a target="_blank" href={dataLink}> {newDataValue[0]}</a> : newDataValue[0]}</div>
           </div>
         );
