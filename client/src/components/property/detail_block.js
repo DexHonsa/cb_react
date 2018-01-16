@@ -37,7 +37,7 @@ truncate(string){
         <div className="basic-detail-block-detail-container">
         {this.state.blockDetails.map(function(data,i){
           var hasSource = false;
-          console.log(data['Source File']);
+        
           if(data['Source File'] !== '--' && data['Source File'] != undefined){
             hasSource = true;
             var dataLink;

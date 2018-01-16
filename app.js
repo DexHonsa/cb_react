@@ -21,6 +21,7 @@ app.engine('handlebars', exphbs());
 app.set('view engine', 'handlebars');
 
 
+
 //development options
 //app.use('/public', express.static(path.join(__dirname, 'public')));
 
@@ -141,7 +142,10 @@ app.route('/api/sharePortfolio').post(api.SharePortfolio);
 app.route('/api/getSharedUsers').post(api.GetSharedUsers);
 app.route('/api/unsharePortfolio').post(api.UnsharePortfolio);
 
+app.route('/api/uploadPortfolioData').post(api.UploadPortfolioData);
+
 app.route('/api/importBasic').post(api.ImportBasic);
+app.route('/api/importTest').post(api.ImportTest);
 app.route('/api/importLoan').post(api.ImportLoan);
 
 

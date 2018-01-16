@@ -11,6 +11,17 @@ var CircularJSON = require('circular-json');
 var nodemailer = require('nodemailer');
 var smtpTransport = require('nodemailer-smtp-transport');
 
+Number.prototype.formatMoney = function(c, d, t){
+var n = this,
+    c = isNaN(c = Math.abs(c)) ? 2 : c,
+    d = d == undefined ? "." : d,
+    t = t == undefined ? "," : t,
+    s = n < 0 ? "-" : "",
+    i = String(parseInt(n = Math.abs(Number(n) || 0).toFixed(c))),
+    j = (j = i.length) > 3 ? j % 3 : 0;
+   return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+ };
+
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 let transporter = nodemailer.createTransport(smtpTransport({
   name: 'Server', host: 'mail.commonbrain.io',
@@ -28,7 +39,6 @@ let transporter = nodemailer.createTransport(smtpTransport({
   }
 
 }));
-
 var storage = multer.diskStorage({
   destination: function(req, file, cb) {
     cb(null, './uploads/')
@@ -38,7 +48,6 @@ var storage = multer.diskStorage({
     cb(null, 'ClosingExcel.xlsx')
   }
 });
-
 var upload = multer({
   storage: storage,
   onError : function(err, next) {
@@ -46,7 +55,6 @@ var upload = multer({
         next(err);
       }
     }).single('file');
-
 var storage_applications = multer.diskStorage({
   destination: function(req, file, cb) {
     cb(null, './uploads/')
@@ -56,7 +64,6 @@ var storage_applications = multer.diskStorage({
     cb(null, 'Application_Legend.xlsx')
   }
 });
-
 var upload_applications = multer({
   storage: storage_applications,
   onError : function(err, next) {
@@ -64,27 +71,22 @@ var upload_applications = multer({
         next(err);
       }
     }).single('file');
-
-    var storage2 = multer.diskStorage({
-      destination: function(req, file, cb) {
-        cb(null, './uploads/')
-      },
-      filename: function(req, file, cb) {
-        //var datetimestamp = Date.now();
-        cb(null, 'TempExcelData.xlsx')
+var storage2 = multer.diskStorage({
+  destination: function(req, file, cb) {
+    cb(null, './uploads/')
+  },
+  filename: function(req, file, cb) {
+    //var datetimestamp = Date.now();
+    cb(null, 'TempExcelData.xlsx')
+  }
+});
+var upload2 = multer({
+  storage: storage2,
+  onError : function(err, next) {
+        console.log('error', err);
+        next(err);
       }
-    });
-
-    var upload2 = multer({
-      storage: storage2,
-      onError : function(err, next) {
-            console.log('error', err);
-            next(err);
-          }
-        }).single('file');
-
-
-
+    }).single('file');
 var options = {
   server: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } },
   replset: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } }
@@ -93,10 +95,30 @@ mongoose.connect('mongodb://iwantmoredexx:Awesomeo21!@cluster0-shard-00-00-l9gyz
 var db = mongoose.connection;
 var ObjectId = require('mongodb').ObjectId;
 
+
+
+
 exports.ImportBasic = function(req,res){
+  var storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+      cb(null, './uploads/')
+    },
+    filename: function(req, file, cb) {
+      //var datetimestamp = Date.now();
+      cb(null, 'ImportBasic.xlsx')
+    }
+  });
+
+  var upload = multer({
+    storage: storage,
+    onError : function(err, next) {
+          console.log('error', err);
+          next(err);
+        }
+      }).single('file');
 
 
-    upload2(req,res,function(err){
+    upload(req,res,function(err){
 
       if(err) {
         res.json({error_code:1, err_desc:err});
@@ -112,6 +134,109 @@ exports.ImportBasic = function(req,res){
 
           var worksheet = workbook.getWorksheet('Sheet1');
           var sheet = JSON.parse(CircularJSON.stringify(worksheet));
+
+          res.json(sheet);
+      })
+
+
+    });
+}
+exports.ImportTest = function(req,res){
+  var storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+      cb(null, './uploads/')
+    },
+    filename: function(req, file, cb) {
+      //var datetimestamp = Date.now();
+      cb(null, 'SuperText.xlsx')
+    }
+  });
+
+  var upload = multer({
+    storage: storage,
+    onError : function(err, next) {
+          console.log('error', err);
+          next(err);
+        }
+      }).single('file');
+
+    upload(req,res,function(err){
+
+      if(err) {
+        res.json({error_code:1, err_desc:err});
+        return;
+      }
+      if (!req.file) {
+        res.json({error_code: 1, err_desc: "No file passed"});
+        return;
+      }
+
+      workbook.xlsx.readFile(req.file.path).then(function() {
+
+
+          var worksheet = workbook.getWorksheet('Sheet1');
+          var sheet = JSON.parse(CircularJSON.stringify(worksheet));
+          for (var i = 0, len = sheet._rows.length; i < len; i++) {
+            if (sheet._rows[i]._cells != null) {
+              for (var i2 = 0, len2 = sheet._rows[i]._cells.length; i2 < len2; i2++) {
+                if (sheet._rows[i]._cells[i2] != null) {
+                  if(sheet._rows[i]._cells[i2]._value.model.style != null &&  sheet._rows[i]._cells[i2]._value.model.style.toString().indexOf('~') > -1){
+                    var styleArr = sheet._rows[i]._cells[i2]._value.model.style.toString().split('~');
+                    var styleLetter;
+
+                    if(styleArr[4] == 0){
+                      styleLetter = 'A';
+                    }
+                    if(styleArr[4] == 1){
+                      styleLetter = 'B';
+                    }
+                    if(styleArr[4] == 2){
+                      styleLetter = 'C';
+                    }
+                    if(styleArr[4] == 3){
+                      styleLetter = 'D';
+                    }
+                    if(styleArr[4] == 4){
+                      styleLetter = 'E';
+                    }
+                    if(styleArr[4] == 5){
+                      styleLetter = 'F';
+                    }
+                    if(styleArr[4] == 6){
+                      styleLetter = 'G';
+                    }
+                    if(styleArr[4] == 7){
+                      styleLetter = 'H';
+                    }
+
+                    var getCell = worksheet.getCell(styleLetter + (parseInt(styleArr[2]) + 1)).style;
+                    if(getCell.numFmt != null){
+                      var tempNumFormat = JSON.parse(CircularJSON.stringify(getCell.numFmt));
+                      if(tempNumFormat.indexOf('$') > -1){
+                        console.log(sheet._rows[i]._cells[i2]._address + ' $ with reference');
+                      }
+                      if(tempNumFormat.indexOf('%') > -1){
+                        console.log(sheet._rows[i]._cells[i2]._address + ' % with reference');
+                      }
+
+                    }
+
+
+                  }
+                  if(sheet._rows[i]._cells[i2]._value.model.style != null  &&  sheet._rows[i]._cells[i2]._value.model.style.numFmt != null){
+                    if(sheet._rows[i]._cells[i2]._value.model.style.numFmt.indexOf('$') > -1){
+                     console.log(sheet._rows[i]._cells[i2]._address + ' $ no reference');
+                    }
+                    if(sheet._rows[i]._cells[i2]._value.model.style.numFmt.indexOf('%') > -1){
+                      console.log(sheet._rows[i]._cells[i2]._address + ' % no reference');
+                      //console.log(sheet._rows[i]._cells[i2]._value.model.style.numFmt + ':percent');
+                    }
+
+                  }
+                }
+              }
+            }
+          }
 
           res.json(sheet);
       })
@@ -326,7 +451,38 @@ exports.ImportExcel = function(req, res) {
     });
   })
 }
+
+exports.UploadPortfolioData = function(req,res){
+  console.log(req);
+  var userId = req.body.userId;
+  var portfolioId = req.body.portfolioId;
+  var fileName = portfolioId;
+  res.send({filename:fileName});
+  var storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+      cb(null, './uploads/')
+    },
+    filename: function(req, file, cb) {
+      //var datetimestamp = Date.now();
+      cb(null, fileName + '.xlsx')
+    }
+  });
+
+  var upload = multer({
+    storage: storage,
+    onError : function(err, next) {
+          console.log('error', err);
+          next(err);
+        }
+      }).single('file');
+
+  upload(req, res, function(err) {
+
+  })
+
+}
 exports.ImportClosingData = function(req, res) {
+
   upload(req, res, function(err) {
     var userId = req.body.userId;
     var portfolioId = req.body.portfolioId;
@@ -341,14 +497,14 @@ exports.ImportClosingData = function(req, res) {
       var arr = [];
       var headers = []
       for (var i = 0, len = sheet2._rows.length; i < len; i++) { //cycle through sheet rows
-        console.log('!' + i)
+
         var rowObj = {}; //create row object for data
-        if (sheet2._rows[i]._cells !== null && sheet2._rows[i]._cells !== undefined) { //cycle through cells in each row
+        if (sheet2._rows[i]._cells != null) { //cycle through cells in each row
           for (var i2 = 0, len2 = sheet2._rows[i]._cells.length; i2 < len2; i2++) {
-            if (sheet2._rows[i]._cells[i2] !== null && sheet2._rows[i]._cells[i2] !== undefined) {
-            console.log(i2);
+            if (sheet2._rows[i]._cells[i2] != null) {
+
             var cell = sheet2._rows[i]._cells[i2]._value.model.address;
-            if (cell.indexOf(headerRow) !== -1 && cell.length == 2) {
+            if (cell.indexOf(headerRow) != -1 && cell.length == 2) {
               headers.push(sheet2._rows[i]._cells[i2]._value.model.value);
             }
             var letter = cell.charAt(0);
@@ -407,7 +563,69 @@ exports.ImportClosingData = function(req, res) {
               }
 
             } else {
+
+              //start
+
+              //end
+              if(sheet2._rows[i]._cells[i2]._value.model.style != null && sheet2._rows[i]._cells[i2]._value.model.style.numFmt != null){
+                var numFormat = sheet2._rows[i]._cells[i2]._value.model.style.numFmt;
+                if(numFormat.indexOf('$') > -1){
+                    rowObj[header] = '$' + sheet2._rows[i]._cells[i2]._value.model.value.formatMoney(2);
+                }
+                if(numFormat.indexOf('%') > -1){
+                  //console.log(sheet2._rows[i]._cells[i2]._value.model.value);
+                    rowObj[header] = '%' + (Math.round(sheet2._rows[i]._cells[i2]._value.model.value * 100));
+                }
+                if(numFormat.indexOf('$') < -1 && numFormat.indexOf('%') < -1){
+                    rowObj[header] = sheet2._rows[i]._cells[i2]._value.model.value;
+                }
+              }else{
               rowObj[header] = sheet2._rows[i]._cells[i2]._value.model.value;
+              }
+
+              if(sheet2._rows[i]._cells[i2]._value.model.style != null &&  sheet2._rows[i]._cells[i2]._value.model.style.toString().indexOf('~') > -1){
+                var styleArr = sheet2._rows[i]._cells[i2]._value.model.style.toString().split('~');
+                var styleLetter;
+
+                if(styleArr[4] == 0){
+                  styleLetter = 'A';
+                }
+                if(styleArr[4] == 1){
+                  styleLetter = 'B';
+                }
+                if(styleArr[4] == 2){
+                  styleLetter = 'C';
+                }
+                if(styleArr[4] == 3){
+                  styleLetter = 'D';
+                }
+                if(styleArr[4] == 4){
+                  styleLetter = 'E';
+                }
+                if(styleArr[4] == 5){
+                  styleLetter = 'F';
+                }
+                if(styleArr[4] == 6){
+                  styleLetter = 'G';
+                }
+                if(styleArr[4] == 7){
+                  styleLetter = 'H';
+                }
+
+                var getCell = worksheet.getCell(styleLetter + (parseInt(styleArr[2]) + 1)).style;
+                if(getCell.numFmt != null){
+                  var tempNumFormat = JSON.parse(CircularJSON.stringify(getCell.numFmt));
+                  if(tempNumFormat.indexOf('$') > -1){
+                      rowObj[header] = '$' + sheet2._rows[i]._cells[i2]._value.model.value.formatMoney(2);
+                  }
+                  if(tempNumFormat.indexOf('%') > -1){
+                      rowObj[header] = '%' + (Math.round(sheet2._rows[i]._cells[i2]._value.model.value * 100));
+                  }
+
+                }
+
+
+              }
             }
           }
         }
@@ -423,7 +641,7 @@ exports.ImportClosingData = function(req, res) {
       var basicSheet2 = JSON.parse(CircularJSON.stringify(basicSheet));
       var basicDetailObj = {userId:userId, portfolioId:portfolioId}
       for (var i = 0, len = basicSheet2._rows.length; i < len; i++) {
-        if (basicSheet2._rows[i]._cells !== null && basicSheet2._rows[i]._cells !== undefined) { //cycle through cells in each row
+        if (basicSheet2._rows[i]._cells != null) { //cycle through cells in each row
           for (var i2 = 0, len2 = basicSheet2._rows[i]._cells.length; i2 < len2; i2++) {
             var cell = basicSheet2._rows[i]._cells[i2]._value.model.address;
             //console.log(cell);
@@ -599,6 +817,7 @@ exports.GetSharedUsers = function(req,res){
   })
 }
 exports.UploadData = function(req, res) {
+
   var headerRow = req.body.headerRow;
   var databaseName = req.body.databaseName;
   var sheetName = req.body.sheetName;
@@ -763,7 +982,7 @@ exports.GetClosingHeaders = function(req, res) {
       if (err)
         throw err;
       res.json(removeDuplicates(headerArr));
-      db.close();
+      //db.close();
     })
 
   })

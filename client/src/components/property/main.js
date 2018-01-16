@@ -9,7 +9,7 @@ import {connect} from 'react-redux';
 class Main extends React.Component {
   constructor(props){
     super(props);
-    this.state ={
+    this.state = {
       isLoading:true,
       uploadPopup:false,
       headers:[],
@@ -20,22 +20,39 @@ class Main extends React.Component {
   }
   componentDidMount(){
     var that = this;
-    this.setState({headers:[]});
-    axios.post('/api/getClosingHeaders/', { responseType: 'arraybuffer' }).then(
+    axios.post('/api/getClosingHeaders/').then(
       (res) => {
-
+        console.log(res);
         that.setState({headers:res.data, headersLoaded:true});
+
+      },
+      (err) => {
+        console.log(err);
       }
     )
+  this.getStuff();
+
+  }
+  getStuff(){
+
+    console.log('mounted');
+    var that = this;
+    this.setState({
+      isLoading:true,
+      uploadPopup:false,
+      propertyInfo:[{title:'',ImgUrl:''}],
+      isLoading:true,
+    });
+
+
 
     axios.post('/api/getPropertyInfo/', { responseType: 'arraybuffer', userId:this.props.auth.user.id }).then(
       (res) => {
 
         that.setState({propertyInfo:res.data, isLoading:false});
-        console.log(this.state.propertyInfo)
+        console.log('got info');
       }
     )
-
   }
   downloadExcel(){
     axios.post('/api/DownloadClosingExcel/', {} , { responseType: 'arraybuffer' }).then(
@@ -53,15 +70,10 @@ class Main extends React.Component {
     this.setState({
       uploadPopup: !this.state.uploadPopup
     });
-    this.componentDidMount();
+    this.getStuff();
   }
   render() {
-    var isLoading;
-    if(this.state.isLoading == true){
-      isLoading = <div className="Preloader">Preloader</div>;
-    }else{
-      isLoading = "";
-    }
+
 
     var uploadPopup;
     if(this.state.uploadPopup){
@@ -114,12 +126,13 @@ class Main extends React.Component {
           </ul>
         </div>
       </div>
-      {this.state.isLoading ? <div className="loading-gif"><img src={loadingGif} /></div> : null}
-      {this.state.headersLoaded ? this.state.headers.map(function(data,i){
+      {this.state.isLoading && <div className="loading-gif"><img src={loadingGif} /></div>}
+      {!this.state.isLoading ? this.state.headers.map(function(data,i){
+
         if(i > 1){
         return <DetailBlock key={i} mainCategory={data} />
       }
-      },this) : null
+    },this) : <div>NOT LOADED</div>
 
     }
 
