@@ -723,8 +723,8 @@ exports.UpdateNewExcel = function(req, res) {
             var basicDetailObj = {
               userId: userId,
               portfolioId: portfolioId,
-              portfolioItemId,
-              'title': nameRanges.Title,
+              portfolioItemId:portfolioItemId,
+              title: nameRanges.Title,
               imgUrl:nameRanges.ImgUrl
             }
 

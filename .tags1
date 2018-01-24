@@ -1,0 +1,128 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	0	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+config	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^var config = require(__dirname + '\/..\/config.js');$/;"	variable	line:2
+jwt	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^var jwt = require('jsonwebtoken');$/;"	variable	line:3
+mongoose	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^var mongoose = require('mongoose');$/;"	variable	line:4
+multer	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^var multer = require('multer');$/;"	variable	line:5
+MongoClient	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^var MongoClient = require('mongodb').MongoClient;$/;"	variable	line:6
+URL	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^var URL = 'mongodb:\/\/iwantmoredexx:Awesomeo21!@cluster0-shard-00-00-l9gyz.mongodb.net:27017,cluster0-shard-00-01-l9gyz.mongodb.net:27017,cluster0-shard-00-02-l9gyz.mongodb.net:27017\/commonbrain?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin';$/;"	variable	line:7
+Excel	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^var Excel = require('exceljs');$/;"	variable	line:8
+CircularJSON	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^var CircularJSON = require('circular-json');$/;"	variable	line:10
+nodemailer	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^var nodemailer = require('nodemailer');$/;"	variable	line:11
+smtpTransport	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^var smtpTransport = require('nodemailer-smtp-transport');$/;"	variable	line:12
+mkdirp	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^var mkdirp = require('mkdirp');$/;"	variable	line:13
+fs	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^var fs = require('fs-extra');$/;"	variable	line:14
+XLSX	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^var XLSX = require('xlsx');$/;"	variable	line:15
+formatMoney	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^Number.prototype.formatMoney = function(c, d, t){$/;"	function	line:17
+Number	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^Number.prototype.formatMoney = function(c, d, t){$/;"	class	line:17
+Number.formatMoney	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^Number.prototype.formatMoney = function(c, d, t){$/;"	method	line:17
+destination	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^  destination: function(req, file, cb) {$/;"	function	line:46
+filename	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^  filename: function(req, file, cb) {$/;"	function	line:49
+storage	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^var storage = multer.diskStorage({$/;"	variable	line:45
+onError	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^  onError : function(err, next) {$/;"	function	line:56
+upload	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^var upload = multer({$/;"	variable	line:54
+destination	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^  destination: function(req, file, cb) {$/;"	function	line:65
+filename	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^  filename: function(req, file, cb) {$/;"	function	line:68
+storage2	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^var storage2 = multer.diskStorage({$/;"	variable	line:64
+onError	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^  onError : function(err, next) {$/;"	function	line:75
+upload2	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^var upload2 = multer({$/;"	variable	line:73
+destination	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^  destination: function(req, file, cb) {$/;"	function	line:81
+filename	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^  filename: function(req, file, cb) {$/;"	function	line:84
+storage_applications	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^var storage_applications = multer.diskStorage({$/;"	variable	line:80
+onError	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^  onError : function(err, next) {$/;"	function	line:91
+upload_applications	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^var upload_applications = multer({$/;"	variable	line:89
+options.server	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^  server: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } },$/;"	property	line:98
+db	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^var db = mongoose.connection;$/;"	variable	line:102
+ObjectId	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^var ObjectId = require('mongodb').ObjectId;$/;"	variable	line:103
+ImportBasic	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.ImportBasic = function(req,res){$/;"	function	line:108
+destination	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^    destination: function(req, file, cb) {$/;"	function	line:110
+filename	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^    filename: function(req, file, cb) {$/;"	function	line:113
+onError	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^    onError : function(err, next) {$/;"	function	line:121
+upload	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^    upload(req,res,function(err){$/;"	function	line:128
+exports.ImportBasic	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.ImportBasic = function(req,res){$/;"	function	line:108
+ImportTest	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.ImportTest = function(req,res){$/;"	function	line:147
+destination	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^    destination: function(req, file, cb) {$/;"	function	line:149
+filename	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^    filename: function(req, file, cb) {$/;"	function	line:152
+onError	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^    onError : function(err, next) {$/;"	function	line:160
+upload	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^    upload(req,res,function(err){$/;"	function	line:166
+exports.ImportTest	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.ImportTest = function(req,res){$/;"	function	line:147
+ImportLoan	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.ImportLoan = function(req,res){$/;"	function	line:250
+upload2	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^    upload2(req,res,function(err){$/;"	function	line:253
+exports.ImportLoan	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.ImportLoan = function(req,res){$/;"	function	line:250
+ImportExcel	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.ImportExcel = function(req, res) {$/;"	function	line:341
+upload_applications	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^  upload_applications(req, res, function(err) {$/;"	function	line:342
+exports.ImportExcel	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.ImportExcel = function(req, res) {$/;"	function	line:341
+ImportNewExcel	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.ImportNewExcel = function(req, res) {$/;"	function	line:458
+upload	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^  upload(req, res, function(err) {$/;"	function	line:459
+mkdirp	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^    mkdirp('.\/uploads\/' + userId + '\/' + portfolioId, function(err) {$/;"	function	line:464
+exports.ImportNewExcel	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.ImportNewExcel = function(req, res) {$/;"	function	line:458
+UpdateNewExcel	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.UpdateNewExcel = function(req, res) {$/;"	function	line:614
+upload	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^  upload(req, res, function(err) {$/;"	function	line:615
+exports.UpdateNewExcel	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.UpdateNewExcel = function(req, res) {$/;"	function	line:614
+GetFilename	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.GetFilename = function(req,res){$/;"	function	line:747
+exports.GetFilename	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.GetFilename = function(req,res){$/;"	function	line:747
+ImportNewExcel_old	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.ImportNewExcel_old = function(req,res){$/;"	function	line:765
+upload	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^  upload(req,res,function(err){$/;"	function	line:767
+mkdirp	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^    mkdirp('.\/uploads\/'+userId+'\/'+portfolioId, function(err) {$/;"	function	line:772
+exports.ImportNewExcel_old	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.ImportNewExcel_old = function(req,res){$/;"	function	line:765
+UpdateNewExcel_old	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.UpdateNewExcel_old = function(req,res){$/;"	function	line:1003
+upload	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^  upload(req,res,function(err){$/;"	function	line:1005
+exports.UpdateNewExcel_old	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.UpdateNewExcel_old = function(req,res){$/;"	function	line:1003
+DeleteNewExcel	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.DeleteNewExcel = function(req,res){$/;"	function	line:1217
+exports.DeleteNewExcel	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.DeleteNewExcel = function(req,res){$/;"	function	line:1217
+DownloadNewExcel	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.DownloadNewExcel = function(req,res){$/;"	function	line:1236
+exports.DownloadNewExcel	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.DownloadNewExcel = function(req,res){$/;"	function	line:1236
+UploadPortfolioData	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.UploadPortfolioData = function(req,res){$/;"	function	line:1242
+destination	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^    destination: function(req, file, cb) {$/;"	function	line:1249
+filename	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^    filename: function(req, file, cb) {$/;"	function	line:1252
+onError	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^    onError : function(err, next) {$/;"	function	line:1260
+upload	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^  upload(req, res, function(err) {$/;"	function	line:1266
+exports.UploadPortfolioData	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.UploadPortfolioData = function(req,res){$/;"	function	line:1242
+ImportClosingData	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.ImportClosingData = function(req, res) {$/;"	function	line:1271
+upload2	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^  upload2(req, res, function(err) {$/;"	function	line:1273
+exports.ImportClosingData	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.ImportClosingData = function(req, res) {$/;"	function	line:1271
+AddPortfolio	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.AddPortfolio = function(req,res){$/;"	function	line:1464
+exports.AddPortfolio	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.AddPortfolio = function(req,res){$/;"	function	line:1464
+GetPortfolioItems	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.GetPortfolioItems = function(req,res){$/;"	function	line:1477
+GetPortfolioInfo	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.GetPortfolioInfo = function(req,res){$/;"	function	line:1494
+DeletePortfolio	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.DeletePortfolio= function(req,res){$/;"	function	line:1511
+exports.DeletePortfolio	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.DeletePortfolio= function(req,res){$/;"	function	line:1511
+SharePortfolio	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.SharePortfolio = function(req,res){$/;"	function	line:1525
+exports.SharePortfolio	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.SharePortfolio = function(req,res){$/;"	function	line:1525
+UnsharePortfolio	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.UnsharePortfolio = function(req,res){$/;"	function	line:1571
+exports.UnsharePortfolio	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.UnsharePortfolio = function(req,res){$/;"	function	line:1571
+GetSharedUsers	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.GetSharedUsers = function(req,res){$/;"	function	line:1595
+exports.GetSharedUsers	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.GetSharedUsers = function(req,res){$/;"	function	line:1595
+UploadData	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.UploadData = function(req, res) {$/;"	function	line:1608
+upload	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^  upload(req, res, function(err) {$/;"	function	line:1615
+exports.UploadData	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.UploadData = function(req, res) {$/;"	function	line:1608
+DownloadClosingExcel	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.DownloadClosingExcel = function(req,res){$/;"	function	line:1713
+exports.DownloadClosingExcel	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.DownloadClosingExcel = function(req,res){$/;"	function	line:1713
+GetPropertyInfo	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.GetPropertyInfo = function(req,res){$/;"	function	line:1718
+exports.GetPropertyInfo	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.GetPropertyInfo = function(req,res){$/;"	function	line:1718
+GetBlock	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.GetBlock = function(req, res) {$/;"	function	line:1733
+exports.GetBlock	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.GetBlock = function(req, res) {$/;"	function	line:1733
+GetHeaders	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.GetHeaders = function(req, res) {$/;"	function	line:1752
+removeDuplicates	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^  function removeDuplicates(arr) {$/;"	function	line:1753
+exports.GetHeaders.removeDuplicates	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^  function removeDuplicates(arr) {$/;"	function	line:1753
+exports.GetHeaders	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.GetHeaders = function(req, res) {$/;"	function	line:1752
+LoginCheck	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.LoginCheck = function(req, res) {$/;"	function	line:1785
+exports.LoginCheck	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.LoginCheck = function(req, res) {$/;"	function	line:1785
+exports.GetPortfolioInfo	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.GetPortfolioInfo = function(req,res){$/;"	function	line:1494
+excelData	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.excelData = function(req, res) {$/;"	function	line:1835
+exports.excelData	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.excelData = function(req, res) {$/;"	function	line:1835
+getApplications	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.getApplications = function(req, res) {$/;"	function	line:1838
+exports.getApplications	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.getApplications = function(req, res) {$/;"	function	line:1838
+Users	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.Users = function(req, res) {$/;"	function	line:1855
+exports.Users	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.Users = function(req, res) {$/;"	function	line:1855
+GetPortfolios	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.GetPortfolios = function(req, res) {$/;"	function	line:1871
+exports.GetPortfolios	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.GetPortfolios = function(req, res) {$/;"	function	line:1871
+ConfirmEmail	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.ConfirmEmail = function(req, res) {$/;"	function	line:1889
+exports.ConfirmEmail	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.ConfirmEmail = function(req, res) {$/;"	function	line:1889
+SignUpUser	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.SignUpUser = function(req, res) {$/;"	function	line:1914
+exports.SignUpUser	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.SignUpUser = function(req, res) {$/;"	function	line:1914
+exports.GetPortfolioItems	C:\Users\Dex\Desktop\cb_react\routes\api.js	/^exports.GetPortfolioItems = function(req,res){$/;"	function	line:1477
