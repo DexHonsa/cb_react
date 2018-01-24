@@ -37,9 +37,10 @@ truncate(string){
 
         <div className="basic-detail-block-detail-container">
         {this.state.blockDetails.map(function(data,i){
+          console.log('data_block');
           var hasSource = false;
 
-          if(data['Source File'] !== '--' && data['Source File'] != undefined){
+          if(data['Source File'] != '--' && data['Source File'] != undefined){
             hasSource = true;
             var dataLink;
             dataLink = "http://"  + data['Source File'];
@@ -54,10 +55,12 @@ truncate(string){
 
           if(value !== undefined && value.toString().indexOf('T') > -1){
           newDataValue = value.split('T00');
-
-          //console.log(dataLink);
         }else{
           newDataValue[0] = value;
+        }
+
+        if(newDataValue[0] == undefined){
+          newDataValue[0] = '--';
         }
           return (
             <div key={i} className="basic-detail-block-detail-item animated-fast fadeIn">

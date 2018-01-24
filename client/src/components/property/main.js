@@ -31,9 +31,8 @@ class Main extends React.Component {
     }
     axios.post('/api/getHeaders/', data).then(
       (res) => {
-        console.log(res);
+        console.log('headers:' + res.data);
         that.setState({headers:res.data, headersLoaded:true});
-
       },
       (err) => {
         console.log(err);
@@ -62,7 +61,7 @@ class Main extends React.Component {
       (res) => {
 
         that.setState({propertyInfo:res.data, isLoading:false});
-        console.log('got info');
+
       }
     )
   }
@@ -141,9 +140,9 @@ class Main extends React.Component {
       {this.state.isLoading && <div className="loading-gif"><img src={loadingGif} /></div>}
       {!this.state.isLoading ? this.state.headers.map(function(data,i){
 
-        if(i > 1){
+        if(i >= 0){
         return <DetailBlock portfolioItemId={this.state.portfolioItemId} key={i} mainCategory={data} />
-      }
+        }
     },this) : null
 
     }

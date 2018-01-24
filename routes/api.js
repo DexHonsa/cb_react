@@ -12,6 +12,7 @@ var nodemailer = require('nodemailer');
 var smtpTransport = require('nodemailer-smtp-transport');
 var mkdirp = require('mkdirp');
 var fs = require('fs-extra');
+var XLSX = require('xlsx');
 
 Number.prototype.formatMoney = function(c, d, t){
 var n = this,
@@ -215,10 +216,10 @@ exports.ImportTest = function(req,res){
                     if(getCell.numFmt != null){
                       var tempNumFormat = JSON.parse(CircularJSON.stringify(getCell.numFmt));
                       if(tempNumFormat.indexOf('$') > -1){
-                        console.log(sheet._rows[i]._cells[i2]._address + ' $ with reference');
+
                       }
                       if(tempNumFormat.indexOf('%') > -1){
-                        console.log(sheet._rows[i]._cells[i2]._address + ' % with reference');
+
                       }
 
                     }
@@ -227,10 +228,10 @@ exports.ImportTest = function(req,res){
                   }
                   if(sheet._rows[i]._cells[i2]._value.model.style != null  &&  sheet._rows[i]._cells[i2]._value.model.style.numFmt != null){
                     if(sheet._rows[i]._cells[i2]._value.model.style.numFmt.indexOf('$') > -1){
-                     console.log(sheet._rows[i]._cells[i2]._address + ' $ no reference');
+
                     }
                     if(sheet._rows[i]._cells[i2]._value.model.style.numFmt.indexOf('%') > -1){
-                      console.log(sheet._rows[i]._cells[i2]._address + ' % no reference');
+
                       //console.log(sheet._rows[i]._cells[i2]._value.model.style.numFmt + ':percent');
                     }
 
@@ -275,7 +276,7 @@ exports.ImportLoan = function(req,res){
 
 
             for(var ic = 0, len = sheet._rows[i]._cells.length; ic <= len; ic++ ){
-              //console.log(ic);
+
 
               //res.send(sheet._rows[i]._cells[ic]);
 
@@ -306,7 +307,7 @@ exports.ImportLoan = function(req,res){
                       lien3[header] = sheet._rows[i]._cells[ic]._value.model.value;
                       //lien3['object' + i] = sheet._rows[i];
                     }else{
-                      console.log(sheet._rows[i]._cells[ic]._value.model);
+
                       lien3[header] = 'HEADER';
                       //lien3[header] = sheet._rows[i]._cells[ic]._value.model.result;
                     }
@@ -454,6 +455,295 @@ exports.ImportExcel = function(req, res) {
   })
 }
 
+exports.ImportNewExcel = function(req, res) {
+  upload(req, res, function(err) {
+    var userId = req.body.userId;
+    var portfolioId = req.body.portfolioId;
+    var date = new Date;
+
+    mkdirp('./uploads/' + userId + '/' + portfolioId, function(err) {
+      var dir = userId + '/' + portfolioId
+
+      var filename = req.file.filename;
+      fs.move('./tmp/' + filename, './uploads/' + dir + '/' + filename, function(err) {
+        if (err) {
+
+          res.status(401).json({
+            errors: {
+              form: "File Exists"
+            }
+          });
+        }
+        MongoClient.connect(URL, function(err, db) {
+          if (err)
+            throw err;
+          var collection = db.collection('portfolioItems');
+          var portfolioItemObj = {
+            userId: userId,
+            portfolioId: portfolioId,
+            name: filename,
+            lastUpdated:date
+          }
+          collection.insert(portfolioItemObj, function(err, result) {
+            if (err)
+              throw err;
+            var portfolioItemId = result.insertedIds[0].toString();
+
+
+            //extract Data
+            var workbook = XLSX.readFile('./uploads/' + dir + '/' + filename);
+            var sheet = JSON.parse(CircularJSON.stringify(workbook));
+            var titles = [];
+            var nameRangesRaw = sheet.Workbook.Names;
+            var nameRanges = {};
+            for (var i = 0, len = nameRangesRaw.length; i < len; i++) {
+              var refArr = nameRangesRaw[i].Ref.split("$");
+
+
+              nameRanges[nameRangesRaw[i].Name] = sheet.Sheets.Sheet1[refArr[1] + refArr[2]].w;
+            }
+            var rows = {};
+            for (var i = 0, len = Object.keys(sheet.Sheets.Sheet1).length; i < len; i++) {
+              if (i > 1) {
+                var rowNumber = Object.keys(sheet.Sheets.Sheet1)[i].substr(1);
+
+                if (rows[rowNumber] == undefined) {
+                  rows[rowNumber] = {};
+                }
+
+                rows[rowNumber][Object.keys(sheet.Sheets.Sheet1)[i]] = sheet.Sheets.Sheet1[Object.keys(sheet.Sheets.Sheet1)[i]].w
+              }
+            }
+            var headers = [];
+            var arr = [];
+            for (var i = 0, len = Object.keys(rows["2"]).length; i < len; i++) {
+              headers.push(rows["2"][Object.keys(rows["2"])[i]]);
+            }
+            for (var i = 3, len = Object.keys(rows).length; i < len; i++) {
+              var rowObj = {
+                userId: userId,
+                portfolioId: portfolioId,
+                portfolioItemId: portfolioItemId
+              };
+              var number = i.toString();
+              for (var i2 = 0, len2 = Object.keys(rows[number]).length; i2 < len2; i2++) {
+                var cell = Object.keys(rows[number])[i2];
+
+                var letter = cell.charAt(0);
+                var header;
+                if (letter == 'A') {
+                  header = headers[0]
+                }
+                if (letter == 'B') {
+                  header = headers[1]
+                }
+                if (letter == 'C') {
+                  header = headers[2]
+                }
+                if (letter == 'D') {
+                  header = headers[3]
+                }
+                if (letter == 'E') {
+                  header = headers[4]
+                }
+                if (letter == 'F') {
+                  header = headers[5]
+                }
+                if (letter == 'G') {
+                  header = headers[6]
+                }
+                if (letter == 'H') {
+                  header = headers[7]
+                }
+                if (letter == 'I') {
+                  header = headers[8]
+                }
+                if (letter == 'J') {
+                  header = headers[9]
+                }
+                if (letter == 'K') {
+                  header = headers[10]
+                }
+                if (letter == 'L') {
+                  header = headers[11]
+                }
+                if (letter == 'M') {
+                  header = headers[12]
+                }
+                if (letter == 'N') {
+                  header = headers[13]
+                }
+                if (letter == 'O') {
+                  header = headers[14]
+                }
+                rowObj[header] = rows[number][Object.keys(rows[number])[i2]]
+              }
+              arr.push(rowObj);
+            }
+            var basicDetailObj = {
+              userId: userId,
+              portfolioId: portfolioId,
+              portfolioItemId:portfolioItemId,
+              title: nameRanges.Title,
+              imgUrl:nameRanges.ImgUrl
+            }
+
+
+            MongoClient.connect(URL, function(err, db) {
+              if (err)
+                throw err;
+
+              var collection = db.collection('uploadData');
+              var collection2 = db.collection('properties');
+              collection2.remove({portfolioItemId: portfolioItemId})
+              collection2.insert(basicDetailObj);
+              collection.remove({portfolioItemId: portfolioItemId});
+
+              collection.insert(arr);
+              res.json(arr);
+
+            })
+            //res.json(arr);
+
+          });
+        });
+      });
+    });
+  });
+}
+exports.UpdateNewExcel = function(req, res) {
+  upload(req, res, function(err) {
+    var userId = req.body.userId;
+    var portfolioId = req.body.portfolioId;
+    var portfolioItemId = req.body.portfolioItemId;
+    var date = new Date;
+      var dir = userId + '/' + portfolioId
+      var filename = req.body.filename;
+      fs.move('./tmp/' + req.file.filename, './uploads/' + dir + '/' + filename,{ overwrite: true }, function (err) {
+        if (err) {
+
+          res.status(401).json({
+            errors: {
+              form: "File Exists"
+            }
+          });
+        }
+
+
+            //extract Data
+            var workbook = XLSX.readFile('./uploads/' + dir + '/' + filename);
+            var sheet = JSON.parse(CircularJSON.stringify(workbook));
+            var titles = [];
+            var nameRangesRaw = sheet.Workbook.Names;
+            var nameRanges = {};
+            for (var i = 0, len = nameRangesRaw.length; i < len; i++) {
+              var refArr = nameRangesRaw[i].Ref.split("$");
+
+
+              nameRanges[nameRangesRaw[i].Name] = sheet.Sheets.Sheet1[refArr[1] + refArr[2]].w;
+            }
+            var rows = {};
+            for (var i = 0, len = Object.keys(sheet.Sheets.Sheet1).length; i < len; i++) {
+              if (i > 1) {
+                var rowNumber = Object.keys(sheet.Sheets.Sheet1)[i].substr(1);
+
+                if (rows[rowNumber] == undefined) {
+                  rows[rowNumber] = {};
+                }
+
+                rows[rowNumber][Object.keys(sheet.Sheets.Sheet1)[i]] = sheet.Sheets.Sheet1[Object.keys(sheet.Sheets.Sheet1)[i]].w
+              }
+            }
+            var headers = [];
+            var arr = [];
+            for (var i = 0, len = Object.keys(rows["2"]).length; i < len; i++) {
+              headers.push(rows["2"][Object.keys(rows["2"])[i]]);
+            }
+            for (var i = 3, len = Object.keys(rows).length; i < len; i++) {
+              var rowObj = {
+                userId: userId,
+                portfolioId: portfolioId,
+                portfolioItemId: portfolioItemId
+              };
+              var number = i.toString();
+              for (var i2 = 0, len2 = Object.keys(rows[number]).length; i2 < len2; i2++) {
+                var cell = Object.keys(rows[number])[i2];
+
+                var letter = cell.charAt(0);
+                var header;
+                if (letter == 'A') {
+                  header = headers[0]
+                }
+                if (letter == 'B') {
+                  header = headers[1]
+                }
+                if (letter == 'C') {
+                  header = headers[2]
+                }
+                if (letter == 'D') {
+                  header = headers[3]
+                }
+                if (letter == 'E') {
+                  header = headers[4]
+                }
+                if (letter == 'F') {
+                  header = headers[5]
+                }
+                if (letter == 'G') {
+                  header = headers[6]
+                }
+                if (letter == 'H') {
+                  header = headers[7]
+                }
+                if (letter == 'I') {
+                  header = headers[8]
+                }
+                if (letter == 'J') {
+                  header = headers[9]
+                }
+                if (letter == 'K') {
+                  header = headers[10]
+                }
+                if (letter == 'L') {
+                  header = headers[11]
+                }
+                if (letter == 'M') {
+                  header = headers[12]
+                }
+                if (letter == 'N') {
+                  header = headers[13]
+                }
+                if (letter == 'O') {
+                  header = headers[14]
+                }
+                rowObj[header] = rows[number][Object.keys(rows[number])[i2]]
+              }
+              arr.push(rowObj);
+            }
+            var basicDetailObj = {
+              userId: userId,
+              portfolioId: portfolioId,
+              portfolioItemId,
+              'title': nameRanges.Title,
+              imgUrl:nameRanges.ImgUrl
+            }
+
+
+            MongoClient.connect(URL, function(err, db) {
+              if (err)
+                throw err;
+              var portfolioItems = db.collection('portfolioItems');
+              var collection = db.collection('uploadData');
+              collection.remove({portfolioItemId:portfolioItemId});
+              portfolioItems.update({_id:ObjectId(portfolioItemId)},{$set:{lastUpdated:date}})
+              collection.insert(arr);
+              res.json(arr);
+            })
+          });
+      });
+
+}
+
 exports.GetFilename = function(req,res){
   var id = req.body.portfolioItemId;
   MongoClient.connect(URL, function(err, db) {
@@ -464,8 +754,7 @@ exports.GetFilename = function(req,res){
     collection.findOne({_id:ObjectId(id)}, function(err,result){
       if (err)
         throw err;
-        console.log('ADADAD');
-        console.log(result);
+
       res.json(result);
     })
 
@@ -473,7 +762,7 @@ exports.GetFilename = function(req,res){
 
   })
 }
-exports.ImportNewExcel = function(req,res){
+exports.ImportNewExcel_old = function(req,res){
 
   upload(req,res,function(err){
     var userId = req.body.userId;
@@ -593,7 +882,7 @@ exports.ImportNewExcel = function(req,res){
                               rowObj[header] = '$' + sheet2._rows[i]._cells[i2]._value.model.value.formatMoney(2);
                           }
                           if(numFormat.indexOf('%') > -1){
-                            //console.log(sheet2._rows[i]._cells[i2]._value.model.value);
+
                               rowObj[header] = '%' + (Math.round(sheet2._rows[i]._cells[i2]._value.model.value * 100));
                           }
                           if(numFormat.indexOf('$') < -1 && numFormat.indexOf('%') < -1){
@@ -664,7 +953,7 @@ exports.ImportNewExcel = function(req,res){
                   if (basicSheet2._rows[i]._cells != null) { //cycle through cells in each row
                     for (var i2 = 0, len2 = basicSheet2._rows[i]._cells.length; i2 < len2; i2++) {
                       var cell = basicSheet2._rows[i]._cells[i2]._value.model.address;
-                      //console.log(cell);
+
                       if(cell == 'A2'){
                         basicDetailObj['title'] = basicSheet2._rows[i]._cells[i2]._value.model.value;
                       }
@@ -711,15 +1000,13 @@ exports.ImportNewExcel = function(req,res){
   })
 
 }
-exports.UpdateNewExcel = function(req,res){
+exports.UpdateNewExcel_old = function(req,res){
 
   upload(req,res,function(err){
     var userId = req.body.userId;
     var portfolioId = req.body.portfolioId;
     var portfolioItemId = req.body.portfolioItemId;
     var date = new Date;
-
-
       var dir = userId + '/' + portfolioId
       var filename = req.body.filename;
       fs.move('./tmp/' + req.file.filename, './uploads/' + dir + '/' + filename,{ overwrite: true }, function (err) {
@@ -818,7 +1105,7 @@ exports.UpdateNewExcel = function(req,res){
                         rowObj[header] = '$' + sheet2._rows[i]._cells[i2]._value.model.value.formatMoney(2);
                     }
                     if(numFormat.indexOf('%') > -1){
-                      //console.log(sheet2._rows[i]._cells[i2]._value.model.value);
+
                         rowObj[header] = '%' + (Math.round(sheet2._rows[i]._cells[i2]._value.model.value * 100));
                     }
                     if(numFormat.indexOf('$') < -1 && numFormat.indexOf('%') < -1){
@@ -889,7 +1176,7 @@ exports.UpdateNewExcel = function(req,res){
             if (basicSheet2._rows[i]._cells != null) { //cycle through cells in each row
               for (var i2 = 0, len2 = basicSheet2._rows[i]._cells.length; i2 < len2; i2++) {
                 var cell = basicSheet2._rows[i]._cells[i2]._value.model.address;
-                //console.log(cell);
+
                 if(cell == 'A2'){
                   basicDetailObj['title'] = basicSheet2._rows[i]._cells[i2]._value.model.value;
                 }
@@ -947,13 +1234,13 @@ exports.DeleteNewExcel = function(req,res){
   })
 }
 exports.DownloadNewExcel = function(req,res){
-  console.log('dir' + __dirname)
+
   var file = __dirname+'/uploads/'+req.body.userId+'/'+req.body.portfolioId+'/'+req.body.filename;
   res.download(file);
 }
 
 exports.UploadPortfolioData = function(req,res){
-  console.log(req);
+
   var userId = req.body.userId;
   var portfolioId = req.body.portfolioId;
   var fileName = portfolioId;
@@ -971,7 +1258,7 @@ exports.UploadPortfolioData = function(req,res){
   var upload = multer({
     storage: storage,
     onError : function(err, next) {
-          console.log('error', err);
+
           next(err);
         }
       }).single('file');
@@ -984,7 +1271,7 @@ exports.UploadPortfolioData = function(req,res){
 exports.ImportClosingData = function(req, res) {
 
   upload2(req, res, function(err) {
-    //console.log(req.body.userId);
+
     var userId = req.body.userId;
     var portfolioId = req.body.portfolioId;
     var headerRow = '2';
@@ -1262,7 +1549,7 @@ exports.SharePortfolio = function(req,res){
           username:result[0].username,
           email:result[0].email
         }
-        console.log(shareId);
+
         portfolios.update({_id:ObjectId(portfolioId)},
           {
             $push:{
@@ -1425,7 +1712,7 @@ exports.UploadData = function(req, res) {
 }
 exports.DownloadClosingExcel = function(req,res){
   var file = __dirname + '/uploads/ClosingExcel.xlsx';
-  console.log(file);
+
   res.download(file);
 }
 exports.GetPropertyInfo = function(req,res){
@@ -1473,6 +1760,7 @@ exports.GetHeaders = function(req, res) {
     return unique_array
   }
   var portfolioItemId = req.body.portfolioItemId;
+  console.log(portfolioItemId);
   MongoClient.connect(URL, function(err, db) {
     if (err)
       throw err;
@@ -1480,6 +1768,7 @@ exports.GetHeaders = function(req, res) {
     var collection = db.collection("uploadData")
 
     collection.find({portfolioItemId:portfolioItemId}).toArray(function(err, result) {
+      console.log(result);
       var headerArr = [];
       for (var i = 0, len = result.length; i < len; i++) {
         headerArr.push(result[i]['Major Category'])
@@ -1672,7 +1961,6 @@ exports.SignUpUser = function(req, res) {
             		font-family:Arial; display:inline-block; padding:7px 15px; border-radius:3px; margin-top:25px;">
             			Confirm Your Account
             		</div></a>
-
             	</div><br>
             	<div style="display: inline-block; font-size: 10pt;
             		font-family:Arial; color:#AFAFAF; margin-top:15px">

@@ -24,7 +24,8 @@
     "thinky": "~ 1.15.6",
     "twit": "^2.2.5",
     "twitter": "^1.7.0",
-    "validator": "^7.0.0"
+    "validator": "^7.0.0",
+    "xlsx": "^0.11.18"
   },
   "author": "Dex",
   "license": "ISC"
