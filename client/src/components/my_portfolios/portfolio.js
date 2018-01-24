@@ -4,6 +4,8 @@ import axios from 'axios';
 import DeletePortfolio from './delete_portfolio';
 import UploadItem from './upload_item';
 import {connect} from 'react-redux';
+import TimeAgo from 'react-timeago';
+
 class Portfolio extends React.Component {
   constructor(props){
     super(props);
@@ -74,6 +76,19 @@ class Portfolio extends React.Component {
     )
   }
   componentDidMount(){
+    this.setState({portfolioId: this.props.match.params.portfolioId,
+    items:[],
+    isloaded:false,
+    portfolioInfo:{},
+    deletePopup:false,
+    uploadPopup:false,
+    tab:'files',
+    activeClasses: [true,false],
+    shareInput:'',
+    shareErrors:{},
+    sharedUsers:[],
+    sharedLoading:false})
+    
     var that = this;
     var portfolioId = this.props.match.params.portfolioId;
     axios.post('/api/getPortfolioInfo',{portfolioId:portfolioId}).then(function(res){
@@ -100,6 +115,7 @@ class Portfolio extends React.Component {
   }
   hideUploadPopup(){
     this.setState({uploadPopup:false});
+    this.componentDidMount();
   }
   render(){
     const {shareErrors} = this.state;
@@ -140,8 +156,8 @@ class Portfolio extends React.Component {
         <div id="files">
           <div className="file-item-headers">
             <div className="file-item-header" style={{marginRight: 15}}>File Name</div>
-            <div className="file-item-header">Date Created</div>
-            <div className="file-item-header">Date Modified</div>
+
+            <div className="file-item-header">Last Modified</div>
           </div>
           {this.state.isLoading ? <div className="loading-gif"><img src={require('../../img/loading2.gif')} /></div> : null}
           {this.state.items.map(function(data, i){
@@ -153,8 +169,8 @@ class Portfolio extends React.Component {
               <Link key={i} to={to}><div className="file-item animated-fast fadeIn">
                 <div className="icon"><i className="fa fa-file" /></div>
                 <div className="file-item-value">{data.name}</div>
-                <div className="file-item-value">08/01/2017</div>
-                <div className="file-item-value">08/01/2017</div>
+
+                <div className="file-item-value"><TimeAgo date={data.lastUpdated}/></div>
               </div></Link>
             );
           },this)}

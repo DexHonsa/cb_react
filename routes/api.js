@@ -10,6 +10,8 @@ var workbook = new Excel.Workbook();
 var CircularJSON = require('circular-json');
 var nodemailer = require('nodemailer');
 var smtpTransport = require('nodemailer-smtp-transport');
+var mkdirp = require('mkdirp');
+var fs = require('fs-extra');
 
 Number.prototype.formatMoney = function(c, d, t){
 var n = this,
@@ -41,6 +43,25 @@ let transporter = nodemailer.createTransport(smtpTransport({
 }));
 var storage = multer.diskStorage({
   destination: function(req, file, cb) {
+    cb(null, './tmp/')
+  },
+  filename: function(req, file, cb) {
+    //var datetimestamp = Date.now();
+    cb(null, file.originalname)
+  }
+});
+var upload = multer({
+  storage: storage,
+  onError : function(err, next) {
+        console.log('error', err);
+        next(err);
+      }
+    }).single('file');
+
+
+
+var storage2 = multer.diskStorage({
+  destination: function(req, file, cb) {
     cb(null, './uploads/')
   },
   filename: function(req, file, cb) {
@@ -48,8 +69,8 @@ var storage = multer.diskStorage({
     cb(null, 'ClosingExcel.xlsx')
   }
 });
-var upload = multer({
-  storage: storage,
+var upload2 = multer({
+  storage: storage2,
   onError : function(err, next) {
         console.log('error', err);
         next(err);
@@ -71,22 +92,7 @@ var upload_applications = multer({
         next(err);
       }
     }).single('file');
-var storage2 = multer.diskStorage({
-  destination: function(req, file, cb) {
-    cb(null, './uploads/')
-  },
-  filename: function(req, file, cb) {
-    //var datetimestamp = Date.now();
-    cb(null, 'TempExcelData.xlsx')
-  }
-});
-var upload2 = multer({
-  storage: storage2,
-  onError : function(err, next) {
-        console.log('error', err);
-        next(err);
-      }
-    }).single('file');
+
 var options = {
   server: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } },
   replset: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } }
@@ -128,13 +134,9 @@ exports.ImportBasic = function(req,res){
         res.json({error_code: 1, err_desc: "No file passed"});
         return;
       }
-
       workbook.xlsx.readFile(req.file.path).then(function() {
-
-
           var worksheet = workbook.getWorksheet('Sheet1');
-          var sheet = JSON.parse(CircularJSON.stringify(worksheet));
-
+          var sheet = JSON.parse(CircularJSON.stringify(workbook));
           res.json(sheet);
       })
 
@@ -452,6 +454,504 @@ exports.ImportExcel = function(req, res) {
   })
 }
 
+exports.GetFilename = function(req,res){
+  var id = req.body.portfolioItemId;
+  MongoClient.connect(URL, function(err, db) {
+    if (err)
+      throw err;
+
+    var collection = db.collection('portfolioItems');
+    collection.findOne({_id:ObjectId(id)}, function(err,result){
+      if (err)
+        throw err;
+        console.log('ADADAD');
+        console.log(result);
+      res.json(result);
+    })
+
+
+
+  })
+}
+exports.ImportNewExcel = function(req,res){
+
+  upload(req,res,function(err){
+    var userId = req.body.userId;
+    var portfolioId = req.body.portfolioId;
+    var date = new Date;
+
+    mkdirp('./uploads/'+userId+'/'+portfolioId, function(err) {
+      var dir = userId + '/' + portfolioId
+      var filename = req.file.filename;
+      fs.move('./tmp/' + filename, './uploads/' + dir + '/' + filename, function (err) {
+        if (err) {
+
+            res.status(401).json({
+              errors: {
+                form: "File Exists"
+              }
+            });
+        }
+        MongoClient.connect(URL, function(err,db){
+          if(err)
+            throw err;
+          var collection = db.collection('portfolioItems');
+          var portfolioItemObj = {
+            userId:userId,
+            portfolioId:portfolioId,
+            name:filename,
+            lastUpdated:date
+          }
+          collection.insert(portfolioItemObj, function(err,result){
+            if(err)
+              throw err;
+              var portfolioItemId = result.insertedIds[0].toString();
+              var headerRow = '2';
+              var sheetName = 'Sheet1';
+
+              //extract Data
+              workbook.xlsx.readFile('./uploads/' + dir + '/' + filename).then(function() {
+
+                var worksheet = workbook.getWorksheet(sheetName); //Grab all data from one sheet in excel doc
+                var sheet2 = JSON.parse(CircularJSON.stringify(worksheet)); //extract parseable data from workbook
+                var arr = [];
+                var headers = []
+                for (var i = 0, len = sheet2._rows.length; i < len; i++) { //cycle through sheet rows
+
+                  var rowObj = {userId:userId, portfolioId:portfolioId,portfolioItemId:portfolioItemId}; //create row object for data
+                  if (sheet2._rows[i]._cells != null) { //cycle through cells in each row
+                    for (var i2 = 0, len2 = sheet2._rows[i]._cells.length; i2 < len2; i2++) {
+                      if (sheet2._rows[i]._cells[i2] != null) {
+
+                      var cell = sheet2._rows[i]._cells[i2]._value.model.address;
+                      if (cell.indexOf(headerRow) != -1 && cell.length == 2) {
+                        headers.push(sheet2._rows[i]._cells[i2]._value.model.value);
+                      }
+                      var letter = cell.charAt(0);
+                      var header;
+                      if (letter == 'A') {
+                        header = headers[0]
+                      }
+                      if (letter == 'B') {
+                        header = headers[1]
+                      }
+                      if (letter == 'C') {
+                        header = headers[2]
+                      }
+                      if (letter == 'D') {
+                        header = headers[3]
+                      }
+                      if (letter == 'E') {
+                        header = headers[4]
+                      }
+                      if (letter == 'F') {
+                        header = headers[5]
+                      }
+                      if (letter == 'G') {
+                        header = headers[6]
+                      }
+                      if (letter == 'H') {
+                        header = headers[7]
+                      }
+                      if (letter == 'I') {
+                        header = headers[8]
+                      }
+                      if (letter == 'J') {
+                        header = headers[9]
+                      }
+                      if (letter == 'K') {
+                        header = headers[10]
+                      }
+                      if (letter == 'L') {
+                        header = headers[11]
+                      }
+                      if (letter == 'M') {
+                        header = headers[12]
+                      }
+                      if (letter == 'N') {
+                        header = headers[13]
+                      }
+                      if (letter == 'O') {
+                        header = headers[14]
+                      }
+
+                      if (sheet2._rows[i]._cells[i2]._value.model.value === undefined) {
+                        if (sheet2._rows[i]._cells[i2]._value.model.result === undefined) {
+                          rowObj[header] = '--';
+                        } else {
+                          rowObj[header] = sheet2._rows[i]._cells[i2]._value.model.result;
+                        }
+
+                      } else {
+
+                        //start
+
+                        //end
+                        if(sheet2._rows[i]._cells[i2]._value.model.style != null && sheet2._rows[i]._cells[i2]._value.model.style.numFmt != null){
+                          var numFormat = sheet2._rows[i]._cells[i2]._value.model.style.numFmt;
+                          if(numFormat.indexOf('$') > -1){
+                              rowObj[header] = '$' + sheet2._rows[i]._cells[i2]._value.model.value.formatMoney(2);
+                          }
+                          if(numFormat.indexOf('%') > -1){
+                            //console.log(sheet2._rows[i]._cells[i2]._value.model.value);
+                              rowObj[header] = '%' + (Math.round(sheet2._rows[i]._cells[i2]._value.model.value * 100));
+                          }
+                          if(numFormat.indexOf('$') < -1 && numFormat.indexOf('%') < -1){
+                              rowObj[header] = sheet2._rows[i]._cells[i2]._value.model.value;
+                          }
+                        }else{
+                        rowObj[header] = sheet2._rows[i]._cells[i2]._value.model.value;
+                        }
+
+                        if(sheet2._rows[i]._cells[i2]._value.model.style != null &&  sheet2._rows[i]._cells[i2]._value.model.style.toString().indexOf('~') > -1){
+                          var styleArr = sheet2._rows[i]._cells[i2]._value.model.style.toString().split('~');
+                          var styleLetter;
+
+                          if(styleArr[4] == 0){
+                            styleLetter = 'A';
+                          }
+                          if(styleArr[4] == 1){
+                            styleLetter = 'B';
+                          }
+                          if(styleArr[4] == 2){
+                            styleLetter = 'C';
+                          }
+                          if(styleArr[4] == 3){
+                            styleLetter = 'D';
+                          }
+                          if(styleArr[4] == 4){
+                            styleLetter = 'E';
+                          }
+                          if(styleArr[4] == 5){
+                            styleLetter = 'F';
+                          }
+                          if(styleArr[4] == 6){
+                            styleLetter = 'G';
+                          }
+                          if(styleArr[4] == 7){
+                            styleLetter = 'H';
+                          }
+
+                          var getCell = worksheet.getCell(styleLetter + (parseInt(styleArr[2]) + 1)).style;
+                          if(getCell.numFmt != null){
+                            var tempNumFormat = JSON.parse(CircularJSON.stringify(getCell.numFmt));
+                            if(tempNumFormat.indexOf('$') > -1){
+                                rowObj[header] = '$' + sheet2._rows[i]._cells[i2]._value.model.value.formatMoney(2);
+                            }
+                            if(tempNumFormat.indexOf('%') > -1){
+                                rowObj[header] = '%' + (Math.round(sheet2._rows[i]._cells[i2]._value.model.value * 100));
+                            }
+
+                          }
+
+
+                        }
+                      }
+                    }
+                  }
+                  }
+                  if (rowObj['CB ID'] != '--') {
+                    arr.push(rowObj);
+                  } else {
+
+                  }
+                }
+                //sheet 2
+                var basicSheet = workbook.getWorksheet('Sheet2');
+                var basicSheet2 = JSON.parse(CircularJSON.stringify(basicSheet));
+                var basicDetailObj = {userId:userId, portfolioId:portfolioId, portfolioItemId}
+                for (var i = 0, len = basicSheet2._rows.length; i < len; i++) {
+                  if (basicSheet2._rows[i]._cells != null) { //cycle through cells in each row
+                    for (var i2 = 0, len2 = basicSheet2._rows[i]._cells.length; i2 < len2; i2++) {
+                      var cell = basicSheet2._rows[i]._cells[i2]._value.model.address;
+                      //console.log(cell);
+                      if(cell == 'A2'){
+                        basicDetailObj['title'] = basicSheet2._rows[i]._cells[i2]._value.model.value;
+                      }
+                      if(cell == 'B2'){
+                        basicDetailObj['imgUrl'] = basicSheet2._rows[i]._cells[i2]._value.model.value;
+                      }
+                    }
+                  }
+                }
+
+                MongoClient.connect(URL, function(err, db) {
+                  if (err)
+                    throw err;
+
+                  var collection = db.collection('uploadData');
+                  var collection2 = db.collection('properties');
+
+                  collection2.remove({portfolioItemId:portfolioItemId})
+                  collection2.insert(basicDetailObj);
+                  collection.remove({portfolioItemId:portfolioItemId});
+
+                  collection.insert(arr);
+                  res.json(arr);
+
+                })
+              });
+
+
+          });
+          db.close();
+        })
+
+
+
+
+
+
+
+
+
+
+    });
+    })
+  })
+
+}
+exports.UpdateNewExcel = function(req,res){
+
+  upload(req,res,function(err){
+    var userId = req.body.userId;
+    var portfolioId = req.body.portfolioId;
+    var portfolioItemId = req.body.portfolioItemId;
+    var date = new Date;
+
+
+      var dir = userId + '/' + portfolioId
+      var filename = req.body.filename;
+      fs.move('./tmp/' + req.file.filename, './uploads/' + dir + '/' + filename,{ overwrite: true }, function (err) {
+        if (err) {
+          console.log(err);
+            res.status(401).json({
+              errors: {
+                form: "File Exists"
+              }
+            });
+        }
+        var headerRow = '2';
+        var sheetName = 'Sheet1';
+
+        //extract Data
+        workbook.xlsx.readFile('./uploads/' + dir + '/' + filename).then(function() {
+
+          var worksheet = workbook.getWorksheet(sheetName); //Grab all data from one sheet in excel doc
+          var sheet2 = JSON.parse(CircularJSON.stringify(worksheet)); //extract parseable data from workbook
+          var arr = [];
+          var headers = []
+          for (var i = 0, len = sheet2._rows.length; i < len; i++) { //cycle through sheet rows
+
+            var rowObj = {userId:userId, portfolioId:portfolioId,portfolioItemId:portfolioItemId}; //create row object for data
+            if (sheet2._rows[i]._cells != null) { //cycle through cells in each row
+              for (var i2 = 0, len2 = sheet2._rows[i]._cells.length; i2 < len2; i2++) {
+                if (sheet2._rows[i]._cells[i2] != null) {
+
+                var cell = sheet2._rows[i]._cells[i2]._value.model.address;
+                if (cell.indexOf(headerRow) != -1 && cell.length == 2) {
+                  headers.push(sheet2._rows[i]._cells[i2]._value.model.value);
+                }
+                var letter = cell.charAt(0);
+                var header;
+                if (letter == 'A') {
+                  header = headers[0]
+                }
+                if (letter == 'B') {
+                  header = headers[1]
+                }
+                if (letter == 'C') {
+                  header = headers[2]
+                }
+                if (letter == 'D') {
+                  header = headers[3]
+                }
+                if (letter == 'E') {
+                  header = headers[4]
+                }
+                if (letter == 'F') {
+                  header = headers[5]
+                }
+                if (letter == 'G') {
+                  header = headers[6]
+                }
+                if (letter == 'H') {
+                  header = headers[7]
+                }
+                if (letter == 'I') {
+                  header = headers[8]
+                }
+                if (letter == 'J') {
+                  header = headers[9]
+                }
+                if (letter == 'K') {
+                  header = headers[10]
+                }
+                if (letter == 'L') {
+                  header = headers[11]
+                }
+                if (letter == 'M') {
+                  header = headers[12]
+                }
+                if (letter == 'N') {
+                  header = headers[13]
+                }
+                if (letter == 'O') {
+                  header = headers[14]
+                }
+
+                if (sheet2._rows[i]._cells[i2]._value.model.value === undefined) {
+                  if (sheet2._rows[i]._cells[i2]._value.model.result === undefined) {
+                    rowObj[header] = '--';
+                  } else {
+                    rowObj[header] = sheet2._rows[i]._cells[i2]._value.model.result;
+                  }
+
+                } else {
+
+                  //start
+
+                  //end
+                  if(sheet2._rows[i]._cells[i2]._value.model.style != null && sheet2._rows[i]._cells[i2]._value.model.style.numFmt != null){
+                    var numFormat = sheet2._rows[i]._cells[i2]._value.model.style.numFmt;
+                    if(numFormat.indexOf('$') > -1){
+                        rowObj[header] = '$' + sheet2._rows[i]._cells[i2]._value.model.value.formatMoney(2);
+                    }
+                    if(numFormat.indexOf('%') > -1){
+                      //console.log(sheet2._rows[i]._cells[i2]._value.model.value);
+                        rowObj[header] = '%' + (Math.round(sheet2._rows[i]._cells[i2]._value.model.value * 100));
+                    }
+                    if(numFormat.indexOf('$') < -1 && numFormat.indexOf('%') < -1){
+                        rowObj[header] = sheet2._rows[i]._cells[i2]._value.model.value;
+                    }
+                  }else{
+                  rowObj[header] = sheet2._rows[i]._cells[i2]._value.model.value;
+                  }
+
+                  if(sheet2._rows[i]._cells[i2]._value.model.style != null &&  sheet2._rows[i]._cells[i2]._value.model.style.toString().indexOf('~') > -1){
+                    var styleArr = sheet2._rows[i]._cells[i2]._value.model.style.toString().split('~');
+                    var styleLetter;
+
+                    if(styleArr[4] == 0){
+                      styleLetter = 'A';
+                    }
+                    if(styleArr[4] == 1){
+                      styleLetter = 'B';
+                    }
+                    if(styleArr[4] == 2){
+                      styleLetter = 'C';
+                    }
+                    if(styleArr[4] == 3){
+                      styleLetter = 'D';
+                    }
+                    if(styleArr[4] == 4){
+                      styleLetter = 'E';
+                    }
+                    if(styleArr[4] == 5){
+                      styleLetter = 'F';
+                    }
+                    if(styleArr[4] == 6){
+                      styleLetter = 'G';
+                    }
+                    if(styleArr[4] == 7){
+                      styleLetter = 'H';
+                    }
+
+                    var getCell = worksheet.getCell(styleLetter + (parseInt(styleArr[2]) + 1)).style;
+                    if(getCell.numFmt != null){
+                      var tempNumFormat = JSON.parse(CircularJSON.stringify(getCell.numFmt));
+                      if(tempNumFormat.indexOf('$') > -1){
+                          rowObj[header] = '$' + sheet2._rows[i]._cells[i2]._value.model.value.formatMoney(2);
+                      }
+                      if(tempNumFormat.indexOf('%') > -1){
+                          rowObj[header] = '%' + (Math.round(sheet2._rows[i]._cells[i2]._value.model.value * 100));
+                      }
+
+                    }
+
+
+                  }
+                }
+              }
+            }
+            }
+            if (rowObj['CB ID'] != '--') {
+              arr.push(rowObj);
+            } else {
+
+            }
+          }
+          //sheet 2
+          var basicSheet = workbook.getWorksheet('Sheet2');
+          var basicSheet2 = JSON.parse(CircularJSON.stringify(basicSheet));
+          var basicDetailObj = {userId:userId, portfolioId:portfolioId, portfolioItemId}
+          for (var i = 0, len = basicSheet2._rows.length; i < len; i++) {
+            if (basicSheet2._rows[i]._cells != null) { //cycle through cells in each row
+              for (var i2 = 0, len2 = basicSheet2._rows[i]._cells.length; i2 < len2; i2++) {
+                var cell = basicSheet2._rows[i]._cells[i2]._value.model.address;
+                //console.log(cell);
+                if(cell == 'A2'){
+                  basicDetailObj['title'] = basicSheet2._rows[i]._cells[i2]._value.model.value;
+                }
+                if(cell == 'B2'){
+                  basicDetailObj['imgUrl'] = basicSheet2._rows[i]._cells[i2]._value.model.value;
+                }
+              }
+            }
+          }
+
+          MongoClient.connect(URL, function(err, db) {
+            if (err)
+              throw err;
+            var portfolioItems = db.collection('portfolioItems');
+            var collection = db.collection('uploadData');
+            collection.remove({portfolioItemId:portfolioItemId});
+            portfolioItems.update({_id:ObjectId(portfolioItemId)},{$set:{lastUpdated:date}})
+            collection.insert(arr);
+            res.json(arr);
+
+          })
+        });
+
+
+
+
+
+
+
+
+
+
+    });
+
+  })
+
+}
+exports.DeleteNewExcel = function(req,res){
+  var dir = './uploads/' + req.body.userId + '/' + req.body.portfolioId + '/' + req.body.filename;
+  MongoClient.connect(URL, function(err, db) {
+    if (err)
+      throw err;
+
+    var portfolioItems = db.collection("portfolioItems")
+    var uploadData = db.collection("uploadData")
+    portfolioItems.remove({userId:req.body.userId, portfolioId:req.body.portfolioId, name:filename});
+    uploadData.remove({portfolioItemId:req.body.portfolioItemId});
+  })
+  fs.unlink(dir, function(res){
+    res.send ({
+      status: "200",
+      responseType: "string",
+      response: "success"
+    });
+  })
+}
+exports.DownloadNewExcel = function(req,res){
+  console.log('dir' + __dirname)
+  var file = __dirname+'/uploads/'+req.body.userId+'/'+req.body.portfolioId+'/'+req.body.filename;
+  res.download(file);
+}
+
 exports.UploadPortfolioData = function(req,res){
   console.log(req);
   var userId = req.body.userId;
@@ -483,7 +983,8 @@ exports.UploadPortfolioData = function(req,res){
 }
 exports.ImportClosingData = function(req, res) {
 
-  upload(req, res, function(err) {
+  upload2(req, res, function(err) {
+    //console.log(req.body.userId);
     var userId = req.body.userId;
     var portfolioId = req.body.portfolioId;
     var headerRow = '2';
@@ -688,6 +1189,7 @@ exports.AddPortfolio = function(req,res){
 }
 exports.GetPortfolioItems = function(req,res){
   var portfolioId = req.body.portfolioId
+
   MongoClient.connect(URL, function(err,db){
     if(err)
       throw err;
@@ -923,15 +1425,17 @@ exports.UploadData = function(req, res) {
 }
 exports.DownloadClosingExcel = function(req,res){
   var file = __dirname + '/uploads/ClosingExcel.xlsx';
+  console.log(file);
   res.download(file);
 }
 exports.GetPropertyInfo = function(req,res){
   var userId = req.body.userId;
+  var portfolioItemId = req.body.portfolioItemId;
   MongoClient.connect(URL, function(err, db){
     if(err)
       throw err;
       var collection = db.collection('properties');
-      collection.find({'userId':userId}).toArray(function(err,result){
+      collection.find({'portfolioItemId':portfolioItemId}).toArray(function(err,result){
         if(err)
           throw err;
         res.send(result);
@@ -939,15 +1443,16 @@ exports.GetPropertyInfo = function(req,res){
       })
   })
 }
-exports.GetClosingBlock = function(req, res) {
+exports.GetBlock = function(req, res) {
   var majorCategory = req.body.majorCategory;
+  var portfolioItemId = req.body.portfolioItemId;
   MongoClient.connect(URL, function(err, db) {
     if (err)
       throw err;
 
-    var collection = db.collection("closingCollection")
+    var collection = db.collection("uploadData")
 
-    collection.find({"Major Category": majorCategory}).toArray(function(err, result) {
+    collection.find({"Major Category": majorCategory, portfolioItemId:portfolioItemId}).toArray(function(err, result) {
       if (err)
         throw err;
 
@@ -957,7 +1462,7 @@ exports.GetClosingBlock = function(req, res) {
 
   })
 }
-exports.GetClosingHeaders = function(req, res) {
+exports.GetHeaders = function(req, res) {
   function removeDuplicates(arr) {
     let unique_array = []
     for (let i = 0; i < arr.length; i++) {
@@ -967,13 +1472,14 @@ exports.GetClosingHeaders = function(req, res) {
     }
     return unique_array
   }
+  var portfolioItemId = req.body.portfolioItemId;
   MongoClient.connect(URL, function(err, db) {
     if (err)
       throw err;
 
-    var collection = db.collection("closingCollection")
+    var collection = db.collection("uploadData")
 
-    collection.find().toArray(function(err, result) {
+    collection.find({portfolioItemId:portfolioItemId}).toArray(function(err, result) {
       var headerArr = [];
       for (var i = 0, len = result.length; i < len; i++) {
         headerArr.push(result[i]['Major Category'])

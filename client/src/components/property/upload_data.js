@@ -22,10 +22,13 @@ class UploadPopup extends Component {
   }
   fileUpload(file){
     var that = this;
-    const url = '/api/uploadClosingData/';
+    const url = '/api/updateNewExcel/';
     const formData = new FormData();
     formData.append('file',file);
     formData.append('userId',this.props.auth.user.id);
+    formData.append('portfolioId',this.props.portfolioId);
+    formData.append('portfolioItemId',this.props.portfolioItemId);
+    formData.append('filename',this.props.filename);
     const config = {
         headers: {
 

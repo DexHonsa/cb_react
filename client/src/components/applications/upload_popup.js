@@ -30,7 +30,7 @@ class UploadPopup extends Component {
 
     formData.append('file',file);
 
-    console.log(this.props.auth.user.id);
+    
     const config = {
         headers: {
 

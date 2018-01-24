@@ -15,12 +15,21 @@ class Main extends React.Component {
       headers:[],
       headersLoaded:false,
       propertyInfo:[{title:'',ImgUrl:''}],
+      portfolioId:this.props.portfolioId,
+      portfolioItemId:this.props.portfolioItemId,
       isLoading:true,
+      filename:''
     }
   }
   componentDidMount(){
     var that = this;
-    axios.post('/api/getClosingHeaders/').then(
+    var portfolioId = this.state.portfolioId;
+    var portfolioItemId = this.state.portfolioItemId;
+    var data = {
+      portfolioId:portfolioId,
+      portfolioItemId:portfolioItemId
+    }
+    axios.post('/api/getHeaders/', data).then(
       (res) => {
         console.log(res);
         that.setState({headers:res.data, headersLoaded:true});
@@ -45,8 +54,11 @@ class Main extends React.Component {
     });
 
 
-
-    axios.post('/api/getPropertyInfo/', { responseType: 'arraybuffer', userId:this.props.auth.user.id }).then(
+    axios.post('/api/getFilename',{portfolioItemId:this.state.portfolioItemId}).then(
+      (res) => {that.setState({filename:res.data.name})},
+      (err) => {console.log(err)}
+    );
+    axios.post('/api/getPropertyInfo/', { responseType: 'arraybuffer', userId:this.props.auth.user.id, portfolioItemId:this.state.portfolioItemId }).then(
       (res) => {
 
         that.setState({propertyInfo:res.data, isLoading:false});
@@ -55,8 +67,9 @@ class Main extends React.Component {
     )
   }
   downloadExcel(){
-    axios.post('/api/DownloadClosingExcel/', {} , { responseType: 'arraybuffer' }).then(
-      (res) => {FileDownload(res.data, 'ClosingExcel.xlsx')},
+    var that = this;
+    axios.post('/api/downloadNewExcel/', {userId:this.props.auth.user.id, portfolioId:this.state.portfolioId,filename:this.state.filename} , { responseType: 'arraybuffer' }).then(
+      (res) => {FileDownload(res.data, that.state.filename)},
       (err) => {}
     )
   }
@@ -77,13 +90,12 @@ class Main extends React.Component {
 
     var uploadPopup;
     if(this.state.uploadPopup){
-      uploadPopup = <UploadData hidePopup={this.showUploadPopup.bind(this)} closePopup={this.closeUploadPopup.bind(this)} />
+      uploadPopup = <UploadData portfolioId={this.state.portfolioId} portfolioItemId={this.state.portfolioItemId}  filename={this.state.filename} hidePopup={this.showUploadPopup.bind(this)} closePopup={this.closeUploadPopup.bind(this)} />
     }else{
       uploadPopup = null;
     }
     return (
     <div>
-
     {uploadPopup}
     <div className="side-stage">
     <div className="side-stage-top" style={{marginBottom:'25px'}}>
@@ -130,9 +142,9 @@ class Main extends React.Component {
       {!this.state.isLoading ? this.state.headers.map(function(data,i){
 
         if(i > 1){
-        return <DetailBlock key={i} mainCategory={data} />
+        return <DetailBlock portfolioItemId={this.state.portfolioItemId} key={i} mainCategory={data} />
       }
-    },this) : <div>NOT LOADED</div>
+    },this) : null
 
     }
 

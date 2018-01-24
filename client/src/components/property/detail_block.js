@@ -7,13 +7,14 @@ class DetailBlock extends Component {
     super(props);
     this.state = {
       blockDetails: [],
-      isLoading:true
+      isLoading:true,
+      portfolioItemId:this.props.portfolioItemId
     }
   }
   componentDidMount(){
     var that = this;
-    var data = {majorCategory:this.props.mainCategory}
-    axios.post('/api/getClosingBlock', data).then(
+    var data = {majorCategory:this.props.mainCategory, portfolioItemId:this.state.portfolioItemId}
+    axios.post('/api/getBlock', data).then(
       (res) => {
 
         that.setState({blockDetails:res.data,isLoading:false})
@@ -37,7 +38,7 @@ truncate(string){
         <div className="basic-detail-block-detail-container">
         {this.state.blockDetails.map(function(data,i){
           var hasSource = false;
-        
+
           if(data['Source File'] !== '--' && data['Source File'] != undefined){
             hasSource = true;
             var dataLink;

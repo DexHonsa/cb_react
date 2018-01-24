@@ -14,8 +14,9 @@ var workbook = new Excel.Workbook();
 var exphbs = require('express-handlebars');
 var nodemailer = require('nodemailer');
 //body parser middleware
-app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: false}));
+
 //view engine setup
 app.engine('handlebars', exphbs());
 app.set('view engine', 'handlebars');
@@ -131,8 +132,35 @@ app.post('/api/DownloadClosingExcel', function(req,res){
        }
    });
 })
-app.route('/api/getClosingBlock').post(api.GetClosingBlock);
-app.route('/api/getClosingHeaders').post(api.GetClosingHeaders);
+app.post('/api/downloadNewExcel', function(req,res){
+
+  var file = __dirname+'/uploads/'+req.body.userId+'/'+req.body.portfolioId+'/'+req.body.filename;
+
+  res.download(file, function (err) {
+       if (err) {
+           console.log("Error");
+           console.log(err);
+       } else {
+           console.log("Success");
+       }
+   });
+})
+app.post('/api/downloadTemplate', function(req,res){
+
+  var file = __dirname+'/CB_template.xlsx';
+  console.log(file);
+
+  res.download(file, function (err) {
+       if (err) {
+           console.log("Error");
+           console.log(err);
+       } else {
+           console.log("Success");
+       }
+   });
+})
+app.route('/api/getBlock').post(api.GetBlock);
+app.route('/api/getHeaders').post(api.GetHeaders);
 app.route('/api/getPropertyInfo').post(api.GetPropertyInfo);
 app.route('/api/addPortfolio').post(api.AddPortfolio);
 app.route('/api/getPortfolioItems').post(api.GetPortfolioItems);
@@ -147,7 +175,10 @@ app.route('/api/uploadPortfolioData').post(api.UploadPortfolioData);
 app.route('/api/importBasic').post(api.ImportBasic);
 app.route('/api/importTest').post(api.ImportTest);
 app.route('/api/importLoan').post(api.ImportLoan);
-
+app.route('/api/importNewExcel').post(api.ImportNewExcel);
+app.route('/api/getFilename').post(api.GetFilename);
+app.route('/api/deleteNewExcel').post(api.DeleteNewExcel);
+app.route('/api/updateNewExcel').post(api.UpdateNewExcel);
 
 var _ = require('lodash');
 var storage = multer.diskStorage({

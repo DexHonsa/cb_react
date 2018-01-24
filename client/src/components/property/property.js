@@ -11,6 +11,8 @@ class Property extends React.Component {
     super(props);
     this.state = {
       sideStage: 'main',
+      portfolioId:this.props.match.params.portfolioId,
+      portfolioItemId:this.props.match.params.id,
       activeClasses:[true,false,false,false,false]
     }
   }
@@ -36,7 +38,7 @@ class Property extends React.Component {
     const activeClasses = this.state.activeClasses.slice();
     var sideStage;
     if (this.state.sideStage == 'main') {
-      sideStage = <Main/>
+      sideStage = <Main portfolioId={this.state.portfolioId} portfolioItemId={this.state.portfolioItemId}/>
     }
     if (this.state.sideStage == 'loan') {
       sideStage = <Loan/>
@@ -63,18 +65,18 @@ class Property extends React.Component {
                       <li className={activeClasses[0]? "active" : "inactive"} onClick={() => this.changeStage("main")}>Asset</li>
 
 
-                      <li className={activeClasses[1]? "active" : "inactive"} onClick={() => this.changeStage("loan")}>Financing</li>
+                    {/*   <li className={activeClasses[1]? "active" : "inactive"} onClick={() => this.changeStage("loan")}>Financing</li>*/}
 
 
-                      <li className={activeClasses[2]? "active" : "inactive"} onClick={() => this.changeStage("asset_sum")}>Asset Summary</li>
+                       {/*<li className={activeClasses[2]? "active" : "inactive"} onClick={() => this.changeStage("asset_sum")}>Asset Summary</li>*/}
 
 
                     <div className="divider"/>
 
-                      <li className={activeClasses[3]? "active disabled" : "inactive disabled"} onClick={() => this.changeStage("visualize")}>Visualize</li>
+                       {/*<li className={activeClasses[3]? "active disabled" : "inactive disabled"} onClick={() => this.changeStage("visualize")}>Visualize</li>*/}
 
 
-                      <li className={activeClasses[4]? "active disabled" : "inactive disabled"} onClick={() => this.changeStage("exceptions")}>Exceptions</li>
+                      {/* <li className={activeClasses[4]? "active disabled" : "inactive disabled"} onClick={() => this.changeStage("exceptions")}>Exceptions</li>*/}
 
                     {/*					<a href="img/Sample Property Template.xlsx"><li>Main Template</li></a>*/}
                   </ul>

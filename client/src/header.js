@@ -53,7 +53,7 @@ class Header extends React.Component {
   jsUcfirst(string)
   {
     if(string !== undefined){
-      return string.charAt(0).toUpperCase() + string.slice(1);
+      return string.charAt(0) + string.slice(1);
     }
   }
   render(){

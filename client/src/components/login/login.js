@@ -124,7 +124,7 @@ class Login extends React.Component {
               <div className="row">
                 <div className="col-sm-6">
                   <div className="css-login-title">Login To CommonBrain</div>
-                  <div className="css-login-inputs">
+                  <div className="css-login-inputs"></form>
                     <div className="css-login-input-item">
                     <TextFieldGroup
 		                	field="username"
