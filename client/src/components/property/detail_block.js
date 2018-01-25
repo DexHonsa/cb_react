@@ -47,11 +47,14 @@ truncate(string){
           }
           var newDataValue = [];
           var value = data['Value'];
+          var dataTitle = data['Specific Category'];
           //console.log(typeof value)
           if(typeof value == 'string'){
             value = this.truncate(value);
           }
-          var dataTitle =  this.truncate(data['Specific Category']);
+          if(typeof data['Specific Category'] == 'string'){
+          dataTitle =  this.truncate(dataTitle);
+          }
 
           if(value !== undefined && value.toString().indexOf('T') > -1){
           newDataValue = value.split('T00');
