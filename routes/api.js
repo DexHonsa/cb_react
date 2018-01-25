@@ -95,8 +95,18 @@ var upload_applications = multer({
     }).single('file');
 
 var options = {
-  server: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } },
-  replset: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } }
+  server: {
+    socketOptions: {
+      keepAlive: 1,
+      connectTimeoutMS: 30000
+    }
+  },
+  replset: {
+    socketOptions: {
+      keepAlive: 1,
+      connectTimeoutMS: 30000
+    }
+  }
 };
 mongoose.connect('mongodb://iwantmoredexx:Awesomeo21!@cluster0-shard-00-00-l9gyz.mongodb.net:27017,cluster0-shard-00-01-l9gyz.mongodb.net:27017,cluster0-shard-00-02-l9gyz.mongodb.net:27017/commonbrain?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin', options);
 var db = mongoose.connection;
@@ -105,7 +115,7 @@ var ObjectId = require('mongodb').ObjectId;
 
 
 
-exports.ImportBasic = function(req,res){
+exports.ImportBasic_old = function(req,res){
   var storage = multer.diskStorage({
     destination: function(req, file, cb) {
       cb(null, './uploads/')
@@ -455,6 +465,140 @@ exports.ImportExcel = function(req, res) {
   })
 }
 
+exports.ImportBasic = function(req, res) {
+  var storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+      cb(null, './uploads/')
+    },
+    filename: function(req, file, cb) {
+      //var datetimestamp = Date.now();
+      cb(null, 'ImportBasic.xlsx')
+    }
+  });
+
+  var upload = multer({
+    storage: storage,
+    onError : function(err, next) {
+          console.log('error', err);
+          next(err);
+        }
+      }).single('file');
+
+  upload(req, res, function(err) {
+      var filename = req.file.filename;
+            //extract Data
+            var workbook = XLSX.readFile(req.file.path);
+            var sheet = JSON.parse(CircularJSON.stringify(workbook));
+            var titles = [];
+
+            var nameRangesRaw = sheet.Workbook.Names;
+            var nameRanges = {};
+            for (var i = 0, len = nameRangesRaw.length; i < len; i++) {
+              if(nameRangesRaw[i].Sheet != null && nameRangesRaw[i].Sheet == 0){
+
+              }else{
+                var refArr = nameRangesRaw[i].Ref.split("$");
+                if(sheet.Sheets.Sheet1[refArr[1] + refArr[2]] != null){
+                  nameRanges[nameRangesRaw[i].Name] = sheet.Sheets.Sheet1[refArr[1] + refArr[2]].w
+                }
+              }
+
+
+            }
+            var rows = {};
+            for (var i = 0, len = Object.keys(sheet.Sheets.Sheet1).length; i < len; i++) {
+              if (i > 1) {
+                var rowNumber = Object.keys(sheet.Sheets.Sheet1)[i].substr(1);
+
+                if (rows[rowNumber] == undefined) {
+                  rows[rowNumber] = {};
+                }
+
+                //
+                if(sheet.Sheets.Sheet1[Object.keys(sheet.Sheets.Sheet1)[i]].w != null){
+                  rows[rowNumber][Object.keys(sheet.Sheets.Sheet1)[i]] = sheet.Sheets.Sheet1[Object.keys(sheet.Sheets.Sheet1)[i]].w
+                }
+
+              }
+            }
+            var headers = [];
+            var arr = [];
+            for (var i = 0, len = Object.keys(rows["2"]).length; i < len; i++) {
+              headers.push(rows["2"][Object.keys(rows["2"])[i]]);
+            }
+            for (var i = 3, len = Object.keys(rows).length; i < len; i++) {
+              var rowObj = {};
+              var number = i.toString();
+              if(rows[number] != null){
+                for (var i2 = 0, len2 = Object.keys(rows[number]).length; i2 < len2; i2++) {
+                  var cell = Object.keys(rows[number])[i2];
+
+                  var letter = cell.charAt(0);
+                  var header;
+                  if (letter == 'A') {
+                    header = headers[0]
+                  }
+                  if (letter == 'B') {
+                    header = headers[1]
+                  }
+                  if (letter == 'C') {
+                    header = headers[2]
+                  }
+                  if (letter == 'D') {
+                    header = headers[3]
+                  }
+                  if (letter == 'E') {
+                    header = headers[4]
+                  }
+                  if (letter == 'F') {
+                    header = headers[5]
+                  }
+                  if (letter == 'G') {
+                    header = headers[6]
+                  }
+                  if (letter == 'H') {
+                    header = headers[7]
+                  }
+                  if (letter == 'I') {
+                    header = headers[8]
+                  }
+                  if (letter == 'J') {
+                    header = headers[9]
+                  }
+                  if (letter == 'K') {
+                    header = headers[10]
+                  }
+                  if (letter == 'L') {
+                    header = headers[11]
+                  }
+                  if (letter == 'M') {
+                    header = headers[12]
+                  }
+                  if (letter == 'N') {
+                    header = headers[13]
+                  }
+                  if (letter == 'O') {
+                    header = headers[14]
+                  }
+                  rowObj[header] = rows[number][Object.keys(rows[number])[i2]]
+                }
+              }
+
+              arr.push(rowObj);
+            }
+
+
+
+
+            res.json(arr);
+
+
+
+
+
+  });
+}
+
 exports.ImportNewExcel = function(req, res) {
   upload(req, res, function(err) {
     var userId = req.body.userId;
@@ -499,8 +643,9 @@ exports.ImportNewExcel = function(req, res) {
             for (var i = 0, len = nameRangesRaw.length; i < len; i++) {
               var refArr = nameRangesRaw[i].Ref.split("$");
 
-
+              if(sheet.Sheets.Sheet1[refArr[1] + refArr[2]] != null){
               nameRanges[nameRangesRaw[i].Name] = sheet.Sheets.Sheet1[refArr[1] + refArr[2]].w;
+            }
             }
             var rows = {};
             for (var i = 0, len = Object.keys(sheet.Sheets.Sheet1).length; i < len; i++) {
@@ -510,8 +655,9 @@ exports.ImportNewExcel = function(req, res) {
                 if (rows[rowNumber] == undefined) {
                   rows[rowNumber] = {};
                 }
-
+                if(sheet.Sheets.Sheet1[Object.keys(sheet.Sheets.Sheet1)[i]].w != null){
                 rows[rowNumber][Object.keys(sheet.Sheets.Sheet1)[i]] = sheet.Sheets.Sheet1[Object.keys(sheet.Sheets.Sheet1)[i]].w
+              }
               }
             }
             var headers = [];
@@ -526,6 +672,7 @@ exports.ImportNewExcel = function(req, res) {
                 portfolioItemId: portfolioItemId
               };
               var number = i.toString();
+                if(rows[number] != null){
               for (var i2 = 0, len2 = Object.keys(rows[number]).length; i2 < len2; i2++) {
                 var cell = Object.keys(rows[number])[i2];
 
@@ -578,6 +725,7 @@ exports.ImportNewExcel = function(req, res) {
                 }
                 rowObj[header] = rows[number][Object.keys(rows[number])[i2]]
               }
+            }
               arr.push(rowObj);
             }
             var basicDetailObj = {
@@ -639,8 +787,9 @@ exports.UpdateNewExcel = function(req, res) {
             for (var i = 0, len = nameRangesRaw.length; i < len; i++) {
               var refArr = nameRangesRaw[i].Ref.split("$");
 
-
+              if(sheet.Sheets.Sheet1[refArr[1] + refArr[2]] != null){
               nameRanges[nameRangesRaw[i].Name] = sheet.Sheets.Sheet1[refArr[1] + refArr[2]].w;
+              }
             }
             var rows = {};
             for (var i = 0, len = Object.keys(sheet.Sheets.Sheet1).length; i < len; i++) {
@@ -650,8 +799,9 @@ exports.UpdateNewExcel = function(req, res) {
                 if (rows[rowNumber] == undefined) {
                   rows[rowNumber] = {};
                 }
-
+                if(sheet.Sheets.Sheet1[Object.keys(sheet.Sheets.Sheet1)[i]].w != null){
                 rows[rowNumber][Object.keys(sheet.Sheets.Sheet1)[i]] = sheet.Sheets.Sheet1[Object.keys(sheet.Sheets.Sheet1)[i]].w
+              }
               }
             }
             var headers = [];
@@ -666,6 +816,7 @@ exports.UpdateNewExcel = function(req, res) {
                 portfolioItemId: portfolioItemId
               };
               var number = i.toString();
+              if(rows[number] != null){
               for (var i2 = 0, len2 = Object.keys(rows[number]).length; i2 < len2; i2++) {
                 var cell = Object.keys(rows[number])[i2];
 
@@ -718,6 +869,7 @@ exports.UpdateNewExcel = function(req, res) {
                 }
                 rowObj[header] = rows[number][Object.keys(rows[number])[i2]]
               }
+            }
               arr.push(rowObj);
             }
             var basicDetailObj = {
