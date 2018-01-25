@@ -734,6 +734,9 @@ exports.UpdateNewExcel = function(req, res) {
                 throw err;
               var portfolioItems = db.collection('portfolioItems');
               var collection = db.collection('uploadData');
+              var properties = db.collection('properties');
+              properties.remove({portfolioItemId:portfolioItemId});
+              properties.insert({basicDetailObj})
               collection.remove({portfolioItemId:portfolioItemId});
               portfolioItems.update({_id:ObjectId(portfolioItemId)},{$set:{lastUpdated:date}})
               collection.insert(arr);
