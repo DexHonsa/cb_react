@@ -44,7 +44,7 @@ truncate(string){
   render() {
     return (
       <div>
-        {this.state.ReactTooltip ? <div><ReactTooltip />WHHHYYYY</div> : null}
+        {this.state.ReactTooltip ? <ReactTooltip />: null}
       {this.state.isLoading ? <div className="loading-gif"><img src={require('../../img/loading2.gif')} /></div> : null}
       <div className="basic-detail-block animated-fast fadeIn">
         <div className="basic-detail-main-title">{this.props.mainCategory}</div>
