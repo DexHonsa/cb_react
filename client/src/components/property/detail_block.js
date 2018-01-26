@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import loadingGif from '../../img/loading2.gif';
+import ReactTooltip from 'react-tooltip';
 
 class DetailBlock extends Component {
   constructor(props){
@@ -8,7 +9,8 @@ class DetailBlock extends Component {
     this.state = {
       blockDetails: [],
       isLoading:true,
-      portfolioItemId:this.props.portfolioItemId
+      portfolioItemId:this.props.portfolioItemId,
+      ReactTooltip:false
     }
   }
   componentDidMount(){
@@ -20,6 +22,8 @@ class DetailBlock extends Component {
         that.setState({blockDetails:res.data,isLoading:false})
       }
     );
+
+
   }
 truncate(string){
      if (string.length > 25)
@@ -27,18 +31,32 @@ truncate(string){
      else
         return string;
   };
+  activateTooltip(){
+    //console.log('activated');
+    if(this.state.ReactTooltip == false){
+      this.setState({ReactTooltip:true})
+    }else{
+
+    }
+
+  }
 
   render() {
     return (
       <div>
+        {this.state.ReactTooltip ? <div><ReactTooltip />WHHHYYYY</div> : null}
       {this.state.isLoading ? <div className="loading-gif"><img src={require('../../img/loading2.gif')} /></div> : null}
       <div className="basic-detail-block animated-fast fadeIn">
         <div className="basic-detail-main-title">{this.props.mainCategory}</div>
 
         <div className="basic-detail-block-detail-container">
-        {this.state.blockDetails.map(function(data,i){
-          console.log('data_block');
+
+        {this.state.blockDetails.map(function(data,i, array){
+
+          //console.log(i, array.length);
+
           var hasSource = false;
+          var hasHover = false;
 
           if(data['Source File'] != '--' && data['Source File'] != undefined){
             hasSource = true;
@@ -47,6 +65,7 @@ truncate(string){
           }
           var newDataValue = [];
           var value = data['Value'];
+          var hoverMessage = data['Hover Message'];
           var dataTitle = data['Specific Category'];
           //console.log(typeof value)
           if(typeof value == 'string'){
@@ -61,14 +80,31 @@ truncate(string){
         }else{
           newDataValue[0] = value;
         }
+        if(data['Hover Message'] != null){
+          hasHover = true;
+        }else{
+          hoverMessage = null;
+        }
 
         if(newDataValue[0] == undefined){
           newDataValue[0] = '--';
         }
+        if((i+1) >= array.length){
+
+          this.activateTooltip();
+        }
           return (
+
             <div key={i} className="basic-detail-block-detail-item animated-fast fadeIn">
             <div className="basic-detail-block-title">{dataTitle}</div>
-            <div className="basic-detail-block-value">{hasSource ? <a target="_blank" href={dataLink}> {newDataValue[0]}</a> : newDataValue[0]}</div>
+
+
+
+              <div className="basic-detail-block-value" data-tip={hoverMessage}>
+                {hasSource ? <a target="_blank" href={dataLink}> {newDataValue[0]}</a> : newDataValue[0]}
+              </div>
+
+
           </div>
         );
         },this)}
