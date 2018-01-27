@@ -1915,7 +1915,7 @@ exports.GetHeaders = function(req, res) {
     return unique_array
   }
   var portfolioItemId = req.body.portfolioItemId;
-  console.log(portfolioItemId);
+
   MongoClient.connect(URL, function(err, db) {
     if (err)
       throw err;
@@ -1923,10 +1923,43 @@ exports.GetHeaders = function(req, res) {
     var collection = db.collection("uploadData")
 
     collection.find({portfolioItemId:portfolioItemId}).toArray(function(err, result) {
-      console.log(result);
+
       var headerArr = [];
       for (var i = 0, len = result.length; i < len; i++) {
         headerArr.push(result[i]['Major Category'])
+      }
+
+      if (err)
+        throw err;
+      res.json(removeDuplicates(headerArr));
+      //db.close();
+    })
+
+  })
+}
+exports.GetTabs = function(req, res) {
+  function removeDuplicates(arr) {
+    let unique_array = []
+    for (let i = 0; i < arr.length; i++) {
+      if (unique_array.indexOf(arr[i]) == -1) {
+        unique_array.push(arr[i])
+      }
+    }
+    return unique_array
+  }
+  var portfolioItemId = req.body.portfolioItemId;
+
+  MongoClient.connect(URL, function(err, db) {
+    if (err)
+      throw err;
+
+    var collection = db.collection("uploadData")
+
+    collection.find({portfolioItemId:portfolioItemId}).toArray(function(err, result) {
+
+      var headerArr = [];
+      for (var i = 0, len = result.length; i < len; i++) {
+        headerArr.push(result[i]['Tab Name'])
       }
 
       if (err)

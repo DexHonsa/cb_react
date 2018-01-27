@@ -85,6 +85,7 @@ app.post('/api/downloadTemplate', function(req,res){
 })
 app.route('/api/getBlock').post(api.GetBlock);
 app.route('/api/getHeaders').post(api.GetHeaders);
+app.route('/api/getTabs').post(api.GetTabs);
 app.route('/api/getPropertyInfo').post(api.GetPropertyInfo);
 app.route('/api/addPortfolio').post(api.AddPortfolio);
 app.route('/api/getPortfolioItems').post(api.GetPortfolioItems);

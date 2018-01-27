@@ -5,6 +5,8 @@ import UploadData from './upload_data';
 import loadingGif from '../../img/loading2.gif';
 import FileDownload from 'react-file-download';
 import {connect} from 'react-redux';
+import ReactTooltip from 'react-tooltip';
+import TabBlock from './tab_block';
 
 class Main extends React.Component {
   constructor(props){
@@ -13,7 +15,11 @@ class Main extends React.Component {
       isLoading:true,
       uploadPopup:false,
       headers:[],
+      tabs:[],
+      activeTabs:[true],
+      activeTabName:'',
       headersLoaded:false,
+      tabsLoaded:false,
       propertyInfo:[{title:'',ImgUrl:''}],
       portfolioId:this.props.portfolioId,
       portfolioItemId:this.props.portfolioItemId,
@@ -21,7 +27,32 @@ class Main extends React.Component {
       filename:''
     }
   }
+
+  activateTab(i){
+    var array = [];
+    array[i] = true;
+    var tabName = this.state.tabs[i];
+    this.setState({activeTabName:tabName, activeTabs:array})
+  }
   componentDidMount(){
+
+
+    this.getStuff();
+
+  }
+  componentDidUpdate(){
+    ReactTooltip.rebuild();
+
+  }
+  getStuff(){
+    var that = this;
+    this.setState({
+      isLoading:true,
+      uploadPopup:false,
+      propertyInfo:[{title:'',ImgUrl:''}],
+      isLoading:true,
+
+    });
     var that = this;
     var portfolioId = this.state.portfolioId;
     var portfolioItemId = this.state.portfolioItemId;
@@ -31,37 +62,29 @@ class Main extends React.Component {
     }
     axios.post('/api/getHeaders/', data).then(
       (res) => {
-        console.log('headers:' + res.data);
+
         that.setState({headers:res.data, headersLoaded:true});
       },
       (err) => {
-        console.log(err);
+
       }
     )
-  this.getStuff();
+    axios.post('/api/getTabs/', data).then(
+      (res) => {
 
-  }
-  getStuff(){
+        that.setState({activeTabName:res.data[0],tabs:res.data, tabsLoaded:true});
+      },
+      (err) => {
 
-    console.log('mounted');
-    var that = this;
-    this.setState({
-      isLoading:true,
-      uploadPopup:false,
-      propertyInfo:[{title:'',ImgUrl:''}],
-      isLoading:true,
-    });
-
-
+      }
+    )
     axios.post('/api/getFilename',{portfolioItemId:this.state.portfolioItemId}).then(
       (res) => {that.setState({filename:res.data.name})},
-      (err) => {console.log(err)}
+      (err) => {}
     );
     axios.post('/api/getPropertyInfo/', { responseType: 'arraybuffer', userId:this.props.auth.user.id, portfolioItemId:this.state.portfolioItemId }).then(
       (res) => {
-
         that.setState({propertyInfo:res.data, isLoading:false});
-
       }
     )
   }
@@ -85,8 +108,6 @@ class Main extends React.Component {
     this.getStuff();
   }
   render() {
-
-
     var uploadPopup;
     if(this.state.uploadPopup){
       uploadPopup = <UploadData portfolioId={this.state.portfolioId} portfolioItemId={this.state.portfolioItemId}  filename={this.state.filename} hidePopup={this.showUploadPopup.bind(this)} closePopup={this.closeUploadPopup.bind(this)} />
@@ -97,55 +118,30 @@ class Main extends React.Component {
     <div>
     {uploadPopup}
     <div className="side-stage">
-    <div className="side-stage-top" style={{marginBottom:'25px'}}>
-
-      <div className="add-new-project-btn" style={{right:'160px'}} onClick={this.showUploadPopup.bind(this)}>Upload</div>
-      <div className="add-new-project-btn" onClick={this.downloadExcel.bind(this)}>Download Excel</div>
-    </div>
-      <div className="property-main-title">{!this.state.isLoading && this.state.propertyInfo[0].title}</div>
       <div className="property-top-container">
-        <div className="property-img" style={!this.state.isLoading ? {backgroundImage:'url(' + this.state.propertyInfo[0].imgUrl + ')'} : {}} />
-        <div className="property-side-details">
-          <ul>
-            <li>
-              <div className="property-info-item">
-                <div className="property-info-title">Zoning Type</div>
-                <div className="property-info-value">IU-3: Unlimited Industrial District</div>
-              </div>
-            </li>
-            <li>
-              <div className="property-info-item">
-                <div className="property-info-title">Square Footage</div>
-                <div className="property-info-value"><span className="tooltip" title="Per Public Record">10,750 SF</span></div>
-              </div>
-            </li>
-            <li>
-              <div className="property-info-item">
-                <div className="property-info-title">Assessors Parcel #</div>
-                <div className="property-info-value">40-237229</div>
-              </div>
-            </li>
-            <li>
-              <div className="property-info-item">
-                <div className="property-info-title">Last Sale Date</div>
-                <div className="property-info-value">07/08/2016</div>
-              </div>
-            </li>
-            <li>
-              <div className="addition-data-source"><i className="fa-info-circle fa" /> Data above is sourced from API/public records.</div>
-            </li>
-          </ul>
+        <div className="property-img" style={!this.state.isLoading ? {backgroundImage:'url(' + this.state.propertyInfo[0].imgUrl + ')'} : {}} >
+          <div className="property-main-title">
+            {!this.state.isLoading && this.state.propertyInfo[0].title}
+            <div className="side-stage-top" >
+              <div className="download-btn" data-tip="Upload Excel" style={{right:'160px'}} onClick={this.showUploadPopup.bind(this)}><i className="fa fa-upload"></i></div>
+              <div className="download-btn" data-tip="Download Excel" onClick={this.downloadExcel.bind(this)}><i className="fa fa-download"></i></div>
+            </div>
+          </div>
         </div>
+        <div className="property-tab-container">
+          {this.state.tabs.map(function(data,i){
+            if(data != undefined){
+              return <div key={i} onClick={()=>this.activateTab(i)} className={this.state.activeTabs[i] ?"property-tab-item active" :"property-tab-item"}>{data}</div>
+            }
+
+          },this)}
+
+        </div>
+        {!this.state.isLoading && <TabBlock tabName={this.state.activeTabName} portfolioId={this.state.portfolioId} portfolioItemId={this.state.portfolioItemId} /> }
+
       </div>
-      {this.state.isLoading && <div className="loading-gif"><img src={loadingGif} /></div>}
-      {!this.state.isLoading ? this.state.headers.map(function(data,i){
 
-        if(i >= 0){
-        return <DetailBlock portfolioItemId={this.state.portfolioItemId} key={i} mainCategory={data} />
-        }
-    },this) : null
 
-    }
 
 
 

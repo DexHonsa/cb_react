@@ -85,8 +85,12 @@ hideAddPortfolio(){
               </div>
               <div className="col-sm-8">
                 <div className="side-stage">
-                  <div className="side-stage-title">My Portfolios</div>
-                  <div  onClick={this.showAddPortfolio.bind(this)} className="add-new-project-btn">+ Add New Portfolio</div>
+                  <div className="side-stage-title">My Portfolios
+                    <div className="button-container">
+                      <div  onClick={this.showAddPortfolio.bind(this)} className="add-new-project-btn">+ Add New Portfolio</div>
+                    </div>
+                  </div>
+
                   <div className="my-projects-tabs">
                     <div className="my-projects-tab active">Recent Portfolios</div>
                     <div className="my-projects-tab">All Portfolios</div>

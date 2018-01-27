@@ -88,7 +88,7 @@ class Portfolio extends React.Component {
     shareErrors:{},
     sharedUsers:[],
     sharedLoading:false})
-    
+
     var that = this;
     var portfolioId = this.props.match.params.portfolioId;
     axios.post('/api/getPortfolioInfo',{portfolioId:portfolioId}).then(function(res){
@@ -144,9 +144,14 @@ class Portfolio extends React.Component {
     </div>
     <div className="col-sm-8">
       <div className="side-stage">
-        <div className="side-stage-title">{this.state.isloaded ? this.state.portfolioInfo[0].portfolioName : <div className="loading-gif"><img src={require('../../img/loading2.gif')} /></div> }</div>
-        <div onClick={this.showDeletePopup.bind(this)} className="delete-portfolio-btn">Delete</div>
-        <div style={{right:'80px'}} onClick={this.showUploadPopup.bind(this)} className="add-new-project-btn">Upload File</div>
+        <div className="side-stage-title">
+          {this.state.isloaded ? this.state.portfolioInfo[0].portfolioName : <div className="loading-gif"><img src={require('../../img/loading2.gif')} /></div> }
+          <div className="button-container">
+            <div onClick={this.showDeletePopup.bind(this)} className="delete-portfolio-btn">Delete</div>
+            <div style={{right:'80px'}} onClick={this.showUploadPopup.bind(this)} className="add-new-project-btn">Upload File</div>
+          </div>
+        </div>
+
         <div className="my-projects-tabs">
           <div id="files_tab" onClick={() => this.changeTab('files')} className={this.state.activeClasses[0] ? 'my-projects-tab active' : 'my-projects-tab'}>Portfolio Files</div>
           <div id="files_tab" onClick={() => this.changeTab('sharing')} className={this.state.activeClasses[1] ? 'my-projects-tab active' : 'my-projects-tab'}>Sharing</div>

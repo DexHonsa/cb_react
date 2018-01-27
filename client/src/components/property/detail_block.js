@@ -9,8 +9,10 @@ class DetailBlock extends Component {
     this.state = {
       blockDetails: [],
       isLoading:true,
+      tabName:'',
       portfolioItemId:this.props.portfolioItemId,
-      ReactTooltip:false
+      ReactTooltip:false,
+      isVisible:false
     }
   }
   componentDidMount(){
@@ -18,13 +20,22 @@ class DetailBlock extends Component {
     var data = {majorCategory:this.props.mainCategory, portfolioItemId:this.state.portfolioItemId}
     axios.post('/api/getBlock', data).then(
       (res) => {
-
-        that.setState({blockDetails:res.data,isLoading:false})
+        that.setState({tabName:res.data[0]['Tab Name'],blockDetails:res.data,isLoading:false});
+        if(that.props.tabName == that.state.tabName){
+          that.setState({isVisible:true})
+        }
       }
     );
-
-
   }
+  componentWillReceiveProps(nextProps){
+    this.setState({
+      isVisible:false
+    })
+    if(nextProps.tabName == this.state.tabName){
+      this.setState({isVisible:true})
+    }
+  }
+
 truncate(string){
      if (string.length > 25)
         return string.substring(0,25)+'...';
@@ -36,28 +47,24 @@ truncate(string){
     if(this.state.ReactTooltip == false){
       this.setState({ReactTooltip:true})
     }else{
-
     }
-
   }
-
   render() {
     return (
-      <div>
-        {this.state.ReactTooltip ? <ReactTooltip />: null}
+      <div style={this.state.isVisible ? {display:'block'} : {display:'none'} }>
+        {this.state.ReactTooltip ? <ReactTooltip effect='solid' />: null}
       {this.state.isLoading ? <div className="loading-gif"><img src={require('../../img/loading2.gif')} /></div> : null}
       <div className="basic-detail-block animated-fast fadeIn">
         <div className="basic-detail-main-title">{this.props.mainCategory}</div>
 
         <div className="basic-detail-block-detail-container">
 
-        {this.state.blockDetails.map(function(data,i, array){
+        {this.state.blockDetails.map(function(data,i,array){
+          if(data['Tab Name'] == this.props.tabName){
 
-          //console.log(i, array.length);
 
           var hasSource = false;
           var hasHover = false;
-
           if(data['Source File'] != '--' && data['Source File'] != undefined){
             hasSource = true;
             var dataLink;
@@ -67,14 +74,12 @@ truncate(string){
           var value = data['Value'];
           var hoverMessage = data['Hover Message'];
           var dataTitle = data['Specific Category'];
-          //console.log(typeof value)
           if(typeof value == 'string'){
             value = this.truncate(value);
           }
           if(typeof data['Specific Category'] == 'string'){
           dataTitle =  this.truncate(dataTitle);
           }
-
           if(value !== undefined && value.toString().indexOf('T') > -1){
           newDataValue = value.split('T00');
         }else{
@@ -97,16 +102,12 @@ truncate(string){
 
             <div key={i} className="basic-detail-block-detail-item animated-fast fadeIn">
             <div className="basic-detail-block-title">{dataTitle}</div>
-
-
-
               <div className="basic-detail-block-value" data-tip={hoverMessage}>
                 {hasSource ? <a target="_blank" href={dataLink}> {newDataValue[0]}</a> : newDataValue[0]}
               </div>
-
-
           </div>
         );
+      }
         },this)}
 
         </div>
