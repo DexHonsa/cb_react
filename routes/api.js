@@ -737,8 +737,8 @@ exports.ImportNewExcel = function(req, res) {
               userId: userId,
               portfolioId: portfolioId,
               portfolioItemId:portfolioItemId,
-              title: nameRanges.Title,
-              imgUrl:nameRanges.ImgUrl
+              title: nameRanges.CBrainTitle,
+              imgUrl:nameRanges.CBrainImage
             }
 
 
@@ -882,8 +882,8 @@ exports.UpdateNewExcel = function(req, res) {
               userId: userId,
               portfolioId: portfolioId,
               portfolioItemId:portfolioItemId,
-              title: nameRanges.Title,
-              imgUrl:nameRanges.ImgUrl
+              title: nameRanges.CBrainTitle,
+              imgUrl:nameRanges.CBrainImage
             }
 
 
