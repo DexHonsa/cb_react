@@ -491,6 +491,7 @@ exports.ImportBasic = function(req, res) {
             var sheet = JSON.parse(CircularJSON.stringify(workbook));
             var titles = [];
 
+
             var nameRangesRaw = sheet.Workbook.Names;
             var nameRanges = {};
             for (var i = 0, len = nameRangesRaw.length; i < len; i++) {
@@ -498,25 +499,28 @@ exports.ImportBasic = function(req, res) {
 
               }else{
                 var refArr = nameRangesRaw[i].Ref.split("$");
-                if(sheet.Sheets.Sheet1[refArr[1] + refArr[2]] != null){
-                  nameRanges[nameRangesRaw[i].Name] = sheet.Sheets.Sheet1[refArr[1] + refArr[2]].w
+                var MainSheet = refArr[0];
+                MainSheet = MainSheet.substr(0,MainSheet.length - 1);
+                console.log(MainSheet);
+                if(sheet.Sheets[MainSheet][refArr[1] + refArr[2]] != null){
+                  nameRanges[nameRangesRaw[i].Name] = sheet.Sheets[MainSheet][refArr[1] + refArr[2]].w
                 }
               }
 
 
             }
             var rows = {};
-            for (var i = 0, len = Object.keys(sheet.Sheets.Sheet1).length; i < len; i++) {
+            for (var i = 0, len = Object.keys(sheet.Sheets[MainSheet]).length; i < len; i++) {
               if (i > 1) {
-                var rowNumber = Object.keys(sheet.Sheets.Sheet1)[i].substr(1);
+                var rowNumber = Object.keys(sheet.Sheets[MainSheet])[i].substr(1);
 
                 if (rows[rowNumber] == undefined) {
                   rows[rowNumber] = {};
                 }
 
                 //
-                if(sheet.Sheets.Sheet1[Object.keys(sheet.Sheets.Sheet1)[i]].w != null){
-                  rows[rowNumber][Object.keys(sheet.Sheets.Sheet1)[i]] = sheet.Sheets.Sheet1[Object.keys(sheet.Sheets.Sheet1)[i]].w
+                if(sheet.Sheets[MainSheet][Object.keys(sheet.Sheets[MainSheet])[i]].w != null){
+                  rows[rowNumber][Object.keys(sheet.Sheets[MainSheet])[i]] = sheet.Sheets[MainSheet][Object.keys(sheet.Sheets[MainSheet])[i]].w
                 }
 
               }
@@ -642,21 +646,22 @@ exports.ImportNewExcel = function(req, res) {
             var nameRanges = {};
             for (var i = 0, len = nameRangesRaw.length; i < len; i++) {
               var refArr = nameRangesRaw[i].Ref.split("$");
-
-              if(sheet.Sheets.Sheet1[refArr[1] + refArr[2]] != null){
-              nameRanges[nameRangesRaw[i].Name] = sheet.Sheets.Sheet1[refArr[1] + refArr[2]].w;
+              var MainSheet = refArr[0];
+              MainSheet = MainSheet.substr(0,MainSheet.length - 1);
+              if(sheet.Sheets[MainSheet][refArr[1] + refArr[2]] != null){
+              nameRanges[nameRangesRaw[i].Name] = sheet.Sheets[MainSheet][refArr[1] + refArr[2]].w;
             }
             }
             var rows = {};
-            for (var i = 0, len = Object.keys(sheet.Sheets.Sheet1).length; i < len; i++) {
+            for (var i = 0, len = Object.keys(sheet.Sheets[MainSheet]).length; i < len; i++) {
               if (i > 1) {
-                var rowNumber = Object.keys(sheet.Sheets.Sheet1)[i].substr(1);
+                var rowNumber = Object.keys(sheet.Sheets[MainSheet])[i].substr(1);
 
                 if (rows[rowNumber] == undefined) {
                   rows[rowNumber] = {};
                 }
-                if(sheet.Sheets.Sheet1[Object.keys(sheet.Sheets.Sheet1)[i]].w != null){
-                rows[rowNumber][Object.keys(sheet.Sheets.Sheet1)[i]] = sheet.Sheets.Sheet1[Object.keys(sheet.Sheets.Sheet1)[i]].w
+                if(sheet.Sheets[MainSheet][Object.keys(sheet.Sheets[MainSheet])[i]].w != null){
+                rows[rowNumber][Object.keys(sheet.Sheets[MainSheet])[i]] = sheet.Sheets[MainSheet][Object.keys(sheet.Sheets[MainSheet])[i]].w
               }
               }
             }
@@ -786,21 +791,22 @@ exports.UpdateNewExcel = function(req, res) {
             var nameRanges = {};
             for (var i = 0, len = nameRangesRaw.length; i < len; i++) {
               var refArr = nameRangesRaw[i].Ref.split("$");
-
-              if(sheet.Sheets.Sheet1[refArr[1] + refArr[2]] != null){
-              nameRanges[nameRangesRaw[i].Name] = sheet.Sheets.Sheet1[refArr[1] + refArr[2]].w;
+              var MainSheet = refArr[0];
+              MainSheet = MainSheet.substr(0,MainSheet.length - 1);
+              if(sheet.Sheets[MainSheet][refArr[1] + refArr[2]] != null){
+              nameRanges[nameRangesRaw[i].Name] = sheet.Sheets[MainSheet][refArr[1] + refArr[2]].w;
               }
             }
             var rows = {};
-            for (var i = 0, len = Object.keys(sheet.Sheets.Sheet1).length; i < len; i++) {
+            for (var i = 0, len = Object.keys(sheet.Sheets[MainSheet]).length; i < len; i++) {
               if (i > 1) {
-                var rowNumber = Object.keys(sheet.Sheets.Sheet1)[i].substr(1);
+                var rowNumber = Object.keys(sheet.Sheets[MainSheet])[i].substr(1);
 
                 if (rows[rowNumber] == undefined) {
                   rows[rowNumber] = {};
                 }
-                if(sheet.Sheets.Sheet1[Object.keys(sheet.Sheets.Sheet1)[i]].w != null){
-                rows[rowNumber][Object.keys(sheet.Sheets.Sheet1)[i]] = sheet.Sheets.Sheet1[Object.keys(sheet.Sheets.Sheet1)[i]].w
+                if(sheet.Sheets[MainSheet][Object.keys(sheet.Sheets[MainSheet])[i]].w != null){
+                rows[rowNumber][Object.keys(sheet.Sheets[MainSheet])[i]] = sheet.Sheets[MainSheet][Object.keys(sheet.Sheets[MainSheet])[i]].w
               }
               }
             }
@@ -1888,13 +1894,14 @@ exports.GetPropertyInfo = function(req,res){
 exports.GetBlock = function(req, res) {
   var majorCategory = req.body.majorCategory;
   var portfolioItemId = req.body.portfolioItemId;
+  var sheetName = req.body.activeSideTabName;
   MongoClient.connect(URL, function(err, db) {
     if (err)
       throw err;
 
     var collection = db.collection("uploadData")
 
-    collection.find({"Major Category": majorCategory, portfolioItemId:portfolioItemId}).toArray(function(err, result) {
+    collection.find({"Major Category": majorCategory, portfolioItemId:portfolioItemId, "Sheet Name":sheetName}).toArray(function(err, result) {
       if (err)
         throw err;
 
@@ -1915,14 +1922,14 @@ exports.GetHeaders = function(req, res) {
     return unique_array
   }
   var portfolioItemId = req.body.portfolioItemId;
-
+  var sheetName = req.body.activeSideTabName;
   MongoClient.connect(URL, function(err, db) {
     if (err)
       throw err;
 
     var collection = db.collection("uploadData")
 
-    collection.find({portfolioItemId:portfolioItemId}).toArray(function(err, result) {
+    collection.find({portfolioItemId:portfolioItemId,"Sheet Name": sheetName}).toArray(function(err, result) {
 
       var headerArr = [];
       for (var i = 0, len = result.length; i < len; i++) {
@@ -1948,6 +1955,39 @@ exports.GetTabs = function(req, res) {
     return unique_array
   }
   var portfolioItemId = req.body.portfolioItemId;
+  var sheetName = req.body.activeSideTabName;
+  MongoClient.connect(URL, function(err, db) {
+    if (err)
+      throw err;
+
+    var collection = db.collection("uploadData")
+
+    collection.find({portfolioItemId:portfolioItemId, "Sheet Name": sheetName}).toArray(function(err, result) {
+      console.log("Tabs " + sheetName);
+      var headerArr = [];
+      for (var i = 0, len = result.length; i < len; i++) {
+        headerArr.push(result[i]['Tab Name'])
+      }
+
+      if (err)
+        throw err;
+      res.json(removeDuplicates(headerArr));
+      //db.close();
+    })
+
+  })
+}
+exports.GetSideTabs = function(req, res) {
+  function removeDuplicates(arr) {
+    let unique_array = []
+    for (let i = 0; i < arr.length; i++) {
+      if (unique_array.indexOf(arr[i]) == -1) {
+        unique_array.push(arr[i])
+      }
+    }
+    return unique_array
+  }
+  var portfolioItemId = req.body.portfolioItemId;
 
   MongoClient.connect(URL, function(err, db) {
     if (err)
@@ -1959,7 +1999,7 @@ exports.GetTabs = function(req, res) {
 
       var headerArr = [];
       for (var i = 0, len = result.length; i < len; i++) {
-        headerArr.push(result[i]['Tab Name'])
+        headerArr.push(result[i]['Sheet Name'])
       }
 
       if (err)

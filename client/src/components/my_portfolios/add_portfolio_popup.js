@@ -18,7 +18,7 @@ onSubmit(){
   };
   var that = this;
   axios.post('/api/addPortfolio', data).then(
-  (res) => { that.props.hide(); console.log('res')},
+  (res) => { that.props.hide(); },
   (err) => console.log(err)
 );
 

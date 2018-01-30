@@ -40,7 +40,7 @@ class uploadItem extends Component {
 
 
      axios.post(url, formData, config).then(
-      (res) => {that.props.hide();console.log(res)},
+      (res) => {that.props.hide();},
       (err) => {
           console.log('an error has occured');
         if(err.data == undefined){

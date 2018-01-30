@@ -17,9 +17,14 @@ class DetailBlock extends Component {
   }
   componentDidMount(){
     var that = this;
-    var data = {majorCategory:this.props.mainCategory, portfolioItemId:this.state.portfolioItemId}
+    var data = {
+      activeSideTabName:this.props.activeSideTabName,
+      majorCategory:this.props.mainCategory,
+      portfolioItemId:this.state.portfolioItemId
+    }
     axios.post('/api/getBlock', data).then(
       (res) => {
+
         that.setState({tabName:res.data[0]['Tab Name'],blockDetails:res.data,isLoading:false});
         if(that.props.tabName == that.state.tabName){
           that.setState({isVisible:true})
@@ -43,7 +48,7 @@ truncate(string){
         return string;
   };
   activateTooltip(){
-    //console.log('activated');
+
     if(this.state.ReactTooltip == false){
       this.setState({ReactTooltip:true})
     }else{
@@ -54,7 +59,7 @@ truncate(string){
       <div style={this.state.isVisible ? {display:'block'} : {display:'none'} }>
         {this.state.ReactTooltip ? <ReactTooltip effect='solid' />: null}
       {this.state.isLoading ? <div className="loading-gif"><img src={require('../../img/loading2.gif')} /></div> : null}
-      <div className="basic-detail-block animated-fast fadeIn">
+      <div className="basic-detail-block">
         <div className="basic-detail-main-title">{this.props.mainCategory}</div>
 
         <div className="basic-detail-block-detail-container">
@@ -64,6 +69,8 @@ truncate(string){
 
 
           var hasSource = false;
+          var truncated = false;
+          var titleTruncated = false;
           var hasHover = false;
           if(data['Source File'] != '--' && data['Source File'] != undefined){
             hasSource = true;
@@ -74,8 +81,16 @@ truncate(string){
           var value = data['Value'];
           var hoverMessage = data['Hover Message'];
           var dataTitle = data['Specific Category'];
+
           if(typeof value == 'string'){
             value = this.truncate(value);
+            if(value.length > 25){
+              truncated = true;
+            }
+          }
+
+          if(dataTitle.length > 25){
+            titleTruncated = true;
           }
           if(typeof data['Specific Category'] == 'string'){
           dataTitle =  this.truncate(dataTitle);
@@ -88,7 +103,7 @@ truncate(string){
         if(data['Hover Message'] != null){
           hasHover = true;
         }else{
-          hoverMessage = null;
+          hoverMessage = '';
         }
 
         if(newDataValue[0] == undefined){
@@ -101,8 +116,8 @@ truncate(string){
           return (
 
             <div key={i} className="basic-detail-block-detail-item animated-fast fadeIn">
-            <div className="basic-detail-block-title">{dataTitle}</div>
-              <div className="basic-detail-block-value" data-tip={hoverMessage}>
+            <div className="basic-detail-block-title" data-tip={titleTruncated ? data['Specific Category'] : null}>{dataTitle}</div>
+              <div className="basic-detail-block-value" data-tip={truncated ? data['Value'] + "  " + hoverMessage : hoverMessage}>
                 {hasSource ? <a target="_blank" href={dataLink}> {newDataValue[0]}</a> : newDataValue[0]}
               </div>
           </div>

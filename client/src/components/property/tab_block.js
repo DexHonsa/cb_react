@@ -20,7 +20,8 @@ componentDidMount(){
   var portfolioItemId = this.state.portfolioItemId;
   var data = {
     portfolioId:portfolioId,
-    portfolioItemId:portfolioItemId
+    portfolioItemId:portfolioItemId,
+    activeSideTabName:this.props.activeSideTabName
   }
   axios.post('/api/getHeaders/', data).then(
     (res) => {
@@ -32,6 +33,7 @@ componentDidMount(){
   )
 }
 componentWillReceiveProps(nextprops){
+  this.setState({isLoading:true})
   this.componentDidMount();
 }
   render() {
@@ -41,7 +43,7 @@ componentWillReceiveProps(nextprops){
 
           if(i >= 0){
 
-          return <DetailBlock tabName={this.props.tabName} portfolioItemId={this.state.portfolioItemId} key={i} mainCategory={data} />
+          return <DetailBlock activeSideTabName={this.props.activeSideTabName} tabName={this.props.tabName} portfolioItemId={this.state.portfolioItemId} key={i} mainCategory={data} />
           }
         },this) : <div className="loading-gif"><img src={loadingGif} /></div>
 

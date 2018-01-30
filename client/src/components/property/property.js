@@ -5,6 +5,7 @@ import AssetSum from './asset_summary';
 import Visualize from './visualize';
 import Exceptions from './exceptions';
 import {NavLink} from 'react-router-dom';
+import axios from 'axios';
 
 class Property extends React.Component {
   constructor(props) {
@@ -13,45 +14,39 @@ class Property extends React.Component {
       sideStage: 'main',
       portfolioId:this.props.match.params.portfolioId,
       portfolioItemId:this.props.match.params.id,
-      activeClasses:[true,false,false,false,false]
+      activeTabIndex:0,
+      sideTabs:[],
+      activeSideTabName:null
     }
   }
-  changeStage(stage) {
+  changeStage(tabIndex) {
+    this.setState({activeTabIndex:tabIndex,activeSideTabName:this.state.sideTabs[tabIndex]})
+  }
+  componentDidMount(){
+
     var that = this;
-    if (stage == 'main') {
-      this.setState({sideStage: 'main',activeClasses:[true,false,false,false,false]})
+    var portfolioId = this.state.portfolioId;
+    var portfolioItemId = this.state.portfolioItemId;
+    var data = {
+      portfolioId:portfolioId,
+      portfolioItemId:portfolioItemId
     }
-    if (stage == 'loan') {
-      this.setState({sideStage: 'loan',activeClasses:[false,true,false,false,false]})
-    }
-    if (stage == 'asset_sum') {
-      this.setState({sideStage: 'asset_sum',activeClasses:[false,false,true,false,false]})
-    }
-    if (stage == 'visualize') {
-      this.setState({sideStage: 'visualize',activeClasses:[false,false,false,true,false]})
-    }
-    if (stage == 'exceptions') {
-      this.setState({sideStage: 'exceptions',activeClasses:[false,false,false,false,true]})
-    }
+    axios.post('/api/getSideTabs', data).then(
+      (res) => {
+        
+        that.setState({sideTabs:res.data, activeSideTabName:res.data[0]})
+        that.changeStage(0);
+      },
+      (err) => {console.log(err)}
+    )
   }
   render() {
-    const activeClasses = this.state.activeClasses.slice();
+
     var sideStage;
-    if (this.state.sideStage == 'main') {
-      sideStage = <Main portfolioId={this.state.portfolioId} portfolioItemId={this.state.portfolioItemId}/>
+    if (this.state.activeSideTabName) {
+      sideStage = <Main activeSideTabName={this.state.activeSideTabName} portfolioId={this.state.portfolioId} portfolioItemId={this.state.portfolioItemId}/>
     }
-    if (this.state.sideStage == 'loan') {
-      sideStage = <Loan/>
-    }
-    if (this.state.sideStage == 'asset_sum') {
-      sideStage = <AssetSum/>
-    }
-    if (this.state.sideStage == 'visualize') {
-      sideStage = <Visualize/>
-    }
-    if (this.state.sideStage == 'exceptions') {
-      sideStage = <Exceptions/>
-    }
+
     return (
       <div>
         <div className="main-stage">
@@ -61,24 +56,16 @@ class Property extends React.Component {
               <div className="col-sm-3">
                 <div className="side-nav">
                   <ul>
+                    {this.state.sideTabs.map(function(data, i){
+                      var active = false;
+                      if(this.state.activeTabIndex == i){
+                        active = true;
+                      }
+                      if(data != null){
+                        return <li key={i} className={active ? "active" : "inactive"} onClick={() => this.changeStage(i)}>{data}</li>
+                      }
+                    },this)}
 
-                      <li className={activeClasses[0]? "active" : "inactive"} onClick={() => this.changeStage("main")}>Asset</li>
-
-
-                    {/*   <li className={activeClasses[1]? "active" : "inactive"} onClick={() => this.changeStage("loan")}>Financing</li>*/}
-
-
-                       {/*<li className={activeClasses[2]? "active" : "inactive"} onClick={() => this.changeStage("asset_sum")}>Asset Summary</li>*/}
-
-
-                    <div className="divider"/>
-
-                       {/*<li className={activeClasses[3]? "active disabled" : "inactive disabled"} onClick={() => this.changeStage("visualize")}>Visualize</li>*/}
-
-
-                      {/* <li className={activeClasses[4]? "active disabled" : "inactive disabled"} onClick={() => this.changeStage("exceptions")}>Exceptions</li>*/}
-
-                    {/*					<a href="img/Sample Property Template.xlsx"><li>Main Template</li></a>*/}
                   </ul>
                 </div>
               </div>

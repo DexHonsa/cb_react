@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import DetailBlock from './detail_block';
+import $ from 'jquery';
 import axios from 'axios';
 import UploadData from './upload_data';
 import loadingGif from '../../img/loading2.gif';
@@ -24,7 +25,8 @@ class Main extends React.Component {
       portfolioId:this.props.portfolioId,
       portfolioItemId:this.props.portfolioItemId,
       isLoading:true,
-      filename:''
+      filename:'',
+      topTitleVisible:true
     }
   }
 
@@ -35,30 +37,30 @@ class Main extends React.Component {
     this.setState({activeTabName:tabName, activeTabs:array})
   }
   componentDidMount(){
-
-
     this.getStuff();
+    $(window).scroll(function () {
+      
+			var scroll = $(window).scrollTop();
 
+			if(scroll > 50){
+				$('.fixed-address-bar').show().removeClass('fadeOutUp').addClass('fadeInDown');
+			}else{
+				$('.fixed-address-bar').removeClass('fadeInDown').addClass('fadeOutUp');
+			}
+		});
   }
   componentDidUpdate(){
     ReactTooltip.rebuild();
-
   }
-  getStuff(){
-    var that = this;
-    this.setState({
-      isLoading:true,
-      uploadPopup:false,
-      propertyInfo:[{title:'',ImgUrl:''}],
-      isLoading:true,
-
-    });
+  componentWillReceiveProps(nextProps){
+    this.setState({tabsLoaded:false})
     var that = this;
     var portfolioId = this.state.portfolioId;
     var portfolioItemId = this.state.portfolioItemId;
     var data = {
       portfolioId:portfolioId,
-      portfolioItemId:portfolioItemId
+      portfolioItemId:portfolioItemId,
+      activeSideTabName:nextProps.activeSideTabName,
     }
     axios.post('/api/getHeaders/', data).then(
       (res) => {
@@ -66,16 +68,44 @@ class Main extends React.Component {
         that.setState({headers:res.data, headersLoaded:true});
       },
       (err) => {
-
       }
     )
     axios.post('/api/getTabs/', data).then(
       (res) => {
-
         that.setState({activeTabName:res.data[0],tabs:res.data, tabsLoaded:true});
       },
       (err) => {
+      }
+    )
+  }
+  getStuff(){
+    this.setState({
+      isLoading:true,
+      uploadPopup:false,
+      propertyInfo:[{title:'',ImgUrl:''}],
+      isLoading:true,
+    });
+    var that = this;
+    var portfolioId = this.state.portfolioId;
+    var portfolioItemId = this.state.portfolioItemId;
+    var data = {
+      portfolioId:portfolioId,
+      portfolioItemId:portfolioItemId,
+      activeSideTabName:this.props.activeSideTabName,
+    }
+    axios.post('/api/getHeaders/', data).then(
+      (res) => {
 
+        that.setState({headers:res.data, headersLoaded:true});
+      },
+      (err) => {
+      }
+    )
+    axios.post('/api/getTabs/', data).then(
+      (res) => {
+        that.setState({activeTabName:res.data[0],tabs:res.data, tabsLoaded:true});
+      },
+      (err) => {
       }
     )
     axios.post('/api/getFilename',{portfolioItemId:this.state.portfolioItemId}).then(
@@ -118,6 +148,11 @@ class Main extends React.Component {
     <div>
     {uploadPopup}
     <div className="side-stage">
+      {this.state.topTitleVisible ? <div className="fixed-address-bar animated " style={{display: 'none', opacity: 0}}>
+        <div className="container" style={{display: 'flex', alignItems: 'center'}}>{this.state.propertyInfo[0].title}
+        </div>
+      </div>
+       : null}
       <div className="property-top-container">
         <div className="property-img" style={!this.state.isLoading ? {backgroundImage:'url(' + this.state.propertyInfo[0].imgUrl + ')'} : {}} >
           <div className="property-main-title">
@@ -129,7 +164,7 @@ class Main extends React.Component {
           </div>
         </div>
         <div className="property-tab-container">
-          {this.state.tabs.map(function(data,i){
+          {this.state.tabsLoaded && this.state.tabs.map(function(data,i){
             if(data != undefined){
               return <div key={i} onClick={()=>this.activateTab(i)} className={this.state.activeTabs[i] ?"property-tab-item active" :"property-tab-item"}>{data}</div>
             }
@@ -137,7 +172,7 @@ class Main extends React.Component {
           },this)}
 
         </div>
-        {!this.state.isLoading && <TabBlock tabName={this.state.activeTabName} portfolioId={this.state.portfolioId} portfolioItemId={this.state.portfolioItemId} /> }
+        {!this.state.isLoading && <TabBlock activeSideTabName={this.props.activeSideTabName} tabName={this.state.activeTabName} portfolioId={this.state.portfolioId} portfolioItemId={this.state.portfolioItemId} /> }
 
       </div>
 
