@@ -47,7 +47,7 @@ class Login extends React.Component {
 			e.preventDefault();
 			 this.setState({errors: {}, isLoading: true});
 			this.props.userLogin(this.state).then(
-				(res) => this.context.router.history.push('/product/dashboard'),
+				(res) => this.context.router.history.push('/product/my-portfolios'),
 				(err) => {
             console.log('an error has occured');
           if(err.data === undefined){
