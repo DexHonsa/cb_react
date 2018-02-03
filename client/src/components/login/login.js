@@ -1,22 +1,15 @@
 import React from 'react';
-import $ from 'jquery';
-import {Link} from 'react-router-dom';
 import TextFieldGroup from './text_field_group';
-import axios from 'axios';
 import validateInput from '../validations/signin_validation';
-import {createBrowserHistory } from 'history';
+
 import PropTypes from "prop-types";
 import {connect} from 'react-redux';
 import { userLogin } from '../../actions/auth_actions';
 import SignUpPopup from './sign_up_popup.js';
-import logo_grey from '../../img/logo_grey.png';
 import logo_color from '../../img/logo_color_with_line.png';
-import computer from '../../img/computer.png';
 import logo_white from '../../img/logo_white.png';
 
 
-
-const browserHistory = createBrowserHistory();
 
 class Login extends React.Component {
   static contextTypes = {
@@ -51,17 +44,13 @@ class Login extends React.Component {
 	}
 	onSubmit(e){
 		if(this.isValid()){
-			var data = this.state;
-			var that = this;
-
-
 			e.preventDefault();
 			 this.setState({errors: {}, isLoading: true});
 			this.props.userLogin(this.state).then(
 				(res) => this.context.router.history.push('/product/dashboard'),
 				(err) => {
             console.log('an error has occured');
-          if(err.data == undefined){
+          if(err.data === undefined){
 
             return this.setState({errors: err.response.data.errors, isLoading: false});
           }else{
@@ -79,7 +68,7 @@ class Login extends React.Component {
     })
   }
   render() {
-    const {username, password, errors, isLoading} = this.state;
+    const {username, password, errors} = this.state;
     var signupPopup;
     if(this.state.signupPopup){
       signupPopup = <SignUpPopup hidePopup={this.showSignupPopup.bind(this)}/>
@@ -94,12 +83,9 @@ class Login extends React.Component {
           <div className="css-main-nav">
             <div className="container">
               <div className="css-logo">
-                <img src={logo_white} alt/>
+                <img src={logo_white} alt=""/>
               </div>
-              <ul className="css-nav-list">
-                <li className="css-services-btn">Services</li>
-                <li className="css-aboutus-btn">About Us</li>
-              </ul>
+
               <ul className="css-login-list">
 
                   <li>Login</li>
@@ -124,6 +110,7 @@ class Login extends React.Component {
               <div className="row">
                 <div className="col-sm-6">
                   <div className="css-login-title">Login To CommonBrain</div>
+                  <form onSubmit={this.onSubmit.bind(this)}>
                   <div className="css-login-inputs">
                     <div className="css-login-input-item">
                     <TextFieldGroup
@@ -142,7 +129,6 @@ class Login extends React.Component {
                         field="password"
                         label="password"
                         type="password"
-
                         value={password}
                         error={errors.password}
                         onChange={this.onChange}
@@ -150,16 +136,16 @@ class Login extends React.Component {
                     </div>
                     <div className="css-error-msg">Your Informarion Is Incorrect</div>
                     {errors.form && <div className=" alert-danger animated fadeIn">{errors.form}</div>}
-                    <div onClick={this.onSubmit} className="css-login-btn">Login</div>
+                    <button type="submit" className="css-login-btn">Login</button>
                   </div>
-
+                  </form>
                 </div>
                 <div className="col-sm-6" style={{
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center'
                 }}>
-                  <div className="css-main-logo-container wow animated fadeInUp"><img src={logo_color} alt/></div>
+                  <div className="css-main-logo-container wow animated fadeInUp"><img src={logo_color} alt=""/></div>
                 </div>
               </div>
             </div>

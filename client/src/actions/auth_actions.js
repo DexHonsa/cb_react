@@ -2,12 +2,9 @@
  import setAuthorizationToken from '../utils/set_authorization_token';
  import { SET_CURRENT_USER } from './types';
  import jwtDecode from 'jwt-decode';
-import {createBrowserHistory } from 'history';
-import PropTypes from "prop-types";
-import { push, routeActions } from 'react-router-redux';
 import history from './history';
 
-const browserHistory = createBrowserHistory();
+
 
 
 

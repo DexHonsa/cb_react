@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import axios, { post } from 'axios';
+import axios from 'axios';
 import {connect} from 'react-redux';
 import PropTypes from "prop-types";
-import {createBrowserHistory } from 'history';
-const browserHistory = createBrowserHistory();
+
 
 class DeletePortfolio extends Component {
   static contextTypes = {

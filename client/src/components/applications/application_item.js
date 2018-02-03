@@ -15,19 +15,19 @@ class ApplicationItem extends Component {
 
   render() {
     var riskScore;
-    if(0 <= parseInt(this.props.riskScore)){
+    if(0 <= parseInt(this.props.riskScore,10)){
       riskScore = "low"
     }
-    if(40 <= parseInt(this.props.riskScore)){
+    if(40 <= parseInt(this.props.riskScore,10)){
       riskScore = "med-low"
     }
-    if(80 <= parseInt(this.props.riskScore)){
+    if(80 <= parseInt(this.props.riskScore,10)){
       riskScore = "med"
     }
-    if(120 <= parseInt(this.props.riskScore)){
+    if(120 <= parseInt(this.props.riskScore,10)){
       riskScore = "med-high"
     }
-    if(160 <= parseInt(this.props.riskScore)){
+    if(160 <= parseInt(this.props.riskScore,10)){
       riskScore = "high"
     }
 

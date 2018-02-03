@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
-import logo_color from '../../img/logo_color_with_line.png';
-import onClickOutside from "react-onclickoutside";
+
+
 import validateInput from '../validations/signup_validation';
 import TextFieldGroup from './signup_text_field_group';
 import {connect} from 'react-redux';
 import { userSignup } from '../../actions/auth_actions';
-import {createBrowserHistory } from 'history';
-const browserHistory = createBrowserHistory();
+
+
 import PropTypes from "prop-types";
 
 class SignUpPopup extends Component {
@@ -45,8 +45,8 @@ class SignUpPopup extends Component {
 	}
   onSubmit(e){
 		if(this.isValid()){
-			var data = this.state;
-			var that = this;
+
+
 
 			e.preventDefault();
 			 this.setState({errors: {}, isLoading: true});
@@ -90,9 +90,7 @@ class SignUpPopup extends Component {
                 <div className="popup-top">Sign Up to Commonbrain
                   <i className="fa fa-times" onClick={this.props.hidePopup}/></div>
                 <div className="popup-content">
-                  <div className="sign-up-logo">
-                    <img src={logo_color} alt/>
-                  </div>
+
                   <div className="sign-up-input-item2">
                     <div className="sign-up-input-label">Username</div>
                     <TextFieldGroup

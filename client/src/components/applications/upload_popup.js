@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import axios, { post } from 'axios';
+import axios from 'axios';
 import {connect} from 'react-redux';
 
 
@@ -24,13 +24,13 @@ class UploadPopup extends Component {
     this.setState({file:e.target.files[0]})
   }
   fileUpload(file){
-    var that = this;
+
     const url = '/api/import/';
     const formData = new FormData();
 
     formData.append('file',file);
 
-    
+
     const config = {
         headers: {
 

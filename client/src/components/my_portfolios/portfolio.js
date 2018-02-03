@@ -25,11 +25,11 @@ class Portfolio extends React.Component {
     }
   }
   changeTab(tab) {
-    var that = this;
-    if (tab == 'files') {
+
+    if (tab === 'files') {
       this.setState({sideStage: 'files',activeClasses:[true,false]})
     }
-    if (tab == 'sharing') {
+    if (tab === 'sharing') {
       this.setState({sideStage: 'sharing',activeClasses:[false,true]})
       this.getSharedUsers();
     }
@@ -145,7 +145,7 @@ class Portfolio extends React.Component {
     <div className="col-sm-8">
       <div className="side-stage">
         <div className="side-stage-title">
-          {this.state.isloaded ? this.state.portfolioInfo[0].portfolioName : <div className="loading-gif"><img src={require('../../img/loading2.gif')} /></div> }
+          {this.state.isloaded ? this.state.portfolioInfo[0].portfolioName : <div className="loading-gif"><img alt="" src={require('../../img/loading2.gif')} /></div> }
           <div className="button-container">
             <div onClick={this.showDeletePopup.bind(this)} className="delete-portfolio-btn">Delete</div>
             <div style={{right:'80px'}} onClick={this.showUploadPopup.bind(this)} className="add-new-project-btn">Upload File</div>
@@ -164,10 +164,10 @@ class Portfolio extends React.Component {
 
             <div className="file-item-header">Last Modified</div>
           </div>
-          {this.state.isLoading ? <div className="loading-gif"><img src={require('../../img/loading2.gif')} /></div> : null}
+          {this.state.isLoading ? <div className="loading-gif"><img alt="" src={require('../../img/loading2.gif')} /></div> : null}
           {this.state.items.map(function(data, i){
             var to = "/product/my-portfolios/" + this.props.match.params.portfolioId + "/" + data._id;
-            if(data.portfolioId == "5a4e8fa6af759d39a4834553"){
+            if(data.portfolioId === "5a4e8fa6af759d39a4834553"){
               to = "/product/model_homes";
             }
             return (
@@ -186,14 +186,14 @@ class Portfolio extends React.Component {
     {this.state.activeClasses[1] && (
     <div id="files">
 
-      {this.state.isLoading ? <div className="loading-gif"><img src={require('../../img/loading2.gif')} /></div> : null}
+      {this.state.isLoading ? <div className="loading-gif"><img alt="" src={require('../../img/loading2.gif')} /></div> : null}
       <div className="sharing-add-email animated-fast fadeIn">
         <input onChange={this.onChange.bind(this)} placeholder="Username or Email" type="text" />
         <div className="sharing-add-email-btn" onClick={this.shareSubmit.bind(this)}>Share</div>
       </div>
       {shareErrors.form && <div style={{marginTop:'15px'}} className=" alert-danger animated fadeIn">{shareErrors.form}</div>}
       <div className="sharing-list animated-fast fadeIn">
-        {this.state.sharedLoading ? <div className="loading-gif"><img src={require('../../img/loading2.gif')} /></div> : this.state.sharedUsers.map(function(data,i){
+        {this.state.sharedLoading ? <div className="loading-gif"><img alt="" src={require('../../img/loading2.gif')} /></div> : this.state.sharedUsers.map(function(data,i){
 
           return (
             <div className="shared-user-item animated-fast fadeIn" key={i}>

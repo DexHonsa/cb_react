@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import axios, { post } from 'axios';
+import axios from 'axios';
 import {connect} from 'react-redux';
 
 class uploadItem extends Component {
@@ -43,7 +43,7 @@ class uploadItem extends Component {
       (res) => {that.props.hide();},
       (err) => {
           console.log('an error has occured');
-        if(err.data == undefined){
+        if(err.data === undefined){
           return this.setState({errors: err.response.data.errors, isLoading: false});
         }else{
           return this.setState({errors: err.data.errors, isLoading: false});

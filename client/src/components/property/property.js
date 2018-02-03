@@ -1,10 +1,5 @@
 import React from 'react';
 import Main from './main.js';
-import Loan from './loan';
-import AssetSum from './asset_summary';
-import Visualize from './visualize';
-import Exceptions from './exceptions';
-import {NavLink} from 'react-router-dom';
 import axios from 'axios';
 
 class Property extends React.Component {
@@ -33,7 +28,7 @@ class Property extends React.Component {
     }
     axios.post('/api/getSideTabs', data).then(
       (res) => {
-        
+
         that.setState({sideTabs:res.data, activeSideTabName:res.data[0]})
         that.changeStage(0);
       },
@@ -58,12 +53,13 @@ class Property extends React.Component {
                   <ul>
                     {this.state.sideTabs.map(function(data, i){
                       var active = false;
-                      if(this.state.activeTabIndex == i){
+                      if(this.state.activeTabIndex === i){
                         active = true;
                       }
                       if(data != null){
                         return <li key={i} className={active ? "active" : "inactive"} onClick={() => this.changeStage(i)}>{data}</li>
                       }
+                      return '';
                     },this)}
 
                   </ul>

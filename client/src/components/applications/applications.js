@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import PropTypes from 'prop-types';
+import React from 'react';
+
 import {Bar, Scatter, Pie} from 'react-chartjs-2';
 import ApplicationItem from './application_item';
 import axios from 'axios';
@@ -45,12 +45,13 @@ filterApplications(event){
   this.setState({applicationTypeDropdown: event.target.value});
   var arr = [];
   this.state.applications.map(function(data, i ){
-      if(data.applicationType == event.target.value){
-        arr.push(data);
+      if(data.applicationType === event.target.value){
+        return arr.push(data);
       }
+      return '';
   },this)
 
-  if(event.target.value == 'All Applications'){
+  if(event.target.value === 'All Applications'){
     arr = this.state.applications;
   }
 
@@ -63,8 +64,8 @@ filterApplications(event){
 }
 
   changeTab(tab){
-    if(tab == '1'){
-      if(this.state.tab == '1'){
+    if(tab === '1'){
+      if(this.state.tab === '1'){
 
       }else{
         this.setState({
@@ -75,7 +76,7 @@ filterApplications(event){
       }
 
     }else{
-      if(this.state.tab == '2'){
+      if(this.state.tab === '2'){
 
       }else{
         this.setState({
@@ -92,26 +93,6 @@ filterApplications(event){
   render() {
     const activeClasses = this.state.activeClasses.slice();
     var BarArray = [0,0,0,0,0];
-
-
-    var barArrayData = this.state.applications.map(function(data,i){
-        if(0 <= parseInt(data.riskScore) && 40 > parseInt(data.riskScore)){
-          BarArray[0] = BarArray[0] + 1
-        }
-        if(40 <= parseInt(data.riskScore) && 80 > parseInt(data.riskScore)){
-          BarArray[1] = BarArray[1] + 1
-        }
-        if(80 <= parseInt(data.riskScore) && 120 > parseInt(data.riskScore)){
-          BarArray[2] = BarArray[2] + 1
-        }
-        if(120 <= parseInt(data.riskScore) && 160 > parseInt(data.riskScore)){
-          BarArray[3] = BarArray[3] + 1
-        }
-        if(160 <= parseInt(data.riskScore) && 200 >= parseInt(data.riskScore)){
-          BarArray[4] = BarArray[4] + 1
-        }
-
-    },this);
 
 
     var barData = {
@@ -131,22 +112,22 @@ filterApplications(event){
 				tooltips: {
 						callbacks: {
 						  label: function(tooltipItem, data) {
-							var datasetLabel = data.datasets[tooltipItem.datasetIndex].label || 'Balh';
+
 							var label = data.labels[tooltipItem.index];
 
-							  if(tooltipItem.index == 0){
+							  if(tooltipItem.index === 0){
 								  return label + ': ' + data.datasets[0].data[tooltipItem.index] + ' (0-40)';
 							  }
-							  if(tooltipItem.index == 1){
+							  if(tooltipItem.index === 1){
 								  return label + ': ' + data.datasets[0].data[tooltipItem.index] + ' (40-80)';
 							  }
-							  if(tooltipItem.index == 2){
+							  if(tooltipItem.index === 2){
 								  return label + ': ' + data.datasets[0].data[tooltipItem.index] + ' (80-120)';
 							  }
-							  if(tooltipItem.index == 3){
+							  if(tooltipItem.index === 3){
 								  return label + ': ' + data.datasets[0].data[tooltipItem.index] + ' (120-160)';
 							  }
-							  if(tooltipItem.index == 4){
+							  if(tooltipItem.index === 4){
 								  return label + ': ' + data.datasets[0].data[tooltipItem.index] + ' (160-200)';
 							  }
 
@@ -196,7 +177,7 @@ filterApplications(event){
 				tooltips: {
 						callbacks: {
 						  label: function(tooltipItem, data) {
-							var datasetLabel = data.datasets[tooltipItem.datasetIndex].label || 'Other';
+
 							var label = data.labels[tooltipItem.index];
 
 							return label + ': ' + data.datasets[0].data[tooltipItem.index] + '%';
@@ -211,29 +192,7 @@ filterApplications(event){
     var scatterNameArray = [];
     var scatterColorArray = [];
 
-    var scatterDataArray = this.state.applications.map(function(data,i){
-        scatterNameArray.push(data.applicationName)
-        scatterArray.push({
-          x:data.riskScore,
-          y: (data.compliancyPercentage*100)
-        })
-        if(0 <= parseInt(data.riskScore) && 40 > parseInt(data.riskScore)){
-          scatterColorArray.push('#66d18f')
-        }
-        if(40 <= parseInt(data.riskScore) && 80 > parseInt(data.riskScore)){
-          scatterColorArray.push('#baf06b')
-        }
-        if(80 <= parseInt(data.riskScore) && 120 > parseInt(data.riskScore)){
-          scatterColorArray.push('#ebf06b')
-        }
-        if(120 <= parseInt(data.riskScore) && 160 > parseInt(data.riskScore)){
-          scatterColorArray.push('#ffa600')
-        }
-        if(160 <= parseInt(data.riskScore) && 200 >= parseInt(data.riskScore)){
-          scatterColorArray.push('#fe4848')
-        }
 
-    },this);
 
     var scatterData = {
 				labels:scatterNameArray,
@@ -411,7 +370,7 @@ filterApplications(event){
                   {
                     this.state.filteredApplications.map(function(data, i){
                         return <ApplicationItem
-                          applicationName = {data.applicationName}
+                          applicationName={data.applicationName}
                           riskScore={data.riskScore}
                           expiration={data.expiration}
                           seats={data.numberOfSeats}

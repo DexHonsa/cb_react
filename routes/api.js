@@ -97,13 +97,13 @@ var upload_applications = multer({
 var options = {
   server: {
     socketOptions: {
-      keepAlive: 1,
+      //keepAlive: 1,
       //connectTimeoutMS: 30000
     }
   },
   replset: {
     socketOptions: {
-      keepAlive: 1,
+      //keepAlive: 1,
       //connectTimeoutMS: 30000
     }
   }
@@ -1395,7 +1395,6 @@ exports.DeleteNewExcel = function(req,res){
   })
 }
 exports.DownloadNewExcel = function(req,res){
-
   var file = __dirname+'/uploads/'+req.body.userId+'/'+req.body.portfolioId+'/'+req.body.filename;
   res.download(file);
 }

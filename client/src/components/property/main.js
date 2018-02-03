@@ -1,9 +1,7 @@
-import React, { Component } from 'react';
-import DetailBlock from './detail_block';
+import React from 'react';
 import $ from 'jquery';
 import axios from 'axios';
 import UploadData from './upload_data';
-import loadingGif from '../../img/loading2.gif';
 import FileDownload from 'react-file-download';
 import {connect} from 'react-redux';
 import ReactTooltip from 'react-tooltip';
@@ -24,7 +22,6 @@ class Main extends React.Component {
       propertyInfo:[{title:'',ImgUrl:''}],
       portfolioId:this.props.portfolioId,
       portfolioItemId:this.props.portfolioItemId,
-      isLoading:true,
       filename:'',
       topTitleVisible:true
     }
@@ -39,9 +36,7 @@ class Main extends React.Component {
   componentDidMount(){
     this.getStuff();
     $(window).scroll(function () {
-      
 			var scroll = $(window).scrollTop();
-
 			if(scroll > 50){
 				$('.fixed-address-bar').show().removeClass('fadeOutUp').addClass('fadeInDown');
 			}else{
@@ -53,7 +48,7 @@ class Main extends React.Component {
     ReactTooltip.rebuild();
   }
   componentWillReceiveProps(nextProps){
-    this.setState({tabsLoaded:false})
+    this.setState({tabsLoaded:false,headers:[]})
     var that = this;
     var portfolioId = this.state.portfolioId;
     var portfolioItemId = this.state.portfolioItemId;
@@ -64,7 +59,6 @@ class Main extends React.Component {
     }
     axios.post('/api/getHeaders/', data).then(
       (res) => {
-
         that.setState({headers:res.data, headersLoaded:true});
       },
       (err) => {
@@ -83,7 +77,7 @@ class Main extends React.Component {
       isLoading:true,
       uploadPopup:false,
       propertyInfo:[{title:'',ImgUrl:''}],
-      isLoading:true,
+
     });
     var that = this;
     var portfolioId = this.state.portfolioId;
@@ -165,14 +159,15 @@ class Main extends React.Component {
         </div>
         <div className="property-tab-container">
           {this.state.tabsLoaded && this.state.tabs.map(function(data,i){
-            if(data != undefined){
+            if(data !== undefined){
               return <div key={i} onClick={()=>this.activateTab(i)} className={this.state.activeTabs[i] ?"property-tab-item active" :"property-tab-item"}>{data}</div>
             }
+            return '';
 
           },this)}
 
         </div>
-        {!this.state.isLoading && <TabBlock activeSideTabName={this.props.activeSideTabName} tabName={this.state.activeTabName} portfolioId={this.state.portfolioId} portfolioItemId={this.state.portfolioItemId} /> }
+        {!this.state.isLoading && <TabBlock headers={this.state.headers} activeSideTabName={this.props.activeSideTabName} tabName={this.state.activeTabName} portfolioId={this.state.portfolioId} portfolioItemId={this.state.portfolioItemId} /> }
 
       </div>
 

@@ -12,17 +12,17 @@ class PortfolioItem extends React.Component {
     }
   }
   componentDidMount(){
-    if(this.props.auth.user.id == '5a3adb9cc786f041d850f823'){
+    if(this.props.auth.user.id === '5a3adb9cc786f041d850f823'){
       this.setState({ntt:true})
     }
-    
+
   }
   render() {
     var to = {
       pathname: '/product/my-portfolios/' + this.props.portfolioId,
       portfolioName:this.props.portfolioName
     };
-    if(this.props.auth.user.id == '5a3adb9cc786f041d850f823'){
+    if(this.props.auth.user.id === '5a3adb9cc786f041d850f823'){
       to = {
         pathname: '/product/applications',
         portfolioName:this.props.portfolioName
@@ -38,7 +38,7 @@ class PortfolioItem extends React.Component {
       <div>
         <Link  to={to}>
           <div className="my-projects-item animated-fast fadeIn">
-            <div className="my-projects-logo"><img src={logo_color} alt/></div>
+            <div className="my-projects-logo"><img src={logo_color} alt=""/></div>
             <div className="my-projects-title">{this.props.portfolioName}<br/>
               <span style={{
                 color: '#D1DCE7',

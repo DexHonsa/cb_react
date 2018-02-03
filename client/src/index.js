@@ -2,11 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 //import { Router, Route } from 'react-router';
 //import { browserHistory, IndexRoute } from 'react-router';
-import {Router, Link, Route } from 'react-router-dom';
+import {Router, Route } from 'react-router-dom';
 
 import {Provider} from 'react-redux';
 import thunk from 'redux-thunk';
-import { combineReducers } from 'redux';
 import {createStore, applyMiddleware, compose} from 'redux';
 import RootReducer from './rootreducer';
 import PropTypes from 'prop-types';
@@ -24,7 +23,6 @@ import ModelHomes from './components/model_homes/model_homes';
 import Templates from './components/templates/templates';
 import FAQ from './components/dashboard/faq.js';
 import Portfolio from './components/my_portfolios/portfolio.js';
-import {withRouter} from 'react-router';
 import history from './actions/history';
 
 

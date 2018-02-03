@@ -21,26 +21,26 @@ class Header extends React.Component {
     }
   }
   componentDidMount(){
-    if(this.props.auth.user.id == '5a3adb9cc786f041d850f823'){
+    if(this.props.auth.user.id === '5a3adb9cc786f041d850f823'){
       this.setState({ntt:true})
     }
-    if(this.props.auth.user.id == '5a4e8e21c27b7c780cbb8e3d'){
+    if(this.props.auth.user.id === '5a4e8e21c27b7c780cbb8e3d'){
       this.setState({gj:true})
     }
 
   }
   showUserDropdown(){
     console.log(this.state.userDropdown);
-    var that = this;
-    if(this.state.userDropdown == false){
+
+    if(this.state.userDropdown === false){
       this.setState({userDropdown: true});
     }else{
       this.setState({userDropdown: false});
     }
   }
   showAlertsDropdown(){
-    var that = this;
-    if(this.state.alertsDropdown == false){
+
+    if(this.state.alertsDropdown === false){
       this.setState({alertsDropdown: true});
     }else{
       this.setState({alertsDropdown: false});
@@ -66,7 +66,7 @@ class Header extends React.Component {
       logo = gj_logo
     }
     var username = this.jsUcfirst(this.props.auth.user.username);
-    if(this.state.userDropdown == true){
+    if(this.state.userDropdown === true){
 
       userDropdown = <div className="notifications-dropdown animated-fast fadeInUp">
         <div className="caret" />
@@ -77,7 +77,7 @@ class Header extends React.Component {
       userDropdown = '';
     }
     var alertsDropdown;
-    if(this.state.alertsDropdown == true){
+    if(this.state.alertsDropdown === true){
       alertsDropdown = <div className="notifications-dropdown animated-fast fadeInUp">
         <div className="caret" />
         No New Notifications</div>;
@@ -89,7 +89,7 @@ class Header extends React.Component {
       <div>
       <div className="main-nav">
         <div className="container nav-container">
-          <div className="logo"><img src={logo} alt /></div>
+          <div className="logo"><img src={logo} alt="" /></div>
           <div className="nav-list">
             <ul>
               <NavLink to="/product/dashboard" activeClassName="active"><li>Getting Started</li></NavLink>

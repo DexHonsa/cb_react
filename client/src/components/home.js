@@ -4,27 +4,40 @@ import logo_grey from '../img/logo_grey.png';
 import logo_color from '../img/logo_color_with_line.png';
 import computer from '../img/computer.png';
 import logo_white from '../img/logo_white.png';
+import SignUpPopup from './login/sign_up_popup';
 
 class Home extends React.Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      signupPopup:false
+    }
+  }
+  showSignupPopup(){
+    this.setState({
+      signupPopup: !this.state.signupPopup
+    })
+  }
   render() {
     return (
       <div>
+        {this.state.signupPopup && <SignUpPopup hidePopup={this.showSignupPopup.bind(this)} />}
         <div>
           <div className="css-main-nav">
             <div className="container">
               <div className="css-logo">
-                <img src={logo_white} alt/>
+                <img alt="" src={logo_white}/>
               </div>
-              <ul className="css-nav-list">
+              {/*<ul className="css-nav-list">
                 <li className="css-services-btn">Services</li>
                 <li className="css-aboutus-btn">About Us</li>
-              </ul>
+              </ul>*/}
               <ul className="css-login-list">
 
                   <NavLink to="login"><li>Login</li></NavLink>
 
                 <li>
-                  <div className="css-signup-btn">Sign Up</div>
+                  <div onClick={this.showSignupPopup.bind(this)} className="css-signup-btn">Sign Up</div>
                 </li>
               </ul>
             </div>
@@ -39,7 +52,7 @@ class Home extends React.Component {
             </div>
           </div>
           <div className="css-section-a1">
-            <div className="css-main-logo-container wow animated fadeInUp"><img src={logo_color} alt/></div>
+            <div className="css-main-logo-container wow animated fadeInUp"><img alt="" src={logo_color}/></div>
           </div>
           <div className="css-section-a" id="services">
             <div className="container">
@@ -50,11 +63,11 @@ class Home extends React.Component {
                 }}>
                   <div>
                     <h1>Let us help you find common ground with your data.</h1>
-                    <p>Save and manage your data with CommonBrain. CommonBrain makes it easy to store, locate, aggregate, and organize your data. CommonBrain connects to your systems and takes your Excel templates and digitizes all of your existing information without the hassle of changing the way you do things.</p>
+                    <p>CommonBrain is a business intelligence tool that publishes results to the web.  The software is nimble, fast and powerful to use.  CommonBrain has multiple applications and has been deployed by cryptocurrency startups to Fortune 500 companies.  </p>
                   </div>
                 </div>
                 <div className="css-computer-container col-sm-7 wow animated fadeInRight">
-                  <img src={computer} alt/>
+                  <img alt="" src={computer}/>
                 </div>
               </div>
             </div>
@@ -63,10 +76,10 @@ class Home extends React.Component {
             <div className="container">
               <div className="row">
                 <div className="col-sm-6 wow animated fadeInLeft">
-                  <img style={{
+                  <img alt="" style={{
                     width: '100%',
                     padding: 25
-                  }} src={logo_grey} alt/>
+                  }} src={logo_grey}/>
                 </div>
                 <div className="css-paragraphs col-sm-6 wow animated fadeInRight" style={{
                   display: 'flex',

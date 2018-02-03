@@ -5,9 +5,9 @@ import axios from 'axios';
 
 class Templates extends Component {
 downloadTemplate(){
-    var that = this;
+
     axios.post('/api/downloadTemplate',{}, { responseType: 'arraybuffer' }).then(
-      (res) => {{FileDownload(res.data, 'CB_template.xlsx')}}
+      (res) => {FileDownload(res.data, 'CB_template.xlsx')}
     )
   }
   render() {
@@ -34,7 +34,7 @@ downloadTemplate(){
           </div>
           <div className="my-projects-container">
             <div onClick={this.downloadTemplate.bind(this)}  id="template-1" className="my-projects-item">
-                <div className="my-projects-logo"><img src={logo_color} alt /></div>
+                <div className="my-projects-logo"><img src={logo_color} alt="" /></div>
                 <div className="my-projects-title">CommonBrain Upload Template<br /></div>
                 <div className="my-projects-create-date">
                 </div>

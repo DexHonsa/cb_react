@@ -1,12 +1,12 @@
 import React from 'react';
-import {Link} from 'react-router';
+
 import {connect} from 'react-redux';
 import axios from 'axios';
-import PropTypes from 'prop-types';
+
 
 
 import excel from '../../img/Excel-Logo-Home-Page.png';
-import logo_color from '../../img/logo_1.png';
+
 
 import PortfolioItem from './portfolio_item';
 import AddPortfolioPopup from './add_portfolio_popup';
@@ -41,12 +41,7 @@ hideAddPortfolio(){
 
 
   render() {
-    var portfolioLink;
-    if (this.props.auth.user.username == 'ntt'){
-      portfolioLink = '/product/my-portfolios/applications';
-    }else{
-      portfolioLink = '/product/my-portfolios/portfolio';
-    }
+
     return (
       <div>
         <div className="main-stage">
@@ -68,7 +63,7 @@ hideAddPortfolio(){
                     <div className="drag-and-drop-img">Drag and Drop Excel Files<br/>
                       <img style={{
                         width: 50
-                      }} src={excel} alt/></div>
+                      }} src={excel} alt=""/></div>
                   </div>
                   <div className="download-template-btn">Download Template &nbsp;<i className="fa fa-download"/></div>
                   <div className="done-btn">Create Portfolio</div>
@@ -96,7 +91,7 @@ hideAddPortfolio(){
                     <div className="my-projects-tab">All Portfolios</div>
                   </div>
                   <div className="my-projects-container">
-                  {this.state.isLoading ? <div className="loading-gif"><img src={require('../../img/loading2.gif')} /></div> : null}
+                  {this.state.isLoading ? <div className="loading-gif"><img alt="" src={require('../../img/loading2.gif')} /></div> : null}
                   {this.state.portfolios.map(function(data, i){
                     return <PortfolioItem key={i} portfolioId={data._id} username={this.props.auth.user.username}  portfolioName={data.portfolioName}  />
                   },this)}

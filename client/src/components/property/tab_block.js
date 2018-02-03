@@ -8,13 +8,16 @@ constructor(props) {
   super(props);
   this.state = {
     isLoading:true,
-    headers:[],
-    headersLoaded:false,
+    headers:this.props.headers,
+    headersLoaded:true,
     portfolioId:this.props.portfolioId,
     portfolioItemId:this.props.portfolioItemId
   };
 }
 componentDidMount(){
+  if(this.props.headers){
+
+  }
   var that = this;
   var portfolioId = this.state.portfolioId;
   var portfolioItemId = this.state.portfolioItemId;
@@ -23,31 +26,32 @@ componentDidMount(){
     portfolioItemId:portfolioItemId,
     activeSideTabName:this.props.activeSideTabName
   }
-  axios.post('/api/getHeaders/', data).then(
-    (res) => {
-      that.setState({headers:res.data, headersLoaded:true,isLoading:false});
-    },
-    (err) => {
-
-    }
-  )
+  // axios.post('/api/getHeaders/', data).then(
+  //   (res) => {
+  //     that.setState({headers:res.data, headersLoaded:true,isLoading:false});
+  //   },
+  //   (err) => {
+  //
+  //   }
+  // )
 }
-componentWillReceiveProps(nextprops){
-  this.setState({isLoading:true})
+componentWillReceiveProps(nextProps){
+  this.setState({isLoading:true,headers:nextProps.headers})
   this.componentDidMount();
+}
+doneLoading(){
+  console.log('done');
+  this.setState({isLoading:false})
 }
   render() {
     return (
       <div>
-        {!this.state.isLoading ? this.state.headers.map(function(data,i){
 
-          if(i >= 0){
-
+        {this.state.headers.map(function(data,i){
+          
           return <DetailBlock activeSideTabName={this.props.activeSideTabName} tabName={this.props.tabName} portfolioItemId={this.state.portfolioItemId} key={i} mainCategory={data} />
-          }
-        },this) : <div className="loading-gif"><img src={loadingGif} /></div>
 
-      }
+        },this)}
       </div>
     );
   }
