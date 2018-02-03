@@ -51,15 +51,15 @@ truncate(string){
   };
   activateTooltip(){
 
-    // if(this.state.ReactTooltip === false){
-    //   this.setState({ReactTooltip:true})
-    // }else{
-    // }
+    if(this.state.ReactTooltip === false){
+      this.setState({ReactTooltip:true})
+    }else{
+    }
   }
   render() {
     return (
       <div>
-        
+
       <div style={this.state.isVisible ? {display:'block'} : {display:'none'} }>
         {this.state.ReactTooltip ? <ReactTooltip effect='solid' />: null}
 
