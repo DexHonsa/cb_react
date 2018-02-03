@@ -54,6 +54,7 @@ truncate(string){
     if(this.state.ReactTooltip === false){
       this.setState({ReactTooltip:true})
     }else{
+      
     }
   }
   render() {

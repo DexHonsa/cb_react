@@ -72,7 +72,7 @@ class Home extends React.Component {
               </div>
             </div>
           </div>
-          <div className="css-section-b" id="aboutus">
+          {/*<div className="css-section-b" id="aboutus">
             <div className="container">
               <div className="row">
                 <div className="col-sm-6 wow animated fadeInLeft">
@@ -90,7 +90,7 @@ class Home extends React.Component {
                 </div>
               </div>
             </div>
-          </div>
+          </div>*/}
           <div className="css-section-c">
             <div className="container">
               <div className="row" style={{
