@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "body-parser": "~1.4.3",
+    "circular-json": "^0.5.1",
     "concurrently": "^3.5.1",
     "exceljs": "^0.8.2",
     "express": "^4.16.0",
