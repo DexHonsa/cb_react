@@ -117,6 +117,21 @@ class Portfolio extends React.Component {
     this.setState({uploadPopup:false});
     this.componentDidMount();
   }
+  deletePortfolioItem(id,filename,e){
+    var that = this;
+    e.stopPropagation();
+    console.log(e);
+    var data = {
+      portfolioItemId:id,
+      portfolioId:this.state.portfolioId,
+      filename:filename,
+      userId:this.props.auth.user.id
+    }
+    axios.post('/api/deleteNewExcel', data).then(
+      (res) => {that.componentDidMount()},
+      (err) => {}
+    )
+  }
   render(){
     const {shareErrors} = this.state;
     var deletePopup;
@@ -171,12 +186,13 @@ class Portfolio extends React.Component {
               to = "/product/model_homes";
             }
             return (
-              <Link key={i} to={to}><div className="file-item animated-fast fadeIn">
+              <div className="file-item animated-fast fadeIn">
                 <div className="icon"><i className="fa fa-file" /></div>
-                <div className="file-item-value">{data.name}</div>
+                <Link key={i} to={to}><div className="file-item-value">{data.name}</div></Link>
 
                 <div className="file-item-value"><TimeAgo date={data.lastUpdated}/></div>
-              </div></Link>
+                <div onClick={(e) => this.deletePortfolioItem(data._id, data.name,e)} className="delete-portfolio-item"><i className="fa fa-close"/></div>
+              </div>
             );
           },this)}
 

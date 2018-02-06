@@ -59,7 +59,7 @@ class uploadItem extends Component {
         <div className="upload-popup animated fadeInUp">
           <div className="upload-popup-top">Upload Excel Spreadsheet <i onClick={this.props.hide} className="fa fa-times"></i></div>
           <div className="upload-popup-content">
-          <form style={{overflow:'auto'}} onSubmit={this.onFormSubmit}>
+          <form onSubmit={this.onFormSubmit}>
             <input name="file" type="file" onChange={this.onChange} />
             <button type="submit" className="add-new-project-btn">Upload File</button>
             </form>

@@ -17,6 +17,7 @@ class PortfolioItem extends React.Component {
     }
 
   }
+  
   render() {
     var to = {
       pathname: '/product/my-portfolios/' + this.props.portfolioId,
@@ -34,6 +35,7 @@ class PortfolioItem extends React.Component {
     //     portfolioName:this.props.portfolioName
     //   }
     // }
+
     return (
       <div>
         <Link  to={to}>
@@ -46,6 +48,7 @@ class PortfolioItem extends React.Component {
               }}>Portfolio</span>
             </div>
             <div className="my-projects-create-date">Created by {this.props.username}</div>
+
           </div>
         </Link>
         </div>

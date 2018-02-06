@@ -491,20 +491,27 @@ exports.ImportBasic = function(req, res) {
             var sheet = JSON.parse(CircularJSON.stringify(workbook));
             var titles = [];
 
-
+            res.json(sheet);
             var nameRangesRaw = sheet.Workbook.Names;
             var nameRanges = {};
+            console.log('HIT');
             for (var i = 0, len = nameRangesRaw.length; i < len; i++) {
-              if(nameRangesRaw[i].Sheet != null && nameRangesRaw[i].Sheet == 0){
+
+              if(nameRangesRaw[i].Name != null && nameRangesRaw[i].Name == 'CBrainTitle'){
+                if(nameRangesRaw[i].Sheet != null && nameRangesRaw[i].Sheet == 0){
+                  var refArr = nameRangesRaw[i].Ref.split("$");
+                  console.log('REF ARR');
+                  console.log(refArr);
+                  var MainSheet = refArr[0];
+                  MainSheet = MainSheet.substr(0,MainSheet.length - 1);
+                  console.log(MainSheet);
+                  if(sheet.Sheets[MainSheet][refArr[1] + refArr[2]] != null){
+                    nameRanges[nameRangesRaw[i].Name] = sheet.Sheets[MainSheet][refArr[1] + refArr[2]].w
+                  }
+                }
 
               }else{
-                var refArr = nameRangesRaw[i].Ref.split("$");
-                var MainSheet = refArr[0];
-                MainSheet = MainSheet.substr(0,MainSheet.length - 1);
-                console.log(MainSheet);
-                if(sheet.Sheets[MainSheet][refArr[1] + refArr[2]] != null){
-                  nameRanges[nameRangesRaw[i].Name] = sheet.Sheets[MainSheet][refArr[1] + refArr[2]].w
-                }
+
               }
 
 
@@ -645,12 +652,33 @@ exports.ImportNewExcel = function(req, res) {
             var nameRangesRaw = sheet.Workbook.Names;
             var nameRanges = {};
             for (var i = 0, len = nameRangesRaw.length; i < len; i++) {
-              var refArr = nameRangesRaw[i].Ref.split("$");
-              var MainSheet = refArr[0];
-              MainSheet = MainSheet.substr(0,MainSheet.length - 1);
-              if(sheet.Sheets[MainSheet][refArr[1] + refArr[2]] != null){
-              nameRanges[nameRangesRaw[i].Name] = sheet.Sheets[MainSheet][refArr[1] + refArr[2]].w;
-            }
+              if(nameRangesRaw[i].Name != null && nameRangesRaw[i].Name == 'CBrainTitle'){
+                if(nameRangesRaw[i].Sheet != null && nameRangesRaw[i].Sheet == 0){
+                  var refArr = nameRangesRaw[i].Ref.split("$");
+                  console.log('REF ARR');
+                  console.log(refArr);
+                  var MainSheet = refArr[0];
+                  MainSheet = MainSheet.substr(0,MainSheet.length - 1);
+                  console.log(MainSheet);
+                  if(sheet.Sheets[MainSheet][refArr[1] + refArr[2]] != null){
+                    nameRanges[nameRangesRaw[i].Name] = sheet.Sheets[MainSheet][refArr[1] + refArr[2]].w
+                  }
+                }
+
+              }if(nameRangesRaw[i].Name != null && nameRangesRaw[i].Name == 'CBrainImage'){
+                if(nameRangesRaw[i].Sheet != null && nameRangesRaw[i].Sheet == 0){
+                  var refArr = nameRangesRaw[i].Ref.split("$");
+                  console.log('REF ARR');
+                  console.log(refArr);
+                  var MainSheet = refArr[0];
+                  MainSheet = MainSheet.substr(0,MainSheet.length - 1);
+                  console.log(MainSheet);
+                  if(sheet.Sheets[MainSheet][refArr[1] + refArr[2]] != null){
+                    nameRanges[nameRangesRaw[i].Name] = sheet.Sheets[MainSheet][refArr[1] + refArr[2]].w
+                  }
+                }
+
+              }
             }
             var rows = {};
             for (var i = 0, len = Object.keys(sheet.Sheets[MainSheet]).length; i < len; i++) {
@@ -789,12 +817,36 @@ exports.UpdateNewExcel = function(req, res) {
             var titles = [];
             var nameRangesRaw = sheet.Workbook.Names;
             var nameRanges = {};
+
+
+
             for (var i = 0, len = nameRangesRaw.length; i < len; i++) {
-              var refArr = nameRangesRaw[i].Ref.split("$");
-              var MainSheet = refArr[0];
-              MainSheet = MainSheet.substr(0,MainSheet.length - 1);
-              if(sheet.Sheets[MainSheet][refArr[1] + refArr[2]] != null){
-              nameRanges[nameRangesRaw[i].Name] = sheet.Sheets[MainSheet][refArr[1] + refArr[2]].w;
+              if(nameRangesRaw[i].Name != null && nameRangesRaw[i].Name == 'CBrainTitle'){
+                if(nameRangesRaw[i].Sheet != null && nameRangesRaw[i].Sheet == 0){
+                  var refArr = nameRangesRaw[i].Ref.split("$");
+                  console.log('REF ARR');
+                  console.log(refArr);
+                  var MainSheet = refArr[0];
+                  MainSheet = MainSheet.substr(0,MainSheet.length - 1);
+                  console.log(MainSheet);
+                  if(sheet.Sheets[MainSheet][refArr[1] + refArr[2]] != null){
+                    nameRanges[nameRangesRaw[i].Name] = sheet.Sheets[MainSheet][refArr[1] + refArr[2]].w
+                  }
+                }
+
+              }if(nameRangesRaw[i].Name != null && nameRangesRaw[i].Name == 'CBrainImage'){
+                if(nameRangesRaw[i].Sheet != null && nameRangesRaw[i].Sheet == 0){
+                  var refArr = nameRangesRaw[i].Ref.split("$");
+                  console.log('REF ARR');
+                  console.log(refArr);
+                  var MainSheet = refArr[0];
+                  MainSheet = MainSheet.substr(0,MainSheet.length - 1);
+                  console.log(MainSheet);
+                  if(sheet.Sheets[MainSheet][refArr[1] + refArr[2]] != null){
+                    nameRanges[nameRangesRaw[i].Name] = sheet.Sheets[MainSheet][refArr[1] + refArr[2]].w
+                  }
+                }
+
               }
             }
             var rows = {};
@@ -904,6 +956,34 @@ exports.UpdateNewExcel = function(req, res) {
       });
 
 }
+// exports.DeleteNewExcel= function(req,res){
+//   var portfolioId = req.body.portfolioId;
+//   var portfolioItemId = req.body.portfolioItemId;
+//
+//   MongoClient.connect(URL, function(err,db){
+//     if(err)
+//       throw err;
+//     var collection = db.collection('portfolioItems');
+//     var uploadData = db.collection('uploadData');
+//     var properties = db.collection('properties');
+//     collection.remove({_id:ObjectId(portfolioItemId)}, function(err,result){
+//       if (err)
+//         throw err;
+//       uploadData.remove({portfolioItemId:portfolioItemId},function(err,result){
+//         if (err)
+//           throw err;
+//         properties.remove({portfolioItemId:portfolioItemId},function(err,result){
+//           if (err)
+//             throw err;
+//           res.json(result);
+//         });
+//       })
+//
+//
+//     });
+//     //db.close();
+//   })
+// }
 
 exports.GetFilename = function(req,res){
   var id = req.body.portfolioItemId;
@@ -1382,12 +1462,14 @@ exports.DeleteNewExcel = function(req,res){
       throw err;
 
     var portfolioItems = db.collection("portfolioItems")
-    var uploadData = db.collection("uploadData")
-    portfolioItems.remove({userId:req.body.userId, portfolioId:req.body.portfolioId, name:filename});
+    var uploadData = db.collection("uploadData");
+    var properties = db.collection('properties');
+    portfolioItems.remove({portfolioId:req.body.portfolioId, name:req.body.filename});
     uploadData.remove({portfolioItemId:req.body.portfolioItemId});
+    properties.remove({portfolioItemId:req.body.portfolioItemId});
   })
-  fs.unlink(dir, function(res){
-    res.send ({
+  fs.unlink(dir, function(result){
+    res.json ({
       status: "200",
       responseType: "string",
       response: "success"
