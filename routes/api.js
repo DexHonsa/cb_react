@@ -494,17 +494,16 @@ exports.ImportBasic = function(req, res) {
             res.json(sheet);
             var nameRangesRaw = sheet.Workbook.Names;
             var nameRanges = {};
-            console.log('HIT');
             for (var i = 0, len = nameRangesRaw.length; i < len; i++) {
 
               if(nameRangesRaw[i].Name != null && nameRangesRaw[i].Name == 'CBrainTitle'){
                 if(nameRangesRaw[i].Sheet != null && nameRangesRaw[i].Sheet == 0){
                   var refArr = nameRangesRaw[i].Ref.split("$");
-                  console.log('REF ARR');
-                  console.log(refArr);
+
+
                   var MainSheet = refArr[0];
                   MainSheet = MainSheet.substr(0,MainSheet.length - 1);
-                  console.log(MainSheet);
+
                   if(sheet.Sheets[MainSheet][refArr[1] + refArr[2]] != null){
                     nameRanges[nameRangesRaw[i].Name] = sheet.Sheets[MainSheet][refArr[1] + refArr[2]].w
                   }
@@ -655,11 +654,8 @@ exports.ImportNewExcel = function(req, res) {
               if(nameRangesRaw[i].Name != null && nameRangesRaw[i].Name == 'CBrainTitle'){
                 if(nameRangesRaw[i].Sheet != null && nameRangesRaw[i].Sheet == 0){
                   var refArr = nameRangesRaw[i].Ref.split("$");
-                  console.log('REF ARR');
-                  console.log(refArr);
                   var MainSheet = refArr[0];
                   MainSheet = MainSheet.substr(0,MainSheet.length - 1);
-                  console.log(MainSheet);
                   if(sheet.Sheets[MainSheet][refArr[1] + refArr[2]] != null){
                     nameRanges[nameRangesRaw[i].Name] = sheet.Sheets[MainSheet][refArr[1] + refArr[2]].w
                   }
@@ -668,11 +664,8 @@ exports.ImportNewExcel = function(req, res) {
               }if(nameRangesRaw[i].Name != null && nameRangesRaw[i].Name == 'CBrainImage'){
                 if(nameRangesRaw[i].Sheet != null && nameRangesRaw[i].Sheet == 0){
                   var refArr = nameRangesRaw[i].Ref.split("$");
-                  console.log('REF ARR');
-                  console.log(refArr);
                   var MainSheet = refArr[0];
                   MainSheet = MainSheet.substr(0,MainSheet.length - 1);
-                  console.log(MainSheet);
                   if(sheet.Sheets[MainSheet][refArr[1] + refArr[2]] != null){
                     nameRanges[nameRangesRaw[i].Name] = sheet.Sheets[MainSheet][refArr[1] + refArr[2]].w
                   }
@@ -802,33 +795,25 @@ exports.UpdateNewExcel = function(req, res) {
       var filename = req.body.filename;
       fs.move('./tmp/' + req.file.filename, './uploads/' + dir + '/' + filename,{ overwrite: true }, function (err) {
         if (err) {
-
           res.status(401).json({
             errors: {
               form: "File Exists"
             }
           });
         }
-
-
             //extract Data
             var workbook = XLSX.readFile('./uploads/' + dir + '/' + filename);
             var sheet = JSON.parse(CircularJSON.stringify(workbook));
             var titles = [];
             var nameRangesRaw = sheet.Workbook.Names;
             var nameRanges = {};
-
-
-
             for (var i = 0, len = nameRangesRaw.length; i < len; i++) {
               if(nameRangesRaw[i].Name != null && nameRangesRaw[i].Name == 'CBrainTitle'){
                 if(nameRangesRaw[i].Sheet != null && nameRangesRaw[i].Sheet == 0){
                   var refArr = nameRangesRaw[i].Ref.split("$");
-                  console.log('REF ARR');
-                  console.log(refArr);
                   var MainSheet = refArr[0];
                   MainSheet = MainSheet.substr(0,MainSheet.length - 1);
-                  console.log(MainSheet);
+
                   if(sheet.Sheets[MainSheet][refArr[1] + refArr[2]] != null){
                     nameRanges[nameRangesRaw[i].Name] = sheet.Sheets[MainSheet][refArr[1] + refArr[2]].w
                   }
@@ -837,11 +822,8 @@ exports.UpdateNewExcel = function(req, res) {
               }if(nameRangesRaw[i].Name != null && nameRangesRaw[i].Name == 'CBrainImage'){
                 if(nameRangesRaw[i].Sheet != null && nameRangesRaw[i].Sheet == 0){
                   var refArr = nameRangesRaw[i].Ref.split("$");
-                  console.log('REF ARR');
-                  console.log(refArr);
                   var MainSheet = refArr[0];
                   MainSheet = MainSheet.substr(0,MainSheet.length - 1);
-                  console.log(MainSheet);
                   if(sheet.Sheets[MainSheet][refArr[1] + refArr[2]] != null){
                     nameRanges[nameRangesRaw[i].Name] = sheet.Sheets[MainSheet][refArr[1] + refArr[2]].w
                   }
@@ -2044,7 +2026,6 @@ exports.GetTabs = function(req, res) {
     var collection = db.collection("uploadData")
 
     collection.find({portfolioItemId:portfolioItemId, "Sheet Name": sheetName}).toArray(function(err, result) {
-      console.log("Tabs " + sheetName);
       var headerArr = [];
       for (var i = 0, len = result.length; i < len; i++) {
         headerArr.push(result[i]['Tab Name'])

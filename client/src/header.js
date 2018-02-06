@@ -30,7 +30,6 @@ class Header extends React.Component {
 
   }
   showUserDropdown(){
-    console.log(this.state.userDropdown);
 
     if(this.state.userDropdown === false){
       this.setState({userDropdown: true});
