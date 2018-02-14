@@ -1406,17 +1406,10 @@ exports.ImportNewExcel_old = function(req, res) {
                       }
                     }
                   }
-<<<<<<< HEAD
 
                   MongoClient.connect(URL, function(err, db) {
                     if (err) throw err;
 
-=======
-
-                  MongoClient.connect(URL, function(err, db) {
-                    if (err) throw err;
-
->>>>>>> develop
                     var collection = db.collection("uploadData");
                     var collection2 = db.collection("properties");
 
