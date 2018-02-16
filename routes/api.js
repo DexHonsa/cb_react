@@ -666,6 +666,7 @@ exports.ImportNewExcel = function(req, res) {
         "./uploads/" + dir + "/" + filename,
         function(err) {
           if (err) {
+            console.log(err);
             res.status(401).json({
               errors: {
                 form: "File Exists"
@@ -696,41 +697,28 @@ exports.ImportNewExcel = function(req, res) {
                   nameRangesRaw[i].Name != null &&
                   nameRangesRaw[i].Name == "CBrainTitle"
                 ) {
-                  if (
-                    nameRangesRaw[i].Sheet != null &&
-                    nameRangesRaw[i].Sheet == 0
-                  ) {
-                    var refArr = nameRangesRaw[i].Ref.split("$");
-                    var MainSheet = refArr[0];
-                    MainSheet = MainSheet.substr(0, MainSheet.length - 1);
-                    if (
-                      sheet.Sheets[MainSheet][refArr[1] + refArr[2]] != null
-                    ) {
-                      nameRanges[nameRangesRaw[i].Name] =
-                        sheet.Sheets[MainSheet][refArr[1] + refArr[2]].w;
-                    }
+                  var refArr = nameRangesRaw[i].Ref.split("$");
+                  var MainSheet = refArr[0];
+                  MainSheet = MainSheet.substr(0, MainSheet.length - 1);
+                  if (sheet.Sheets[MainSheet][refArr[1] + refArr[2]] != null) {
+                    nameRanges[nameRangesRaw[i].Name] =
+                      sheet.Sheets[MainSheet][refArr[1] + refArr[2]].w;
                   }
                 }
                 if (
                   nameRangesRaw[i].Name != null &&
                   nameRangesRaw[i].Name == "CBrainImage"
                 ) {
-                  if (
-                    nameRangesRaw[i].Sheet != null &&
-                    nameRangesRaw[i].Sheet == 0
-                  ) {
-                    var refArr = nameRangesRaw[i].Ref.split("$");
-                    var MainSheet = refArr[0];
-                    MainSheet = MainSheet.substr(0, MainSheet.length - 1);
-                    if (
-                      sheet.Sheets[MainSheet][refArr[1] + refArr[2]] != null
-                    ) {
-                      nameRanges[nameRangesRaw[i].Name] =
-                        sheet.Sheets[MainSheet][refArr[1] + refArr[2]].w;
-                    }
+                  var refArr = nameRangesRaw[i].Ref.split("$");
+                  var MainSheet = refArr[0];
+                  MainSheet = MainSheet.substr(0, MainSheet.length - 1);
+                  if (sheet.Sheets[MainSheet][refArr[1] + refArr[2]] != null) {
+                    nameRanges[nameRangesRaw[i].Name] =
+                      sheet.Sheets[MainSheet][refArr[1] + refArr[2]].w;
                   }
                 }
               }
+              console.log(sheet.Sheets[MainSheet]);
               if (sheet.Sheets[MainSheet] == undefined) {
                 var deletedir =
                   "./uploads/" + userId + "/" + portfolioId + "/" + filename;
@@ -858,26 +846,26 @@ exports.ImportNewExcel = function(req, res) {
                 imgUrl: nameRanges.CBrainImage
               };
 
-              if (
-                nameRanges.CBrainTitle == undefined ||
-                nameRanges.CBrainTitle == ""
-              ) {
-                res.status(401).json({
-                  errors: {
-                    form: "No Title Found"
-                  }
-                });
-              }
-              if (
-                nameRanges.CBrainImage == undefined ||
-                nameRanges.CBrainImage == ""
-              ) {
-                res.status(401).json({
-                  errors: {
-                    form: "No Image Found"
-                  }
-                });
-              }
+              // if (
+              //   nameRanges.CBrainTitle == undefined ||
+              //   nameRanges.CBrainTitle == ""
+              // ) {
+              //   res.status(401).json({
+              //     errors: {
+              //       form: "No Title Found"
+              //     }
+              //   });
+              // }
+              // if (
+              //   nameRanges.CBrainImage == undefined ||
+              //   nameRanges.CBrainImage == ""
+              // ) {
+              //   res.status(401).json({
+              //     errors: {
+              //       form: "No Image Found"
+              //     }
+              //   });
+              // }
 
               MongoClient.connect(URL, function(err, db) {
                 if (err) throw err;
@@ -930,29 +918,25 @@ exports.UpdateNewExcel = function(req, res) {
             nameRangesRaw[i].Name != null &&
             nameRangesRaw[i].Name == "CBrainTitle"
           ) {
-            if (nameRangesRaw[i].Sheet != null && nameRangesRaw[i].Sheet == 0) {
-              var refArr = nameRangesRaw[i].Ref.split("$");
-              var MainSheet = refArr[0];
-              MainSheet = MainSheet.substr(0, MainSheet.length - 1);
+            var refArr = nameRangesRaw[i].Ref.split("$");
+            var MainSheet = refArr[0];
+            MainSheet = MainSheet.substr(0, MainSheet.length - 1);
 
-              if (sheet.Sheets[MainSheet][refArr[1] + refArr[2]] != null) {
-                nameRanges[nameRangesRaw[i].Name] =
-                  sheet.Sheets[MainSheet][refArr[1] + refArr[2]].w;
-              }
+            if (sheet.Sheets[MainSheet][refArr[1] + refArr[2]] != null) {
+              nameRanges[nameRangesRaw[i].Name] =
+                sheet.Sheets[MainSheet][refArr[1] + refArr[2]].w;
             }
           }
           if (
             nameRangesRaw[i].Name != null &&
             nameRangesRaw[i].Name == "CBrainImage"
           ) {
-            if (nameRangesRaw[i].Sheet != null && nameRangesRaw[i].Sheet == 0) {
-              var refArr = nameRangesRaw[i].Ref.split("$");
-              var MainSheet = refArr[0];
-              MainSheet = MainSheet.substr(0, MainSheet.length - 1);
-              if (sheet.Sheets[MainSheet][refArr[1] + refArr[2]] != null) {
-                nameRanges[nameRangesRaw[i].Name] =
-                  sheet.Sheets[MainSheet][refArr[1] + refArr[2]].w;
-              }
+            var refArr = nameRangesRaw[i].Ref.split("$");
+            var MainSheet = refArr[0];
+            MainSheet = MainSheet.substr(0, MainSheet.length - 1);
+            if (sheet.Sheets[MainSheet][refArr[1] + refArr[2]] != null) {
+              nameRanges[nameRangesRaw[i].Name] =
+                sheet.Sheets[MainSheet][refArr[1] + refArr[2]].w;
             }
           }
         }
