@@ -25,7 +25,7 @@ class uploadItem extends Component {
   fileUpload(file) {
     this.setState({ isloading: true });
     var that = this;
-    const url = "/api/importNewExcel/";
+    const url = "/api/newUpload/";
     const formData = new FormData();
     formData.append("file", file);
     formData.append("userId", this.props.auth.user.id);

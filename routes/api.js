@@ -126,6 +126,235 @@ mongoose.connect(
 var db = mongoose.connection;
 var ObjectId = require("mongodb").ObjectId;
 
+exports.NewUpload = function(req, res) {
+  upload(req, res, function(err) {
+    var userId = req.body.userId;
+    var portfolioId = req.body.portfolioId;
+    var date = new Date();
+
+    mkdirp("./uploads/" + userId + "/" + portfolioId, function(err) {
+      var dir = userId + "/" + portfolioId;
+      var filename = req.file.filename;
+      fs.move(
+        "./tmp/" + filename,
+        "./uploads/" + dir + "/" + filename,
+        function(err) {
+          if (err) {
+            res.status(401).json({
+              errors: {
+                form: "File Exists"
+              }
+            });
+          }
+          MongoClient.connect(URL, function(err, db) {
+            if (err) throw err;
+            var collection = db.collection("portfolioItems");
+            var portfolioItemObj = {
+              userId: userId,
+              portfolioId: portfolioId,
+              name: filename,
+              lastUpdated: date
+            };
+            collection.insert(portfolioItemObj, function(err, result) {
+              if (err) throw err;
+              var portfolioItemId = result.insertedIds[0].toString();
+
+              //extract Data
+              var workbook = XLSX.readFile("./uploads/" + dir + "/" + filename);
+              var sheet = JSON.parse(CircularJSON.stringify(workbook));
+              var titles = [];
+              var nameRangesRaw = sheet.Workbook.Names;
+              var nameRanges = {};
+              for (var i = 0, len = nameRangesRaw.length; i < len; i++) {
+                if (
+                  nameRangesRaw[i].Name != null &&
+                  nameRangesRaw[i].Name == "CBrainTitle"
+                ) {
+                  var refArr = nameRangesRaw[i].Ref.split("$");
+                  var MainSheet = refArr[0];
+                  MainSheet = MainSheet.substr(0, MainSheet.length - 1);
+                  if (sheet.Sheets[MainSheet][refArr[1] + refArr[2]] != null) {
+                    nameRanges[nameRangesRaw[i].Name] =
+                      sheet.Sheets[MainSheet][refArr[1] + refArr[2]].w;
+                  }
+                }
+                if (
+                  nameRangesRaw[i].Name != null &&
+                  nameRangesRaw[i].Name == "CBrainImage"
+                ) {
+                  var refArr = nameRangesRaw[i].Ref.split("$");
+                  var MainSheet = refArr[0];
+                  MainSheet = MainSheet.substr(0, MainSheet.length - 1);
+                  if (sheet.Sheets[MainSheet][refArr[1] + refArr[2]] != null) {
+                    nameRanges[nameRangesRaw[i].Name] =
+                      sheet.Sheets[MainSheet][refArr[1] + refArr[2]].w;
+                  }
+                }
+              }
+
+              if (sheet.Sheets[MainSheet] == undefined) {
+                var deletedir =
+                  "./uploads/" + userId + "/" + portfolioId + "/" + filename;
+                fs.unlink(deletedir);
+
+                MongoClient.connect(URL, function(err, db) {
+                  var collection = db.collection("portfolioItems");
+                  collection.remove({ _id: ObjectId(portfolioItemId) });
+                });
+                res.status(401).json({
+                  errors: {
+                    form: "Wrong Format"
+                  }
+                });
+                return;
+              }
+              var rows = {};
+              for (
+                var i = 0, len = Object.keys(sheet.Sheets[MainSheet]).length;
+                i < len;
+                i++
+              ) {
+                if (i > 1) {
+                  var rowNumber = Object.keys(sheet.Sheets[MainSheet])[
+                    i
+                  ].substr(1);
+
+                  if (rows[rowNumber] == undefined) {
+                    rows[rowNumber] = {};
+                  }
+                  if (
+                    sheet.Sheets[MainSheet][
+                      Object.keys(sheet.Sheets[MainSheet])[i]
+                    ].w != null
+                  ) {
+                    rows[rowNumber][Object.keys(sheet.Sheets[MainSheet])[i]] =
+                      sheet.Sheets[MainSheet][
+                        Object.keys(sheet.Sheets[MainSheet])[i]
+                      ].w;
+                  }
+                }
+              }
+              var headers = [];
+              var arr = [];
+              for (
+                var i = 0, len = Object.keys(rows["2"]).length;
+                i < len;
+                i++
+              ) {
+                headers.push(rows["2"][Object.keys(rows["2"])[i]]);
+              }
+              for (var i = 3, len = Object.keys(rows).length; i < len; i++) {
+                var rowObj = {
+                  userId: userId,
+                  portfolioId: portfolioId,
+                  portfolioItemId: portfolioItemId
+                };
+                var number = i.toString();
+                if (rows[number] != null) {
+                  for (
+                    var i2 = 0, len2 = Object.keys(rows[number]).length;
+                    i2 < len2;
+                    i2++
+                  ) {
+                    var cell = Object.keys(rows[number])[i2];
+
+                    var letter = cell.charAt(0);
+                    var header;
+                    if (letter == "A") {
+                      header = headers[0];
+                    }
+                    if (letter == "B") {
+                      header = headers[1];
+                    }
+                    if (letter == "C") {
+                      header = headers[2];
+                    }
+                    if (letter == "D") {
+                      header = headers[3];
+                    }
+                    if (letter == "E") {
+                      header = headers[4];
+                    }
+                    if (letter == "F") {
+                      header = headers[5];
+                    }
+                    if (letter == "G") {
+                      header = headers[6];
+                    }
+                    if (letter == "H") {
+                      header = headers[7];
+                    }
+                    if (letter == "I") {
+                      header = headers[8];
+                    }
+                    if (letter == "J") {
+                      header = headers[9];
+                    }
+                    if (letter == "K") {
+                      header = headers[10];
+                    }
+                    if (letter == "L") {
+                      header = headers[11];
+                    }
+                    if (letter == "M") {
+                      header = headers[12];
+                    }
+                    if (letter == "N") {
+                      header = headers[13];
+                    }
+                    if (letter == "O") {
+                      header = headers[14];
+                    }
+                    rowObj[header] =
+                      rows[number][Object.keys(rows[number])[i2]];
+                  }
+                }
+                arr.push(rowObj);
+              }
+              var basicDetailObj = {
+                userId: userId,
+                portfolioId: portfolioId,
+                portfolioItemId: portfolioItemId,
+                title: nameRanges.CBrainTitle,
+                imgUrl: nameRanges.CBrainImage
+              };
+
+              MongoClient.connect(URL, function(err, db) {
+                if (err) throw err;
+
+                var collection = db.collection("ExcelData");
+                var collection2 = db.collection("properties");
+                collection2.remove({ portfolioItemId: portfolioItemId });
+                collection2.insert(basicDetailObj);
+                collection.remove({ portfolioItemId: portfolioItemId });
+
+                collection.insert({
+                  portfolioItemId: portfolioItemId,
+                  workbook: sheet
+                });
+                res.json(sheet);
+              });
+              //res.json(arr);
+            });
+          });
+        }
+      );
+    });
+  });
+};
+exports.GetNewUpload = function(req, res) {
+  var id = req.body.portfolioItemId;
+  MongoClient.connect(URL, function(err, db) {
+    if (err) throw err;
+
+    var collection = db.collection("ExcelData");
+    collection.findOne({ portfolioItemId: id }, function(err, result) {
+      if (err) throw err;
+      res.json(result);
+    });
+  });
+};
+
 exports.ImportBasic_old = function(req, res) {
   var storage = multer.diskStorage({
     destination: function(req, file, cb) {
