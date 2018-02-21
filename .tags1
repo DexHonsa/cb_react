@@ -4,11 +4,5 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.8	//
-constructor	C:\Users\Dex\Desktop\cb_react\client\src\components\property\detail_block.js	/^  constructor(props){$/;"	function	line:7
-state.blockDetails	C:\Users\Dex\Desktop\cb_react\client\src\components\property\detail_block.js	/^      blockDetails: [],$/;"	property	line:10
-componentDidMount	C:\Users\Dex\Desktop\cb_react\client\src\components\property\detail_block.js	/^  componentDidMount(){$/;"	function	line:18
-data.activeSideTabName	C:\Users\Dex\Desktop\cb_react\client\src\components\property\detail_block.js	/^      activeSideTabName:this.props.activeSideTabName,$/;"	property	line:21
-componentWillReceiveProps	C:\Users\Dex\Desktop\cb_react\client\src\components\property\detail_block.js	/^  componentWillReceiveProps(nextProps){$/;"	function	line:37
-truncate	C:\Users\Dex\Desktop\cb_react\client\src\components\property\detail_block.js	/^truncate(string){$/;"	function	line:46
-activateTooltip	C:\Users\Dex\Desktop\cb_react\client\src\components\property\detail_block.js	/^  activateTooltip(){$/;"	function	line:52
-render	C:\Users\Dex\Desktop\cb_react\client\src\components\property\detail_block.js	/^  render() {$/;"	function	line:59
+constructor	C:\Users\Dex\Desktop\cb_react\client\src\components\property\new_main.js	/^	constructor(props) {$/;"	function	line:4
+render	C:\Users\Dex\Desktop\cb_react\client\src\components\property\new_main.js	/^	render() {$/;"	function	line:8
