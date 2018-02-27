@@ -6,7 +6,7 @@ class ImagePopup extends React.Component {
 			<div
 				onClick={this.props.hide}
 				className="image-popup-container animated fadeIn">
-				<img src={this.props.img} />
+				<img style={{ maxWidth: "70%" }} src={this.props.img} />
 			</div>
 		);
 	}
