@@ -23,7 +23,8 @@ class Main extends React.Component {
 			portfolioId: this.props.portfolioId,
 			portfolioItemId: this.props.portfolioItemId,
 			filename: "",
-			topTitleVisible: true
+			topTitleVisible: true,
+			imageExpanded: false
 		};
 	}
 
@@ -32,6 +33,9 @@ class Main extends React.Component {
 		array[i] = true;
 		var tabName = this.state.tabs[i];
 		this.setState({ activeTabName: tabName, activeTabs: array });
+	}
+	toggleExpand() {
+		this.setState({ imageExpanded: !this.state.imageExpanded });
 	}
 	componentDidMount() {
 		this.getStuff();
@@ -136,7 +140,8 @@ class Main extends React.Component {
 				}
 			});
 	}
-	downloadExcel() {
+	downloadExcel(e) {
+		e.stopPropagation();
 		var that = this;
 		axios
 			.post(
@@ -155,7 +160,8 @@ class Main extends React.Component {
 				err => {}
 			);
 	}
-	showUploadPopup() {
+	showUploadPopup(e) {
+		e.stopPropagation();
 		this.setState({
 			uploadPopup: !this.state.uploadPopup
 		});
@@ -198,7 +204,12 @@ class Main extends React.Component {
 					) : null}
 					<div className="property-top-container">
 						<div
-							className="property-img"
+							className={
+								!this.state.imageExpanded
+									? "property-img"
+									: "property-img expanded"
+							}
+							onClick={this.toggleExpand.bind(this)}
 							style={
 								!this.state.isLoading
 									? {
